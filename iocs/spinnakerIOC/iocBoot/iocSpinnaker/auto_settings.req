@@ -1,0 +1,21 @@
+file "spinnaker_settings.req",            P=$(P),  R=cam1:
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Brightness
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=AutoExposure
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Sharpness
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=WhiteBalance
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Hue
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Saturation
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Gamma
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Iris
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Focus
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Zoom
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Pan
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Tilt
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Shutter
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Gain
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=TriggerMode
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=TriggerDelay
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=FrameRate
+file "spinnakerProperty_settings.req",    P=$(P),  R=cam1:, PROPERTY=Temperature
+file "NDStdArrays_settings.req",          P=$(P),  R=image1:
+file "commonPlugin_settings.req",         P=$(P)
