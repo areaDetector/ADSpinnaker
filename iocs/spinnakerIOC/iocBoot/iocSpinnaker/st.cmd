@@ -5,14 +5,14 @@ dbLoadDatabase("$(TOP)/dbd/spinnakerApp.dbd")
 spinnakerApp_registerRecordDeviceDriver(pdbbase) 
 
 # Prefix for all records
-epicsEnvSet("PREFIX", "13PG1:")
+epicsEnvSet("PREFIX", "13SP1:")
 # Use this line for the first Point Grey camera in the system
-#epicsEnvSet("CAMERA_ID", "0")
+epicsEnvSet("CAMERA_ID", " ")
 # Use this line for a specific camera by serial number, in this case a Flea2 Firewire camera
 #epicsEnvSet("CAMERA_ID", "9211601")
 
 # The port name for the detector
-epicsEnvSet("PORT",   "PG1")
+epicsEnvSet("PORT",   "SP1")
 # Really large queue so we can stream to disk at full camera speed
 epicsEnvSet("QSIZE",  "2000")   
 # The maximim image width; used for row profiles in the NDPluginStats plugin
@@ -28,16 +28,16 @@ epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db")
 # Define NELEMENTS to be enough for a 2048x2048x3 (color) image
 epicsEnvSet("NELEMENTS", "12592912")
 
-# spinnakerConfig(const char *portName, int cameraId, int traceMask, int memoryChannel,
+# ADSpinnakerConfig(const char *portName, const char *cameraId, int traceMask, int memoryChannel,
 #                 int maxBuffers, size_t maxMemory, int priority, int stackSize)
-spinnakerConfig("$(PORT)", $(CAMERA_ID), 0x1, 0)
+ADSpinnakerConfig("$(PORT)", "", 0x1, 0)
 asynSetTraceIOMask($(PORT), 0, 2)
 asynSetTraceMask($(PORT), 0, 0x1)
-asynSetTraceFile($(PORT), 0, "asynTrace.out")
+#asynSetTraceFile($(PORT), 0, "asynTrace.out")
 #asynSetTraceInfoMask($(PORT), 0, 0xf)
 
 dbLoadRecords("$(ADSPINNAKER)/db/spinnaker.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TIMEOUT=1")
-dbLoadTemplate("spinnaker.substitutions")
+#dbLoadTemplate("spinnaker.substitutions")
 
 # Create a standard arrays plugin
 NDStdArraysConfigure("Image1", 5, 0, "$(PORT)", 0, 0)
@@ -58,16 +58,7 @@ create_monitor_set("auto_settings.req", 30,"P=$(PREFIX)")
 # Wait for enum callbacks to complete
 epicsThreadSleep(1.0)
 
-# Records with dynamic enums need to be processed again because the enum values are not available during iocInit.  
-dbpf("$(PREFIX)cam1:Format7Mode.PROC", "1")
-dbpf("$(PREFIX)cam1:PixelFormat.PROC", "1")
-
 # Wait for callbacks on the property limits (DRVL, DRVH) to complete
 epicsThreadSleep(1.0)
 
-# Records that depend on the state of the dynamic enum records or property limits also need to be processed again
-# Other property records may need to be added to this list
-dbpf("$(PREFIX)cam1:FrameRate.PROC", "1")
-dbpf("$(PREFIX)cam1:FrameRateValAbs.PROC", "1")
-dbpf("$(PREFIX)cam1:AcquireTime.PROC", "1")
 
