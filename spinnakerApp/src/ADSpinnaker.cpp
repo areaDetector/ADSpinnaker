@@ -222,14 +222,14 @@ public:
                  int priority, int stackSize);
 
     // virtual methods to override from ADDriver
-//    virtual asynStatus writeInt32( asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus writeInt32( asynUser *pasynUser, epicsInt32 value);
 //    virtual asynStatus writeFloat64( asynUser *pasynUser, epicsFloat64 value);
 //    virtual asynStatus readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], 
 //                                size_t nElements, size_t *nIn);
 //    void report(FILE *fp, int details);
     /**< These should be private but are called from C callback functions, must be public. */
-//    void imageGrabTask();
-//    void shutdown();
+    void imageGrabTask();
+    void shutdown();
 
 protected:
                                  /** The following PGProperty parameters 
@@ -328,6 +328,7 @@ private:
     SystemPtr system_;
     CameraList camList_;
     CameraPtr pCam_;
+    ImagePtr pImage_;
 /*
     BusManager            *pBusMgr_;
     PGRGuid               *pGuid_;
@@ -405,12 +406,13 @@ extern "C" int ADSpinnakerConfig(const char *portName, const char *cameraId, int
     return asynSuccess;
 }
 
-/*
+
 static void c_shutdown(void *arg)
 {
   ADSpinnaker *p = (ADSpinnaker *)arg;
   p->shutdown();
 }
+
 
 static void imageGrabTaskC(void *drvPvt)
 {
@@ -418,7 +420,7 @@ static void imageGrabTaskC(void *drvPvt)
 
     pPvt->imageGrabTask();
 }
-*/
+
 /** Constructor for the ADSpinnaker class
  * \param[in] portName asyn port name to assign to the camera.
  * \param[in] cameraId The camera index or serial number.
@@ -446,8 +448,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, const char *cameraId, int traceMa
     cameraId_(cameraId), memoryChannel_(memoryChannel), exiting_(0), pRaw_(NULL)
 {
     static const char *functionName = "ADSpinnaker";
-    int i;
-    Error error;
+//    int i;
     //PropertyType propType;
     asynStatus status;
     
@@ -591,7 +592,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, const char *cameraId, int traceMa
 
     startEventId_ = epicsEventCreate(epicsEventEmpty);
 
-/*
+
     // launch image read task
     epicsThreadCreate("PointGreyImageTask", 
                       epicsThreadPriorityMedium,
@@ -600,7 +601,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, const char *cameraId, int traceMa
 
     // shutdown on exit
     epicsAtExit(c_shutdown, this);
-*/
+
     return;
 }
 
@@ -615,20 +616,22 @@ inline asynStatus ADSpinnaker::checkError(Error error, const char *functionName,
     }
     return asynSuccess;
 }
+*/
 
 void ADSpinnaker::shutdown(void)
 {
     exiting_ = 1;
-    if (pGuid_) {
-        disconnectCamera();
-        delete pCameraBase_;
-    }
+//    if (pGuid_) {
+//        disconnectCamera();
+//        delete pCameraBase_;
+//    }
 }
-*/
+
 
 asynStatus ADSpinnaker::connectCamera(void)
 {
     unsigned int numCameras;
+    char tempString[100];
     static const char *functionName = "connectCamera";
 
     try {
@@ -685,29 +688,25 @@ asynStatus ADSpinnaker::connectCamera(void)
     		if (IsReadable(pValue)) {
     		    setStringParam(ADFirmwareVersion, pValue->ToString());
     		}  }
-	catch (Spinnaker::Exception &e)
-	{
-		cout << "Error: " << e.what() << endl;
-		return asynError;
-	}
+    catch (Spinnaker::Exception &e)
+    {
+    	cout << "Error: " << e.what() << endl;
+    	return asynError;
+    }
 
-/*
-    epicsSnprintf(tempString, sizeof(tempString), "%d", pCameraInfo_->serialNumber);
-    setStringParam(ADSerialNumber, tempString);
-    setStringParam(ADManufacturer, pCameraInfo_->vendorName);
-    setStringParam(ADModel, pCameraInfo_->modelName);
-    setStringParam(ADFirmwareVersion, pCameraInfo_->firmwareVersion);
     epicsSnprintf(tempString, sizeof(tempString), "%d.%d.%d", 
                   DRIVER_VERSION, DRIVER_REVISION, DRIVER_MODIFICATION);
     setStringParam(NDDriverVersion,tempString);
-    
+ 
+/*   
     Utilities::GetLibraryVersion(&version);
     epicsSnprintf(tempString, sizeof(tempString), "%d.%d.%d", version.major, version.minor, version.type);
     asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
         "%s::%s called Utilities::GetLibraryVersion, version=%s\n",
         driverName, functionName, tempString);
     setStringParam(ADSDKVersion, tempString);
-    
+
+
     // Get and set the embedded image info
     asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
         "%s::%s calling CameraBase::GetEmbeddedImageInfo, &embeddedInfo=%p\n",
@@ -747,7 +746,7 @@ asynStatus ADSpinnaker::disconnectCamera(void)
 /** Task to grab images off the camera and send them up to areaDetector
  *
  */
-/*
+
 void ADSpinnaker::imageGrabTask()
 {
     asynStatus status = asynSuccess;
@@ -832,115 +831,88 @@ void ADSpinnaker::imageGrabTask()
 asynStatus ADSpinnaker::grabImage()
 {
     asynStatus status = asynSuccess;
-    Error error;
-    unsigned int nRows, nCols, stride;
-    PixelFormat pixelFormat;
-    BayerTileFormat bayerFormat;
+    size_t nRows, nCols, stride;
     NDDataType_t dataType;
     NDColorMode_t colorMode;
-    Image *pPGImage;
-    ImageMetadata metaData;
-    TimeStamp timeStamp;
     int convertPixelFormat;
     int numColors;
     size_t dims[3];
+    ImageStatus imageStatus;
+    PixelFormatEnums pixelFormat;
     int pixelSize;
     size_t dataSize, dataSizePG;
-    double bandwidth;
-    double frameRate;
+//    double bandwidth;
+//    double frameRate;
     void *pData;
     int nDims;
+    long long timeStamp;
     int timeStampMode;
     static const char *functionName = "grabImage";
 
     // unlock the driver while we wait for a new image to be ready
     unlock();
-    asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-        "%s::%s calling CameraBase::RetrieveBuffer, pCameraBase_=%p, pPGRawImage_=%p\n",
-        driverName, functionName, pCameraBase_, pPGRawImage_);
-    error = pCameraBase_->RetrieveBuffer(pPGRawImage_);
+    pImage_ = pCam_->GetNextImage();
     lock();
-    if (error != PGRERROR_OK) {
-        if (error == PGRERROR_ISOCH_NOT_STARTED) {
-            // This is an expected error if acquisition was stopped externally
-            return asynError;
-        } 
-        checkError(error, functionName, "RetrieveBuffer");
-        if (error == PGRERROR_IMAGE_CONSISTENCY_ERROR) {
-            return asynError;
-        } else {
-            //  Any other error we turn off acquisition and return an error
-            setIntegerParam(ADAcquire, 0);
-            return asynError;
-        }
+    imageStatus = pImage_->GetImageStatus();
+    if (imageStatus != IMAGE_NO_ERROR) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
+            "%s::%s error GetImageStatus returned %d\n",
+            driverName, functionName, imageStatus);
+        setIntegerParam(ADAcquire, 0);
+        return asynError;
     }
-    pPGRawImage_->GetDimensions(&nRows, &nCols, &stride, &pixelFormat, &bayerFormat);    
-    metaData = pPGRawImage_->GetMetadata();    
-    timeStamp = pPGRawImage_->GetTimeStamp();    
-    pPGImage = pPGRawImage_;
+    nCols = pImage_->GetWidth();
+    nRows = pImage_->GetHeight();
+    stride = pImage_->GetStride();
+    pixelFormat = pImage_->GetPixelFormat();
+ 
+    timeStamp = pImage_->GetTimeStamp();    
+//    pPGImage = pPGRawImage_;
     // Calculate bandwidth
-    dataSizePG = pPGRawImage_->GetReceivedDataSize();
-    getDoubleParam(FRAME_RATE, PGPropertyValueAbs, &frameRate);
-    bandwidth = frameRate * dataSizePG / (1024 * 1024);
-    setDoubleParam(PGBandwidth, bandwidth);
+//    dataSizePG = pPGRawImage_->GetReceivedDataSize();
+//    getDoubleParam(FRAME_RATE, PGPropertyValueAbs, &frameRate);
+//    bandwidth = frameRate * dataSizePG / (1024 * 1024);
+//    setDoubleParam(PGBandwidth, bandwidth);
 
     // If the incoming pixel format is raw[8,12,16] or mono12 and convertPixelFormat is non-zero then convert
     // the pixel format of the image
     getIntegerParam(PGConvertPixelFormat, &convertPixelFormat);
-    if (((pixelFormat == PIXEL_FORMAT_RAW8)   ||
-         (pixelFormat == PIXEL_FORMAT_RAW12)  ||
-         (pixelFormat == PIXEL_FORMAT_MONO12) ||
-         (pixelFormat == PIXEL_FORMAT_RAW16)) &&
+    if (((pixelFormat == PixelFormat_Raw8)   ||
+//         (pixelFormat == PixelFormat_Raw12)  ||
+         (pixelFormat == PixelFormat_Mono12) ||
+         (pixelFormat == PixelFormat_Raw16)) &&
           convertPixelFormat != 0) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-            "%s::%s calling Image::Convert, pPGRawImage_=%p, convertPixelFormat=%d, pPGConvertedImage_=%p\n",
-            driverName, functionName, pPGRawImage_, convertPixelFormat, pPGConvertedImage_);
-        error = pPGRawImage_->Convert((PixelFormat)convertPixelFormat, pPGConvertedImage_);
-        if (checkError(error, functionName, "Convert") == 0)
-            pPGImage = pPGConvertedImage_;
+        ImagePtr pConvertedImage = pImage_->Convert((PixelFormatEnums)convertPixelFormat);
+        pImage_ = pConvertedImage;
     }
     
-    pPGImage->GetDimensions(&nRows, &nCols, &stride, &pixelFormat, &bayerFormat);
-    switch (pixelFormat) {
-        case PIXEL_FORMAT_MONO8:
-        case PIXEL_FORMAT_RAW8:
+     pixelFormat = pImage_->GetPixelFormat();
+     switch (pixelFormat) {
+        case PixelFormat_Mono8:
+        case PixelFormat_Raw8:
             dataType = NDUInt8;
             colorMode = NDColorModeMono;
             numColors = 1;
             pixelSize = 1;
             break;
 
-        case PIXEL_FORMAT_RGB8:
+        case PixelFormat_RGB8:
             dataType = NDUInt8;
             colorMode = NDColorModeRGB1;
             numColors = 3;
             pixelSize = 1;
             break;
 
-        case PIXEL_FORMAT_MONO16:
-        case PIXEL_FORMAT_RAW16:
+        case PixelFormat_Mono16:
+        case PixelFormat_Raw16:
             dataType = NDUInt16;
             colorMode = NDColorModeMono;
             numColors = 1;
             pixelSize = 2;
             break;
 
-        case PIXEL_FORMAT_S_MONO16:
-            dataType = NDInt16;
-            colorMode = NDColorModeMono;
-            numColors = 1;
-            pixelSize = 2;
-            break;
-
-        case PIXEL_FORMAT_RGB16:
+        case PixelFormat_RGB16:
             dataType = NDUInt16;
-            colorMode = NDColorModeRGB1;
-            numColors = 3;
-            pixelSize = 2;
-            break;
-
-        case PIXEL_FORMAT_S_RGB16:
-            dataType = NDInt16;
             colorMode = NDColorModeRGB1;
             numColors = 3;
             pixelSize = 2;
@@ -965,7 +937,7 @@ asynStatus ADSpinnaker::grabImage()
     }
     dataSize = dims[0] * dims[1] * pixelSize;
     if (nDims == 3) dataSize *= dims[2];
-    dataSizePG = pPGImage->GetDataSize();
+    dataSizePG = pImage_->GetBufferSize();
     // Note, we should be testing for equality here.  However, there appears to be a bug in the
     // SDK when images are converted.  When converting from raw8 to mono8, for example, the
     // size returned by GetDataSize is the size of an RGB8 image, not a mono8 image.
@@ -975,8 +947,8 @@ asynStatus ADSpinnaker::grabImage()
             driverName, functionName, (long)dataSize, (long)dataSizePG);
         //return asynError;
     }
-    setIntegerParam(NDArraySizeX, nCols);
-    setIntegerParam(NDArraySizeY, nRows);
+    setIntegerParam(NDArraySizeX, (int)nCols);
+    setIntegerParam(NDArraySizeY, (int)nRows);
     setIntegerParam(NDArraySize, (int)dataSize);
     setIntegerParam(NDDataType,dataType);
     if (nDims == 3) {
@@ -1000,26 +972,18 @@ asynStatus ADSpinnaker::grabImage()
         setIntegerParam(ADAcquire, 0);
         return(asynError);
     }
-    pData = pPGImage->GetData();
+    pData = pImage_->GetData();
     memcpy(pRaw_->pData, pData, dataSize);
-
+ 
     // Put the frame number into the buffer
-    pRaw_->uniqueId = metaData.embeddedFrameCounter;
+    pRaw_->uniqueId = (int)pImage_->GetFrameID();
     getIntegerParam(PGTimeStampMode, &timeStampMode);
     updateTimeStamp(&pRaw_->epicsTS);
     // Set the timestamps in the buffer
     switch (timeStampMode) {
         case TimeStampCamera:
-            // Some Point Grey cameras return seconds and microseconds, others cycleSeconds, etc. fields
-            if (timeStamp.seconds != 0) {
-                pRaw_->timeStamp = (double)timeStamp.seconds + 
-                                   (double)timeStamp.microSeconds / 1.e6;
-            } else {
-                pRaw_->timeStamp = (double)timeStamp.cycleSeconds + 
-                                   (double)timeStamp.cycleCount / 8000. + 
-                                   (double)timeStamp.cycleOffset / 8000. / 3072.;
-            }
-            break;
+             pRaw_->timeStamp = timeStamp / 1e9;
+             break;
         case TimeStampEPICS:
             pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
             break;
@@ -1048,18 +1012,18 @@ asynStatus ADSpinnaker::grabImage()
   *
   * Takes action if the function code requires it.  ADAcquire, ADSizeX, and many other
   * function codes make calls to the Firewire library from this function. */
-/*
+
 asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
 {
     asynStatus status = asynSuccess;
     int function = pasynUser->reason;
     int addr;
-    PropertyType propType;
+//    PropertyType propType;
     static const char *functionName = "writeInt32";
 
     pasynManager->getAddr(pasynUser, &addr);
     if (addr < 0) addr=0;
-    propType = (PropertyType) addr;
+//    propType = (PropertyType) addr;
 
     // Set the value in the parameter library.  This may change later but that's OK
     status = setIntegerParam(addr, function, value);
@@ -1071,7 +1035,7 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
         } else {
             status = stopCapture();
         }
-
+/*
     } else if ( (function == ADSizeX)       ||
                 (function == ADSizeY)       ||
                 (function == ADMinX)        ||
@@ -1120,7 +1084,7 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
                 
     } else if (function == ADReadStatus) {
         status = readStatus();
-
+*/
     } else {
         // If this parameter belongs to a base class call its method
         if (function < FIRST_PG_PARAM) status = ADDriver::writeInt32(pasynUser, value);
@@ -2483,22 +2447,17 @@ asynStatus ADSpinnaker::getAllGigEProperties()
     for (addr=0; addr<NUM_GIGE_PROPERTIES; addr++) callParamCallbacks(addr);
     return asynSuccess;
 }
-
+*/
 
 asynStatus ADSpinnaker::startCapture()
 {
-    Error error;
     static const char *functionName = "startCapture";
 
     // Start the camera transmission...
     setIntegerParam(ADNumImagesCounter, 0);
     setShutter(1);
-    asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-        "%s::%s calling CameraBase::StartCapture, pCameraBase_=%p\n",
-        driverName, functionName, pCameraBase_);
-    error = pCameraBase_->StartCapture();
-    if (checkError(error, functionName, "StartCapture")) 
-        return asynError;
+printf("%s::%s calling BeginAcquisition()\n", driverName, functionName);
+    pCam_->BeginAcquisition();
     epicsEventSignal(startEventId_);
     return asynSuccess;
 }
@@ -2506,20 +2465,16 @@ asynStatus ADSpinnaker::startCapture()
 
 asynStatus ADSpinnaker::stopCapture()
 {
-    Error error;
     static const char *functionName = "stopCapture";
 
-    setShutter(0);
-    asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-        "%s::%s calling CameraBase::StopCapture, pCameraBase_=%p\n",
-        driverName, functionName, pCameraBase_);
-    error = pCameraBase_->StopCapture();
     setIntegerParam(ADAcquire, 0);
-    if (checkError(error, functionName, "StopCapture")) 
-        return asynError;
+    setShutter(0);
+printf("%s::%s calling EndAcquisition()\n", driverName, functionName);
+    pCam_->EndAcquisition();
     return asynSuccess;
 }
 
+/*
 asynStatus ADSpinnaker::readStatus()
 {
     Error error;
