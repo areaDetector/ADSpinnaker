@@ -33,6 +33,10 @@ NodeMapInfo_SRCS += NodeMapInfo.cpp
 PROD_IOC_WIN32 += ImageFormatControl
 ImageFormatControl_SRCS += ImageFormatControl.cpp
 
+#PROD_IOC_Linux += ChunkData
+PROD_IOC_WIN32 += ChunkData
+ChunkData_SRCS += ChunkData.cpp
+
 PROD_LIBS_WIN32 += Spinnaker_v140
 
 PROD_SYS_LIBS_Linux += Spinnaker
