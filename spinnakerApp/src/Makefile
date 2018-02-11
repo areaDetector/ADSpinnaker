@@ -4,18 +4,18 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 
 LIBRARY_IOC_WIN32 += ADSpinnaker
-#LIBRARY_IOC_Linux += ADSpinnaker
+LIBRARY_IOC_Linux += ADSpinnaker
 
 LIB_SRCS += ADSpinnaker.cpp
 
 LIB_LIBS_WIN32 += Spinnaker_v140
-#LIB_IBS_Linux  += spinnaker
+LIB_IBS_Linux  += Spinnaker
 
 DBD += ADSpinnakerSupport.dbd
 
 USR_INCLUDES += -I ../../../spinnakerSupport/include
 USR_CXXFLAGS_Linux += -D LINUX
-USR_CXXFLAGS_Linux += -std=c++11
+USR_CXXFLAGS_Linux += -std=c++11 -Wno-unknown-pragmas
 
 #PROD_IOC_Linux += Enumeration
 PROD_IOC_WIN32 += Enumeration
