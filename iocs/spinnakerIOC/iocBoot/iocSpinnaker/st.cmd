@@ -7,9 +7,11 @@ spinnakerApp_registerRecordDeviceDriver(pdbbase)
 # Prefix for all records
 epicsEnvSet("PREFIX", "13SP1:")
 # Use this line for the first Point Grey camera in the system
-epicsEnvSet("CAMERA_ID", " ")
-# Use this line for a specific camera by serial number, in this case a Flea2 Firewire camera
-#epicsEnvSet("CAMERA_ID", "9211601")
+#epicsEnvSet("CAMERA_ID", "1")
+# Use this line for a specific camera by serial number, in this case a Grasshopper3 USB
+epicsEnvSet("CAMERA_ID", "17476170")
+# Use this line for a specific camera by serial number, in this case a BlackFlyS GigE
+#epicsEnvSet("CAMERA_ID", "17165235")
 
 # The port name for the detector
 epicsEnvSet("PORT",   "SP1")
@@ -30,9 +32,10 @@ epicsEnvSet("NELEMENTS", "12592912")
 
 # ADSpinnakerConfig(const char *portName, const char *cameraId, int traceMask, int memoryChannel,
 #                 int maxBuffers, size_t maxMemory, int priority, int stackSize)
-ADSpinnakerConfig("$(PORT)", "", 0x1, 0)
+ADSpinnakerConfig("$(PORT)", $(CAMERA_ID), 0x1, 0)
 asynSetTraceIOMask($(PORT), 0, 2)
-asynSetTraceMask($(PORT), 0, 0x1)
+# Set ASYN_TRACE_WARNING and ASYN_TRACE_ERROR
+asynSetTraceMask($(PORT), 0, 0x21)
 #asynSetTraceFile($(PORT), 0, "asynTrace.out")
 #asynSetTraceInfoMask($(PORT), 0, 0xf)
 
