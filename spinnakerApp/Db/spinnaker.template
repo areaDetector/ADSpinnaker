@@ -22,3 +22,97 @@ record(ao, "$(P)$(R)AcquirePeriod")
    info(asyn:READBACK, "1")
 }
 
+## Pixel format
+record(mbbo, "$(P)$(R)PixelFormat") {
+  field(PINI, "YES")
+  field(PHAS, "2")
+  field(DTYP, "asynInt32")
+  field(OUT,  "@asyn($(PORT) 0)SP_PIXEL_FORMAT")
+}
+
+record(mbbi, "$(P)$(R)PixelFormat_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP,  "@asyn($(PORT) 0)SP_PIXEL_FORMAT")
+}
+
+## Trigger source
+record(mbbo, "$(P)$(R)TriggerSource") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(OUT,  "@asyn($(PORT) 0)SP_TRIGGER_SOURCE")
+}
+
+record(mbbi, "$(P)$(R)TriggerSource_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP,  "@asyn($(PORT) 0)SP_TRIGGER_SOURCE")
+}
+
+## Trigger polarity
+record(bo, "$(P)$(R)TriggerPolarity") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(OUT,  "@asyn($(PORT) 0)SP_TRIGGER_ACTIVATION")
+}
+
+record(bi, "$(P)$(R)TriggerPolarity_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP,  "@asyn($(PORT) 0)SP_TRIGGER_ACTIVATION")
+}
+
+## Software trigger
+record(bo, "$(P)$(R)SoftwareTrigger") {
+  field(PINI, "NO")
+  field(DTYP, "asynInt32")
+  field(ONAM, "Trigger")
+  field(ZNAM, "Done")
+  field(OUT,  "@asyn($(PORT) 0)SP_SOFTWARE_TRIGGER")
+}
+
+## Frame rate
+record(ao, "$(P)$(R)FrameRate") {
+  field(PINI, "YES")
+  field(DTYP, "asynFloat64")
+  field(OUT,  "@asyn($(PORT) 0)SP_FRAME_RATE")
+  field(PREC, "3")
+  field(VAL, "0.01")
+}
+
+record(ai, "$(P)$(R)FrameRate_RBV") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)SP_FRAME_RATE")
+  field(PREC, "3")
+  field(SCAN, "I/O Intr")
+}
+
+## Frame rate enable
+record(mbbo, "$(P)$(R)FrameRateEnable") {
+  field(PINI, "YES")
+  field(PHAS, "3")
+  field(DTYP, "asynInt32")
+  field(OUT,  "@asyn($(PORT) 0)SP_FRAME_RATE_ENABLE")
+}
+
+record(mbbi, "$(P)$(R)FrameRateEnable_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP,  "@asyn($(PORT) 0)SP_FRAME_RATE_ENABLE")
+}
+
+## Frame rate auto
+record(mbbo, "$(P)$(R)FrameRateAuto") {
+  field(PINI, "YES")
+  field(PHAS, "3")
+  field(DTYP, "asynInt32")
+  field(OUT,  "@asyn($(PORT) 0)SP_FRAME_RATE_AUTO")
+}
+
+record(mbbi, "$(P)$(R)FrameRateAuto_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP,  "@asyn($(PORT) 0)SP_FRAME_RATE_AUTO")
+}
+
+
