@@ -46,6 +46,7 @@ static const char *driverName = "ADSpinnaker";
 #define SPTriggerActivationString     "SP_TRIGGER_ACTIVATION"
 #define SPSoftwareTriggerString       "SP_SOFTWARE_TRIGGER"
 #define SPPixelFormatString           "SP_PIXEL_FORMAT"
+#define SPVideoModeString             "SP_VIDEO_MODE"
 #define SPConvertPixelFormatString    "SP_CONVERT_PIXEL_FORMAT"
 #define SPFrameRateString             "SP_FRAME_RATE"
 #define SPFrameRateEnableString       "SP_FRAME_RATE_ENABLE"
@@ -76,6 +77,7 @@ static const char *driverName = "ADSpinnaker";
 
 typedef enum {
     SPPropertyTypeInt,
+    SPPropertyTypeBoolean,
     SPPropertyTypeEnum,
     SPPropertyTypeDouble,
     SPPropertyTypeString,
@@ -123,6 +125,33 @@ typedef enum {
    TimeStampHybrid
 } PGTimeStamp_t;
 
+class ADSpinnaker;
+
+class ImageEventHandler : public ImageEvent
+{
+public:
+
+	ImageEventHandler() 
+	{ 
+	}
+	~ImageEventHandler() {}
+
+	void OnImageEvent(ImagePtr image)
+	{
+			// Check image retrieval status
+			if (image->IsIncomplete()) {
+				cout << "Image incomplete with image status " << image->GetImageStatus() << "..." << endl << endl;
+			} else {
+				// Print image information
+				cout << "Grabbed image " << ", width = " << image->GetWidth() << ", height = " << image->GetHeight() << endl;
+			}
+			image->Release();
+	}
+	
+private:
+
+};
+
 /** Main driver class inherited from areaDetectors ADDriver class.
  * One instance of this class will control one camera.
  */
@@ -149,6 +178,7 @@ protected:
     int SPTriggerActivation;      /** Trigger activation (polarity)                   (int32 write/read) */
     int SPSoftwareTrigger;        /** Issue a software trigger                        (int32 write/read) */
     int SPPixelFormat;            /** Pixel format (Mono8, Mono16, etc.)              (int32 read/write) */
+    int SPVideoMode;              /** Video mode                                      (int32 read/write) */
     int SPConvertPixelFormat;     /** The pixel format to convert to                  (int32 read/write) */
     int SPFrameRate;              /** Frame rate                                      (float64 read/write) */
     int SPFrameRateEnable;        /** Frame rate enable/disable                       (int32 read/write) */
@@ -178,7 +208,6 @@ private:
     asynStatus startCapture();
     asynStatus stopCapture();
 
-    inline asynStatus checkError(Error error, const char *functionName, const char *message);
     asynStatus connectCamera();
     asynStatus disconnectCamera();
     asynStatus readStatus();
@@ -188,6 +217,8 @@ private:
     asynStatus getSPProperty (SPPropertyType_t propertyType, const char *nodeName, void *value, int paramIndex=-1);
 
     asynStatus setImageParams();
+    
+    void imageEventCallback(ImagePtr pImage);
 
 /*
     asynStatus getAllProperties();
@@ -203,11 +234,13 @@ private:
     CameraList camList_;
     CameraPtr pCamera_;
     ImagePtr pImage_;
+    ImageEventHandler *pImageEventHandler_;
 
     int exiting_;
     epicsEventId startEventId_;
     NDArray *pRaw_;
 };
+
 
 /** Number of asynPortDriver parameters this driver supports. */
 #define NUM_PG_PARAMS ((int)(&LAST_PG_PARAM - &FIRST_PG_PARAM + 1))
@@ -294,6 +327,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createParam(SPTriggerActivationString,      asynParamInt32,   &SPTriggerActivation);
     createParam(SPSoftwareTriggerString,        asynParamInt32,   &SPSoftwareTrigger);
     createParam(SPPixelFormatString,            asynParamInt32,   &SPPixelFormat);
+    createParam(SPVideoModeString,              asynParamInt32,   &SPVideoMode);
     createParam(SPConvertPixelFormatString,     asynParamInt32,   &SPConvertPixelFormat);
     createParam(SPFrameRateString,              asynParamFloat64, &SPFrameRate);
     createParam(SPFrameRateEnableString,        asynParamInt32,   &SPFrameRateEnable);
@@ -343,8 +377,10 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
         return;
     }
 
-    startEventId_ = epicsEventCreate(epicsEventEmpty);
+		pImageEventHandler_ = new ImageEventHandler();
+		pCamera_->RegisterEvent(*pImageEventHandler_);
 
+    startEventId_ = epicsEventCreate(epicsEventEmpty);
 
     // launch image read task
     epicsThreadCreate("PointGreyImageTask", 
@@ -360,11 +396,22 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
 
 void ADSpinnaker::shutdown(void)
 {
+    static const char *functionName = "shutdown";
     exiting_ = 1;
-//    if (pGuid_) {
-//        disconnectCamera();
-//        delete pCameraBase_;
-//    }
+    
+    printf("Shutting down, calling camList.Clear() and system.ReleaseInstance()\n");
+    try {
+    		pCamera_->UnregisterEvent(*pImageEventHandler_);
+    		delete pImageEventHandler_;
+        camList_.Clear();
+        system_->ReleaseInstance();
+    }
+    catch (Spinnaker::Exception &e)
+    {
+    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+    	    "%s::%s exception %s\n",
+    	    driverName, functionName, e.what());
+    }
 }
 
 
@@ -406,7 +453,8 @@ asynStatus ADSpinnaker::connectCamera(void)
                 driverName, functionName, &camList_, cameraId_);
             char tempString[100];
             sprintf(tempString, "%d", cameraId_);
-            pCamera_ = camList_.GetBySerial(std::string(tempString));
+            std::string tempStdString(tempString);
+            pCamera_ = camList_.GetBySerial(tempStdString);
         }
     
 //    		report(stdout, 1);
@@ -563,10 +611,10 @@ printf("Setting ADStatusIdle\n");
         pRaw_ = NULL;
 
         // See if acquisition is done if we are in single or multiple mode
-        if ((imageMode == ADImageSingle) || ((imageMode == ADImageMultiple) && (numImagesCounter >= numImages))) {
-            setIntegerParam(ADStatus, ADStatusIdle);
-            status = stopCapture();
-        }
+//        if ((imageMode == ADImageSingle) || ((imageMode == ADImageMultiple) && (numImagesCounter >= numImages))) {
+//            setIntegerParam(ADStatus, ADStatusIdle);
+//            status = stopCapture();
+//        }
         callParamCallbacks();
     }
 }
@@ -594,21 +642,28 @@ asynStatus ADSpinnaker::grabImage()
     static const char *functionName = "grabImage";
 
     // unlock the driver while we wait for a new image to be ready
-    unlock();
-    pImage_ = pCamera_->GetNextImage();
-    lock();
-    imageStatus = pImage_->GetImageStatus();
-    if (imageStatus != IMAGE_NO_ERROR) {
+    while (1) {
+    asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
+        "%s::%s AcquisitionStatus=%d\n", 
+        driverName, functionName, pCamera_->AcquisitionStatus());
+        unlock();
+        pImage_ = pCamera_->GetNextImage(100);
+        lock();
+        imageStatus = pImage_->GetImageStatus();
+        if (imageStatus == IMAGE_NO_ERROR) break;
         asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
             "%s::%s error GetImageStatus returned %d\n",
             driverName, functionName, imageStatus);
-        setIntegerParam(ADAcquire, 0);
-        return asynError;
-    }
+//        setIntegerParam(ADAcquire, 0);
+//        return asynError;
+    } 
     nCols = pImage_->GetWidth();
     nRows = pImage_->GetHeight();
     //stride = pImage_->GetStride();
     pixelFormat = pImage_->GetPixelFormat();
+    gcstring pixelFormatName = pImage_->GetPixelFormatName();
+printf("%s::%s NUM_PIXELFORMAT=%d, pixelFormat=%d, pixelFormatName=%s\n", 
+driverName, functionName, NUM_PIXELFORMAT, pixelFormat, pixelFormatName.c_str());
  
 //    timeStamp = pImage_->GetTimeStamp();    
 //    pPGImage = pPGRawImage_;
@@ -632,6 +687,9 @@ asynStatus ADSpinnaker::grabImage()
     }
     
      pixelFormat = pImage_->GetPixelFormat();
+     pixelFormatName = pImage_->GetPixelFormatName();
+printf("%s::%s pixelFormat=%d, pixelFormatName=%s\n", 
+driverName, functionName, pixelFormat, pixelFormatName.c_str());
      switch (pixelFormat) {
         case PixelFormat_Mono8:
         case PixelFormat_Raw8:
@@ -799,7 +857,7 @@ asynStatus ADSpinnaker::getSPProperty(SPPropertyType_t propertyType, const char 
             }
             case SPPropertyTypeString: {
                 CStringPtr pNode = (CStringPtr)pBase;
-                std::string value = epicsStrDup(pNode->GetValue());
+                std::string value = epicsStrDup((pNode->GetValue()).c_str());
                 if (pValue) *(std::string *)pValue = value;
                 if (paramIndex >= 0) setStringParam(paramIndex, value);
                 break;
@@ -874,6 +932,23 @@ asynStatus ADSpinnaker::setSPProperty(SPPropertyType_t propertyType, const char 
                 }
                 break;
             }
+            case SPPropertyTypeBoolean: {
+                CBooleanPtr pNode = (CBooleanPtr)pBase;
+                epicsInt32 value = *(epicsInt32*)pValue;
+                *pNode = value;
+                asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
+                    "%s::%s set property %s to %d\n",
+                    driverName, functionName, nodeName, value);
+                if (IsReadable(pNode)) {
+                    epicsInt32 readback = (epicsInt32)pNode->GetValue();
+                    if (pReadbackValue) *(epicsInt32*)pReadbackValue = readback;
+                    asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
+                        "%s::%s readback property %s is %d\n",
+                        driverName, functionName, nodeName, readback);
+                    if (paramIndex >= 0) setIntegerParam(paramIndex, readback);
+                }
+                break;
+            }
             case SPPropertyTypeDouble: {
                 CFloatPtr pNode = (CFloatPtr)pBase;
                 epicsFloat64 value = *(epicsFloat64*)pValue;
@@ -931,7 +1006,7 @@ asynStatus ADSpinnaker::setSPProperty(SPPropertyType_t propertyType, const char 
                     "%s::%s set property %s to %s\n",
                     driverName, functionName, nodeName, value);
                 if (IsReadable(pNode)) {
-                    std::string readback = epicsStrDup(pNode->GetValue());
+                    std::string readback = epicsStrDup((pNode->GetValue()).c_str());
                     if (pReadbackValue) *(std::string*)pReadbackValue = readback;
                     asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
                         "%s::%s readback property %s is %s\n",
@@ -997,8 +1072,11 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
                 (function == ADBinX)        ||
                 (function == ADBinY)        ||
                 (function == ADImageMode)   ||
+                (function == ADNumImages)   ||
                 (function == NDDataType)) {    
         status = setImageParams();
+    } else if (function == SPFrameRateEnable) {
+        status = setSPProperty(SPPropertyTypeBoolean, "AcquisitionFrameRateEnable",       &value, 0, SPFrameRateEnable);
     } else if (function == SPPixelFormat) {
         status = setSPProperty(SPPropertyTypeEnum, "PixelFormat",       &value, 0, SPPixelFormat);
     } else if (function == ADTriggerMode) {
@@ -1107,14 +1185,16 @@ asynStatus ADSpinnaker::readEnum(asynUser *pasynUser, char *strings[], int value
     *nIn = 0;
     if (function == SPPixelFormat) {
         nodeName = "PixelFormat";
+    } else if (function == ADImageMode) {
+        nodeName= "AcquisitionMode";
+    } else if (function == SPVideoMode) {
+        nodeName= "VideoMode";
     } else if (function == ADTriggerMode) {
         nodeName= "TriggerMode";
     } else if (function == SPTriggerSource) {
         nodeName = "TriggerSource";
     } else if (function == SPTriggerActivation) {
         nodeName = "TriggerActivation";
-    } else if (function == SPFrameRateEnable) {
-        nodeName = "AcquisitionFrameRateEnable";
     } else if (function == SPFrameRateAuto) {
         nodeName = "AcquisitionFrameRateAuto";
     } else {
@@ -1139,7 +1219,7 @@ asynStatus ADSpinnaker::readEnum(asynUser *pasynUser, char *strings[], int value
 
         for (i=0; ((i<numEnums) && (i<(int)nElements)); i++) {
             IEnumEntry *pEntry= dynamic_cast<IEnumEntry *>(entries[i]);
-            const char *pString = epicsStrDup(pEntry->GetSymbolic());
+            const char *pString = epicsStrDup((pEntry->GetSymbolic()).c_str());
             if (IsAvailable(pEntry) && IsReadable(pEntry)) {
 printf("%s:%s is available\n", nodeName, pString);               
                 if (strings[*nIn]) free(strings[*nIn]);
@@ -1171,11 +1251,13 @@ asynStatus ADSpinnaker::setImageParams()
     //static const char *functionName = "setImageParams";
     
     //bool resumeAcquire;
-    int sizeX, sizeY, minX, minY, binX, binY, imageMode;
+    int sizeX, sizeY, minX, minY, binX, binY, imageMode, numImages, videoMode;
 
     if (!pCamera_) return asynError;
     
+    getIntegerParam(SPVideoMode, &videoMode);
     getIntegerParam(ADImageMode, &imageMode);
+    getIntegerParam(ADNumImages, &numImages);
     getIntegerParam(ADSizeX, &sizeX);
     getIntegerParam(ADSizeY, &sizeY);
     getIntegerParam(ADMinX, &minX);
@@ -1183,20 +1265,26 @@ asynStatus ADSpinnaker::setImageParams()
     getIntegerParam(ADBinX, &binX);
     getIntegerParam(ADBinY, &binY);
 
-    setSPProperty(SPPropertyTypeInt, "Width",             &sizeX);
-    setSPProperty(SPPropertyTypeInt, "Height",            &sizeY);
-    setSPProperty(SPPropertyTypeInt, "OffsetX",           &minX);
-    setSPProperty(SPPropertyTypeInt, "OffsetY",           &minY);
-    setSPProperty(SPPropertyTypeInt, "BinningHorizontal", &binX);
-    setSPProperty(SPPropertyTypeInt, "BinningVertical",   &binY);
+    setSPProperty(SPPropertyTypeEnum, "VideoMode",              &videoMode);
+    setSPProperty(SPPropertyTypeEnum, "AcquisitionMode",        &imageMode);
+    setSPProperty(SPPropertyTypeInt,  "AcquisitionFrameCount",  &numImages);
+    setSPProperty(SPPropertyTypeInt,  "Width",                  &sizeX);
+    setSPProperty(SPPropertyTypeInt,  "Height",                 &sizeY);
+    setSPProperty(SPPropertyTypeInt,  "OffsetX",                &minX);
+    setSPProperty(SPPropertyTypeInt,  "OffsetY",                &minY);
+    setSPProperty(SPPropertyTypeInt,  "BinningHorizontal",      &binX);
+    setSPProperty(SPPropertyTypeInt,  "BinningVertical",        &binY);
 
     // We read these back after setting all of them in case one setting affects another
-    getSPProperty(SPPropertyTypeInt, "Width",             0, ADSizeX);
-    getSPProperty(SPPropertyTypeInt, "Height",            0, ADSizeY);
-    getSPProperty(SPPropertyTypeInt, "OffsetX",           0, ADMinX);
-    getSPProperty(SPPropertyTypeInt, "OffsetY",           0, ADMinY);
-    getSPProperty(SPPropertyTypeInt, "BinningHorizontal", 0, ADBinX);
-    getSPProperty(SPPropertyTypeInt, "BinningVertical",   0, ADBinY);
+    getSPProperty(SPPropertyTypeEnum, "VideoMode",              0, SPVideoMode);
+    getSPProperty(SPPropertyTypeEnum, "AcquisitionMode",        0, ADImageMode);
+    getSPProperty(SPPropertyTypeInt,  "AcquisitionFrameCount",  0, ADNumImages);
+    getSPProperty(SPPropertyTypeInt,  "Width",                  0, ADSizeX);
+    getSPProperty(SPPropertyTypeInt,  "Height",                 0, ADSizeY);
+    getSPProperty(SPPropertyTypeInt,  "OffsetX",                0, ADMinX);
+    getSPProperty(SPPropertyTypeInt,  "OffsetY",                0, ADMinY);
+    getSPProperty(SPPropertyTypeInt,  "BinningHorizontal",      0, ADBinX);
+    getSPProperty(SPPropertyTypeInt,  "BinningVertical",        0, ADBinY);
 
 /*
     // Must stop acquisition before changing the video mode
@@ -1405,8 +1493,17 @@ asynStatus ADSpinnaker::startCapture()
     setIntegerParam(ADNumImagesCounter, 0);
     setShutter(1);
 printf("%s::%s calling BeginAcquisition()\n", driverName, functionName);
-    pCamera_->BeginAcquisition();
-    epicsEventSignal(startEventId_);
+    try {
+        pCamera_->BeginAcquisition();
+//      epicsEventSignal(startEventId_);
+    }
+    catch (Spinnaker::Exception &e)
+    {
+    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+    	    "%s::%s exception %s\n",
+    	    driverName, functionName, e.what());
+    	return asynError;
+    }
     return asynSuccess;
 }
 
@@ -1427,8 +1524,17 @@ printf("Waiting for ADStatusIdle\n");
         epicsThreadSleep(.1);
         lock();
     }
-printf("%s::%s calling EndAcquisition()\n", driverName, functionName);
-    pCamera_->EndAcquisition();
+    printf("%s::%s calling EndAcquisition()\n", driverName, functionName);
+    try {
+        pCamera_->EndAcquisition();
+    }
+    catch (Spinnaker::Exception &e)
+    {
+    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+    	    "%s::%s exception %s\n",
+    	    driverName, functionName, e.what());
+    	return asynError;
+    }
     return asynSuccess;
 }
 
