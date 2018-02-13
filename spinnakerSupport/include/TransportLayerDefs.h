@@ -64,7 +64,8 @@ namespace Spinnaker
 		StreamBufferHandlingMode_OldestFirst,	/*!< The application always gets the buffer from the head of the output buffer queue (thus, the oldest available one). If the output buffer queue is empty, the application waits for a newly acquired buffer until the timeout expires.*/
 		StreamBufferHandlingMode_OldestFirstOverwrite,	/*!< The application always gets the buffer from the head of the output buffer queue (thus, the oldest available one). If the output buffer queue is empty, the application waits for a newly acquired buffer until the timeout expires. If a new buffer arrives it will overwrite the existing buffer from the head of the queue (behaves like a circular buffer).*/
 		StreamBufferHandlingMode_NewestFirst,	/*!< The application always gets the buffer from the tail of the output buffer queue (thus, the newest available one). If the output buffer queue is empty, the application waits for a newly acquired buffer until the timeout expires.*/
-		StreamBufferHandlingMode_NewestFirstOverwrite,	/*!< The application always gets the buffer from the tail of the output buffer queue (thus, the newest available one). If the output buffer queue is empty, the application waits for a newly acquired buffer until the timeout expires. If a new buffer arrives it will overwrite the existing buffer from the tail of the queue.*/
+		StreamBufferHandlingMode_NewestFirstOverwrite,	/*!< DEPRECATED.  This is replaced by NewestOnly.*/
+		StreamBufferHandlingMode_NewestOnly,	/*!< The application always gets the latest completed buffer (the newest one).  If the Output Buffer Queue is empty, the application waits for a newly acquired buffer until the timeout expires.  This buffer handling mode is typically used in a live display GUI where it is important that there is no lag between camera and display.*/
 		NUMSTREAMBUFFERHANDLINGMODE
 	};
 

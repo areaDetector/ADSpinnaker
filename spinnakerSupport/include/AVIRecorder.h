@@ -117,6 +117,18 @@ namespace Spinnaker
          *
          */
         virtual void AVIClose( );
+		
+        /**
+         * Set the maximum file size (in megabytes) of a AVI/MP4 file. A new AVI/MP4 file
+         * is created automatically when file size limit is reached. Setting
+         * a maximum size of 0 indicates no limit on file size.
+         *
+         * @param size The maximum AVI file size in MB.
+         *
+         * @see AVIAppend( ImagePtr pImage)
+         *
+         */
+        virtual void SetMaximumAVISize(unsigned int size);
 
     private:
 

@@ -2139,6 +2139,18 @@ extern "C" {
 	*/
 	SPINNAKERC_API spinAVIRecorderAppend(spinAVIRecorder hRecorder, spinImage hImage);
 
+	/**
+	* Set the maximum file size (in megabytes) of a AVI/MP4 file. A new AVI/MP4 file
+	* is created automatically when file size limit is reached. Setting
+	* a maximum size of 0 indicates no limit on file size.
+	*
+	* @param spinAVIRecorder The AVI recorder to append the image to
+	* @param size The maximum AVI file size in MB.
+	*
+	* @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+	*/
+	SPINNAKERC_API spinAVISetMaximumSize(spinAVIRecorder hRecorder, unsigned int size);
+
 	/*
 	* Closes a video file to complete its creation
 	* @see spinError

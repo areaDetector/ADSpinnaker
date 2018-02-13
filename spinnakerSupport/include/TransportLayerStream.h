@@ -111,20 +111,20 @@ namespace Spinnaker
 		GenApi::IBoolean &GevPacketResendMode;
 
 		/**
-		 * Description: Maximum number of resend requests per image.
+		 * Description: Maximum number of resend requests per image. Each resend request consists of a span of consecutive packet IDs.
 		 * Visibility: Expert
 		 */
 		GenApi::IInteger &GevMaximumNumberResendRequests;
 
 		/**
-		 * Description: Time in milliseconds to wait until a resend request is issued.
+		 * Description: Time in milliseconds to wait after the image trailer is received and before the image is completed by the driver.
 		 * Visibility: Expert
 		 */
 		GenApi::IInteger &GevPacketResendTimeout;
 
 		/**
-		 * Description: The maximum number of buffers that can be resend simultaneously.
-		 * Visibility: Expert
+		 * Description: This node is not used and has been deprecated.
+		 * Visibility: Invisible
 		 */
 		GenApi::IInteger &GevMaximumNumberResendBuffers;
 
