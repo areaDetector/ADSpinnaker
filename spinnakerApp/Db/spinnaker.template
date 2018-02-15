@@ -83,6 +83,23 @@ record(bo, "$(P)$(R)SoftwareTrigger") {
   field(OUT,  "@asyn($(PORT) 0)SP_SOFTWARE_TRIGGER")
 }
 
+## Trigger delay
+record(ao, "$(P)$(R)TriggerDelay") {
+  field(PINI, "YES")
+  field(DTYP, "asynFloat64")
+  field(OUT,  "@asyn($(PORT) 0)SP_TRIGGER_DELAY")
+  field(PREC, "3")
+  field(VAL, ".01")
+}
+
+record(ai, "$(P)$(R)TriggerDelay_RBV") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)SP_TRIGGER_DELAY")
+  field(PREC, "3")
+  field(SCAN, "I/O Intr")
+}
+
+
 ## Frame rate
 record(ao, "$(P)$(R)FrameRate") {
   field(PINI, "YES")
