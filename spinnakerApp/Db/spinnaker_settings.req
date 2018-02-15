@@ -1,8 +1,12 @@
 file "ADBase_settings.req", P=$(P), R=$(R)
-$(P)$(R)FrameRate
 $(P)$(R)PixelFormat
+$(P)$(R)VideoMode
 $(P)$(R)TriggerSource
 $(P)$(R)TriggerPolarity
+$(P)$(R)TriggerDelay
+$(P)$(R)FrameRate
+$(P)$(R)FrameRateEnable
+$(P)$(R)FrameRateAuto
 #$(P)$(R)PacketSize
 #$(P)$(R)PacketDelay
 #$(P)$(R)ConvertPixelFormat
