@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=338
-		y=56
+		x=310
+		y=53
 		width=1070
 		height=925
 	}
@@ -167,7 +167,7 @@ rectangle {
 		x=360
 		y=205
 		width=350
-		height=525
+		height=450
 	}
 	"basic attribute" {
 		clr=14
@@ -186,48 +186,6 @@ text {
 	}
 	textix="Readout"
 	align="horiz. centered"
-}
-text {
-	object {
-		x=405
-		y=705
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Timestamp"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=501
-		y=706
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TimeStampMode"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=586
-		y=706
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TimeStampMode_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
 }
 rectangle {
 	object {
@@ -989,19 +947,6 @@ text {
 	textix="Data type"
 	align="horiz. right"
 }
-text {
-	object {
-		x=395
-		y=550
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Color mode"
-	align="horiz. right"
-}
 "text update" {
 	object {
 		x=501
@@ -1011,23 +956,6 @@ text {
 	}
 	monitor {
 		chan="$(P)$(R)DataType_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=501
-		y=551
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)ColorMode_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1334,118 +1262,6 @@ text {
 }
 text {
 	object {
-		x=385
-		y=680
-		width=110
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Convert raw"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=501
-		y=681
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ConvertPixelFormat"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=586
-		y=681
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)ConvertPixelFormat_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=395
-		y=625
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Properties"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=501
-		y=625
-		width=80
-		height=20
-	}
-	display[0] {
-		label="Properties"
-		name="pointGreyProperties.adl"
-		args="P=$(P),R=$(R)"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=395
-		y=600
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Video mode"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=500
-		y=600
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)VideoMode"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=605
-		y=601
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)VideoMode_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
 		x=395
 		y=425
 		width=100
@@ -1559,48 +1375,6 @@ text {
 		clr=14
 		bclr=51
 	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=500
-		y=575
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PixelFormat"
-		clr=14
-		bclr=51
-	}
-}
-text {
-	object {
-		x=375
-		y=575
-		width=120
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Pixel format"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=605
-		y=576
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PixelFormat_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
 	limits {
 	}
 }
@@ -2310,19 +2084,6 @@ menu {
 }
 text {
 	object {
-		x=750
-		y=435
-		width=80
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Polarity"
-	align="horiz. right"
-}
-text {
-	object {
 		x=770
 		y=410
 		width=60
@@ -2386,35 +2147,6 @@ menu {
 		bclr=4
 	}
 	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-menu {
-	object {
-		x=835
-		y=433
-		width=110
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TriggerPolarity"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=950
-		y=434
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TriggerPolarity_RBV"
-		clr=54
-		bclr=4
-	}
 	format="string"
 	limits {
 	}
@@ -2518,6 +2250,190 @@ text {
 		clr=54
 		bclr=4
 	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=458
+		y=884
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="More"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=504
+		y=884
+		width=80
+		height=20
+	}
+	display[0] {
+		label="More"
+		name="ADSpinnakerMore.adl"
+		args="P=$(P),R=$(R)"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=395
+		y=575
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Video mode"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=500
+		y=575
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)VideoMode"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=605
+		y=576
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)VideoMode_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=405
+		y=625
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Timestamp"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=501
+		y=626
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TimeStampMode"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=586
+		y=626
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TimeStampMode_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=385
+		y=600
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Convert raw"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=501
+		y=601
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ConvertPixelFormat"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=586
+		y=601
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ConvertPixelFormat_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=395
+		y=550
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Color mode"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=501
+		y=551
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ColorMode_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
 	format="string"
 	limits {
 	}
