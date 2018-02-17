@@ -9,9 +9,9 @@ $(P)$(R)FrameRateEnable
 $(P)$(R)FrameRateAuto
 $(P)$(R)GainAuto
 $(P)$(R)ExposureAuto
+$(P)$(R)ConvertPixelFormat
 #$(P)$(R)PacketSize
 #$(P)$(R)PacketDelay
-#$(P)$(R)ConvertPixelFormat
 #$(P)$(R)SkipFrames
 #$(P)$(R)StrobeSource
 #$(P)$(R)StrobeEnable
