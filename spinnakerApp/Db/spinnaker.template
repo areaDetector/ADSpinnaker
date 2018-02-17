@@ -35,6 +35,44 @@ record(mbbi, "$(P)$(R)PixelFormat_RBV") {
   field(INP,  "@asyn($(PORT) 0)SP_PIXEL_FORMAT")
 }
 
+## Convert pixel format
+record(mbbo, "$(P)$(R)ConvertPixelFormat") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(ZRVL, "0")
+  field(ZRST, "None")
+  field(ONVL, "1")
+  field(ONST, "Mono8")
+  field(TWVL, "2")
+  field(TWST, "Mono16")
+  field(THVL, "3")
+  field(THST, "Raw16")
+  field(FRVL, "4")
+  field(FRST, "RGB8")
+  field(FVVL, "5")
+  field(FVST, "RGB16")
+  field(OUT,  "@asyn($(PORT) 0)SP_CONVERT_PIXEL_FORMAT")
+}
+
+record(mbbi, "$(P)$(R)ConvertPixelFormat_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(ZRVL, "0")
+  field(ZRST, "None")
+  field(ONVL, "1")
+  field(ONST, "Mono8")
+  field(TWVL, "2")
+  field(TWST, "Mono16")
+  field(THVL, "3")
+  field(THST, "Raw16")
+  field(FRVL, "4")
+  field(FRST, "RGB8")
+  field(FVVL, "5")
+  field(FVST, "RGB16")
+  field(INP,  "@asyn($(PORT) 0)SP_CONVERT_PIXEL_FORMAT")
+}
+
+
 ## Video mode
 record(mbbo, "$(P)$(R)VideoMode") {
   field(PINI, "YES")
@@ -145,6 +183,48 @@ record(mbbi, "$(P)$(R)FrameRateAuto_RBV") {
   field(SCAN, "I/O Intr")
   field(DTYP, "asynInt32")
   field(INP,  "@asyn($(PORT) 0)SP_FRAME_RATE_AUTO")
+}
+
+## Black level
+record(ao, "$(P)$(R)BlackLevel") {
+  field(PINI, "YES")
+  field(DTYP, "asynFloat64")
+  field(OUT,  "@asyn($(PORT) 0)SP_BLACK_LEVEL")
+  field(PREC, "3")
+  field(VAL,  "0.")
+}
+
+record(ai, "$(P)$(R)BlackLevel_RBV") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)SP_BLACK_LEVEL")
+  field(PREC, "3")
+  field(SCAN, "I/O Intr")
+}
+
+## Black level auto
+record(mbbo, "$(P)$(R)BlackLevelAuto") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(OUT,  "@asyn($(PORT) 0)SP_BLACK_LEVEL_AUTO")
+}
+
+record(mbbi, "$(P)$(R)BlackLevelAuto_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP,  "@asyn($(PORT) 0)SP_BLACK_LEVEL_AUTO")
+}
+
+## Black level balance auto
+record(mbbo, "$(P)$(R)BlackLevelBalanceAuto") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(OUT,  "@asyn($(PORT) 0)SP_BLACK_LEVEL_BALANCE_AUTO")
+}
+
+record(mbbi, "$(P)$(R)BlackLevelBalanceAuto_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP,  "@asyn($(PORT) 0)SP_BLACK_LEVEL_BALANCE_AUTO")
 }
 
 ## Gain auto
