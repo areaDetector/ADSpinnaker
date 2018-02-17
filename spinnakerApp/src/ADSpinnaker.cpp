@@ -59,6 +59,9 @@ static const char *driverName = "ADSpinnaker";
 #define SPAcquisitionModeString       "SP_ACQUISITION_MODE"
 #define SPGainAutoString              "SP_GAIN_AUTO"
 #define SPExposureAutoString          "SP_EXPOSURE_AUTO"
+#define SPBlackLevelString            "SP_BLACK_LEVEL"
+#define SPBlackLevelAutoString        "SP_BLACK_LEVEL_AUTO"
+#define SPBlackLevelBalanceAutoString "SP_BLACK_LEVEL_BALANCE_AUTO"
 
 /*
 #define PGSkipFramesString            "PG_SKIP_FRAMES"
@@ -96,11 +99,14 @@ typedef enum {
     SPPropertyTypeUnknown
 } SPPropertyType_t;
 
-#define MAX_ENUM_STRING_SIZE 26
-typedef struct {
-    int value;
-    char string[MAX_ENUM_STRING_SIZE];
-} enumStruct_t;
+typedef enum {
+    SPPixelConvertNone,
+    SPPixelConvertMono8,
+    SPPixelConvertMono16,
+    SPPixelConvertRaw16,
+    SPPixelConvertRGB8,
+    SPPixelConvertRGB16
+} SPPixelConvert_t;
 
 
 /*
@@ -237,6 +243,9 @@ protected:
     int SPAcquisitionMode;        /** Acquisition mode                                (int32 read/write) */
     int SPGainAuto;               /** Auto gain                                       (int32 read/write) */
     int SPExposureAuto;           /** Auto exposure                                   (int32 read/write) */
+    int SPBlackLevel;             /** Black level                                     (float64 read/write) */
+    int SPBlackLevelAuto;         /** Black level auto                                (int32 read/write) */
+    int SPBlackLevelBalanceAuto;  /** Black level balance auto                        (int32 read/write) */
 
 //    int PGSkipFrames;             /** Frames to skip in trigger mode 3                (int32 write/read) */
 //    int PGStrobeSource;           /** Strobe source GPIO pin                          (int32 write/read) */
@@ -395,6 +404,9 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createParam(SPAcquisitionModeString,        asynParamInt32,   &SPAcquisitionMode);
     createParam(SPGainAutoString,               asynParamInt32,   &SPGainAuto);
     createParam(SPExposureAutoString,           asynParamInt32,   &SPExposureAuto);
+    createParam(SPBlackLevelString,             asynParamFloat64, &SPBlackLevel);
+    createParam(SPBlackLevelAutoString,         asynParamInt32,   &SPBlackLevelAuto);
+    createParam(SPBlackLevelBalanceAutoString,  asynParamInt32,   &SPBlackLevelBalanceAuto);
 
 /*
     createParam(PGSkipFramesString,             asynParamInt32,   &PGSkipFrames);
@@ -469,6 +481,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     propertyList_[SPFrameRate]          = new propertyListElement(pNodeMap_, "AcquisitionFrameRate");
     propertyList_[SPTriggerDelay]       = new propertyListElement(pNodeMap_, "TriggerDelay");
     propertyList_[ADTemperatureActual]  = new propertyListElement(pNodeMap_, "DeviceTemperature");
+    propertyList_[SPBlackLevel]         = new propertyListElement(pNodeMap_, "BlackLevel");
 
     // Enum properties
     propertyList_[SPPixelFormat]        = new propertyListElement(pNodeMap_, "PixelFormat");
@@ -480,6 +493,8 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     propertyList_[SPFrameRateAuto]      = new propertyListElement(pNodeMap_, "AcquisitionFrameRateAuto");
     propertyList_[SPGainAuto]           = new propertyListElement(pNodeMap_, "GainAuto");
     propertyList_[SPExposureAuto]       = new propertyListElement(pNodeMap_, "ExposureAuto");
+    propertyList_[SPBlackLevelAuto]     = new propertyListElement(pNodeMap_, "BlackLevelAuto");
+    propertyList_[SPBlackLevelBalanceAuto] = new propertyListElement(pNodeMap_, "BlackLevelBalanceAuto");
     CNodePtr pBase = (CNodePtr)pNodeMap_->GetNode("AcquisitionFrameRateEnable");
     if (IsAvailable(pBase)) {
         propertyList_[SPFrameRateEnable]   = new propertyListElement(pNodeMap_, "AcquisitionFrameRateEnable");
@@ -794,22 +809,51 @@ asynStatus ADSpinnaker::grabImage()
 //    bandwidth = frameRate * dataSizePG / (1024 * 1024);
 //    setDoubleParam(PGBandwidth, bandwidth);
 
-    // If the incoming pixel format is raw[8,12,16] or mono12 and convertPixelFormat is non-zero then convert
-    // the pixel format of the image
+    // Convert the pixel format if requested
     getIntegerParam(SPConvertPixelFormat, &convertPixelFormat);
-    if (((pixelFormat == PixelFormat_Raw8)   ||
-         (pixelFormat == PixelFormat_Mono12Packed)  ||
-         (pixelFormat == PixelFormat_Mono12p) ||
-         (pixelFormat == PixelFormat_Mono12) ||
-         (pixelFormat == PixelFormat_Raw16)) &&
-          convertPixelFormat != 0) {
-//        ImagePtr pConvertedImage = pImage_->Convert((PixelFormatEnums)convertPixelFormat);
-//        pImage_ = pConvertedImage;
+    if (convertPixelFormat != SPPixelConvertNone) {
+        PixelFormatEnums convertedFormat;
+        switch (convertPixelFormat) {
+            case SPPixelConvertMono8:
+                convertedFormat = PixelFormat_Mono8;
+                break;
+            case SPPixelConvertMono16:
+                convertedFormat = PixelFormat_Mono16;
+                break;
+            case SPPixelConvertRaw16:
+                convertedFormat = PixelFormat_Raw16;
+                break;
+            case SPPixelConvertRGB8:
+                convertedFormat = PixelFormat_RGB8;
+                break;
+            case SPPixelConvertRGB16:
+                convertedFormat = PixelFormat_RGB16;
+                break;
+            default:
+                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s::%s Error: Unknown pixel conversion format %d\n",
+                    driverName, functionName, convertPixelFormat);
+                convertedFormat = PixelFormat_Mono8;
+                break;
+        }
+
+printf("Converting image to format 0x%x\n", convertedFormat);
+        try {
+            ImagePtr pConvertedImage = pImage_->Convert(convertedFormat);
+            pImage_->Release();
+            pImage_ = pConvertedImage;
+        }
+        catch (Spinnaker::Exception &e) {
+    	       asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+    	           "%s::%s exception %s\n",
+    	       driverName, functionName, e.what());
+        }
     }
-    
-     pixelFormat = pImage_->GetPixelFormat();
-     pixelFormatName = pImage_->GetPixelFormatName();
-     switch (pixelFormat) {
+
+    pixelFormat = pImage_->GetPixelFormat();
+printf("After conversion image format=0x%x\n", pixelFormat);
+    pixelFormatName = pImage_->GetPixelFormatName();
+    switch (pixelFormat) {
         case PixelFormat_Mono8:
         case PixelFormat_Raw8:
             dataType = NDUInt8;
@@ -1262,6 +1306,8 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
                 (function == SPTriggerActivation) ||
                 (function == SPGainAuto)          ||
                 (function == SPExposureAuto)      ||
+                (function == SPBlackLevelAuto)    ||
+                (function == SPBlackLevelBalanceAuto) ||
                 (function == SPSoftwareTrigger)) {
         status = setSPProperty(function, &value);
     } else if (function == ADReadStatus) {
@@ -1325,9 +1371,6 @@ asynStatus ADSpinnaker::writeFloat64( asynUser *pasynUser, epicsFloat64 value)
         status = setSPProperty(SPTriggerDelay, &tempValue, &readbackValue, false);
         setDoubleParam(SPTriggerDelay, readbackValue/1.e6);
     
-    } else if (function == ADGain) {
-        status = setSPProperty(ADGain, &value);
-            
     } else if (function == SPFrameRate) {
         status = setSPProperty(SPFrameRate, &value, &readbackValue);
         setDoubleParam(ADAcquirePeriod, 1./readbackValue);
@@ -1336,7 +1379,11 @@ asynStatus ADSpinnaker::writeFloat64( asynUser *pasynUser, epicsFloat64 value)
         double tempValue = 1./value;
         status = setSPProperty(SPFrameRate, &tempValue, &readbackValue);
         setDoubleParam(ADAcquirePeriod, 1./readbackValue);
-    
+
+    } else if ((function == ADGain) ||
+               (function == SPBlackLevel)) {
+        status = setSPProperty(function, &value);
+
 //    } else if ((function == PGStrobeDelay)  || 
 //               (function == PGStrobeDuration)) {
 //        status = setStrobe();
