@@ -57,6 +57,8 @@ static const char *driverName = "ADSpinnaker";
 #define SPFrameRateAutoString         "SP_FRAME_RATE_AUTO"
 #define SPAcquisitionStatusString     "SP_ACQUISITION_STATUS"
 #define SPAcquisitionModeString       "SP_ACQUISITION_MODE"
+#define SPGainAutoString              "SP_GAIN_AUTO"
+#define SPExposureAutoString          "SP_EXPOSURE_AUTO"
 
 /*
 #define PGSkipFramesString            "PG_SKIP_FRAMES"
@@ -90,7 +92,8 @@ typedef enum {
     SPPropertyTypeEnum,
     SPPropertyTypeDouble,
     SPPropertyTypeString,
-    SPPropertyTypeCmd
+    SPPropertyTypeCmd,
+    SPPropertyTypeUnknown
 } SPPropertyType_t;
 
 #define MAX_ENUM_STRING_SIZE 26
@@ -129,11 +132,49 @@ typedef enum {
 
 class propertyListElement {
     public:
-        propertyListElement(SPPropertyType_t propertyType, const char *nodeName)
-          : propertyType_(propertyType), nodeName_(nodeName) {}
+        propertyListElement(INodeMap *pNodeMap, const char *nodeName);
         SPPropertyType_t propertyType_;
         const char *nodeName_;
 };
+
+propertyListElement::propertyListElement(INodeMap *pNodeMap, const char *nodeName)
+    : nodeName_(nodeName) 
+{
+    try {
+        CNodePtr pBase = (CNodePtr)pNodeMap->GetNode(nodeName);
+        if (IsAvailable(pBase)) {
+            switch (pBase->GetPrincipalInterfaceType()) {
+                case intfIString:
+                		propertyType_ = SPPropertyTypeString;
+                 	  break;
+                case  intfIInteger:
+                		propertyType_ = SPPropertyTypeInt;
+                	  break; 
+                case intfIFloat:
+                		propertyType_ = SPPropertyTypeDouble;
+                	  break;
+                case intfIBoolean:
+                		propertyType_ = SPPropertyTypeBoolean;
+                	  break;
+                case intfICommand:
+                		propertyType_ = SPPropertyTypeCmd;
+                	  break;
+                case intfIEnumeration:
+                		propertyType_ = SPPropertyTypeEnum;
+                	  break;
+                default:
+                   break; 
+            }
+        } else {
+            propertyType_ = SPPropertyTypeUnknown;
+        }
+
+    }
+    catch (Spinnaker::Exception &e)
+    {
+    	printf("propertyListElement::propertyListElement exception %s\n", e.what());
+    }
+}
 
 class ImageEventHandler : public ImageEvent
 {
@@ -175,7 +216,7 @@ public:
     virtual asynStatus writeFloat64( asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], 
                                 size_t nElements, size_t *nIn);
-//    void report(FILE *fp, int details);
+    void report(FILE *fp, int details);
     /**< These should be private but are called from C callback functions, must be public. */
     void imageGrabTask();
     void shutdown();
@@ -194,6 +235,8 @@ protected:
     int SPFrameRateAuto;          /** Frame rate auto enable/disable                  (int32 read/write) */
     int SPAcquisitionStatus;      /** Acquisition status                              (int32 read/write) */
     int SPAcquisitionMode;        /** Acquisition mode                                (int32 read/write) */
+    int SPGainAuto;               /** Auto gain                                       (int32 read/write) */
+    int SPExposureAuto;           /** Auto exposure                                   (int32 read/write) */
 
 //    int PGSkipFrames;             /** Frames to skip in trigger mode 3                (int32 write/read) */
 //    int PGStrobeSource;           /** Strobe source GPIO pin                          (int32 write/read) */
@@ -232,7 +275,7 @@ private:
     asynStatus setImageParams();
     
     void imageEventCallback(ImagePtr pImage);
-
+    void reportNode(FILE *fp, INodeMap *pNodeMap, const char *nodeName, int level);
 /*
     asynStatus getAllProperties();
     asynStatus setTrigger();
@@ -350,6 +393,8 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createParam(SPFrameRateAutoString,          asynParamInt32,   &SPFrameRateAuto);
     createParam(SPAcquisitionStatusString,      asynParamInt32,   &SPAcquisitionStatus);
     createParam(SPAcquisitionModeString,        asynParamInt32,   &SPAcquisitionMode);
+    createParam(SPGainAutoString,               asynParamInt32,   &SPGainAuto);
+    createParam(SPExposureAutoString,           asynParamInt32,   &SPExposureAuto);
 
 /*
     createParam(PGSkipFramesString,             asynParamInt32,   &PGSkipFrames);
@@ -395,46 +440,53 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
         return;
     }
 
-    // Construct property list.  This is a convenience.
-    propertyList_[ADSerialNumber]       = new propertyListElement(SPPropertyTypeString, "DeviceSerialNumber");
-    propertyList_[ADFirmwareVersion]    = new propertyListElement(SPPropertyTypeString, "DeviceFirmwareVersion");
-    propertyList_[ADManufacturer]       = new propertyListElement(SPPropertyTypeString, "DeviceVendorName");
-    propertyList_[ADModel]              = new propertyListElement(SPPropertyTypeString, "DeviceModelName");
+    // Construct property list.
+    // String properties
+    propertyList_[ADSerialNumber]       = new propertyListElement(pNodeMap_, "DeviceSerialNumber");
+    propertyList_[ADFirmwareVersion]    = new propertyListElement(pNodeMap_, "DeviceFirmwareVersion");
+    propertyList_[ADManufacturer]       = new propertyListElement(pNodeMap_, "DeviceVendorName");
+    propertyList_[ADModel]              = new propertyListElement(pNodeMap_, "DeviceModelName");
 
-    propertyList_[ADMaxSizeX]           = new propertyListElement(SPPropertyTypeInt,    "WidthMax");
-    propertyList_[ADMaxSizeY]           = new propertyListElement(SPPropertyTypeInt,    "HeightMax");
-    propertyList_[ADSizeX]              = new propertyListElement(SPPropertyTypeInt,    "Width");
-    propertyList_[ADSizeY]              = new propertyListElement(SPPropertyTypeInt,    "Height");
-    propertyList_[ADMinX]               = new propertyListElement(SPPropertyTypeInt,    "OffsetX");
-    propertyList_[ADMinY]               = new propertyListElement(SPPropertyTypeInt,    "OffsetY");
-    propertyList_[ADBinX]               = new propertyListElement(SPPropertyTypeInt,    "BinningHorizontal");
-    propertyList_[ADBinY]               = new propertyListElement(SPPropertyTypeInt,    "BinningVertical");
-    propertyList_[ADNumImages]          = new propertyListElement(SPPropertyTypeInt,    "AcquisitionFrameCount");
+    // Integer properties
+    propertyList_[ADMaxSizeX]           = new propertyListElement(pNodeMap_, "WidthMax");
+    propertyList_[ADMaxSizeY]           = new propertyListElement(pNodeMap_, "HeightMax");
+    propertyList_[ADSizeX]              = new propertyListElement(pNodeMap_, "Width");
+    propertyList_[ADSizeY]              = new propertyListElement(pNodeMap_, "Height");
+    propertyList_[ADMinX]               = new propertyListElement(pNodeMap_, "OffsetX");
+    propertyList_[ADMinY]               = new propertyListElement(pNodeMap_, "OffsetY");
+    propertyList_[ADBinX]               = new propertyListElement(pNodeMap_, "BinningHorizontal");
+    propertyList_[ADBinY]               = new propertyListElement(pNodeMap_, "BinningVertical");
+    propertyList_[ADNumImages]          = new propertyListElement(pNodeMap_, "AcquisitionFrameCount");
 
-    propertyList_[SPAcquisitionStatus]  = new propertyListElement(SPPropertyTypeBoolean,"AcquisitionStatus");
+    propertyList_[SPAcquisitionStatus]  = new propertyListElement(pNodeMap_, "AcquisitionStatus");
 
-    propertyList_[SPSoftwareTrigger]    = new propertyListElement(SPPropertyTypeCmd,    "TriggerSoftware");
+    // Command properties
+    propertyList_[SPSoftwareTrigger]    = new propertyListElement(pNodeMap_, "TriggerSoftware");
 
-    propertyList_[ADAcquireTime]        = new propertyListElement(SPPropertyTypeDouble, "ExposureTime");
-    propertyList_[ADGain]               = new propertyListElement(SPPropertyTypeDouble, "Gain");
-    propertyList_[SPFrameRate]          = new propertyListElement(SPPropertyTypeDouble, "AcquisitionFrameRate");
-    propertyList_[SPTriggerDelay]       = new propertyListElement(SPPropertyTypeDouble, "TriggerDelay");
-    propertyList_[ADTemperatureActual]  = new propertyListElement(SPPropertyTypeDouble, "DeviceTemperature");
+    // Float properties
+    propertyList_[ADAcquireTime]        = new propertyListElement(pNodeMap_, "ExposureTime");
+    propertyList_[ADGain]               = new propertyListElement(pNodeMap_, "Gain");
+    propertyList_[SPFrameRate]          = new propertyListElement(pNodeMap_, "AcquisitionFrameRate");
+    propertyList_[SPTriggerDelay]       = new propertyListElement(pNodeMap_, "TriggerDelay");
+    propertyList_[ADTemperatureActual]  = new propertyListElement(pNodeMap_, "DeviceTemperature");
 
-    propertyList_[SPPixelFormat]        = new propertyListElement(SPPropertyTypeEnum,   "PixelFormat");
-    propertyList_[SPAcquisitionMode]    = new propertyListElement(SPPropertyTypeEnum,   "AcquisitionMode");
-    propertyList_[SPVideoMode]          = new propertyListElement(SPPropertyTypeEnum,   "VideoMode");
-    propertyList_[ADTriggerMode]        = new propertyListElement(SPPropertyTypeEnum,   "TriggerMode");
-    propertyList_[SPTriggerSource]      = new propertyListElement(SPPropertyTypeEnum,   "TriggerSource");
-    propertyList_[SPTriggerActivation]  = new propertyListElement(SPPropertyTypeEnum,   "TriggerActivation");
-    propertyList_[SPFrameRateAuto]      = new propertyListElement(SPPropertyTypeEnum,   "AcquisitionFrameRateAuto");
+    // Enum properties
+    propertyList_[SPPixelFormat]        = new propertyListElement(pNodeMap_, "PixelFormat");
+    propertyList_[SPAcquisitionMode]    = new propertyListElement(pNodeMap_, "AcquisitionMode");
+    propertyList_[SPVideoMode]          = new propertyListElement(pNodeMap_, "VideoMode");
+    propertyList_[ADTriggerMode]        = new propertyListElement(pNodeMap_, "TriggerMode");
+    propertyList_[SPTriggerSource]      = new propertyListElement(pNodeMap_, "TriggerSource");
+    propertyList_[SPTriggerActivation]  = new propertyListElement(pNodeMap_, "TriggerActivation");
+    propertyList_[SPFrameRateAuto]      = new propertyListElement(pNodeMap_, "AcquisitionFrameRateAuto");
+    propertyList_[SPGainAuto]           = new propertyListElement(pNodeMap_, "GainAuto");
+    propertyList_[SPExposureAuto]       = new propertyListElement(pNodeMap_, "ExposureAuto");
     CNodePtr pBase = (CNodePtr)pNodeMap_->GetNode("AcquisitionFrameRateEnable");
     if (IsAvailable(pBase)) {
-        propertyList_[SPFrameRateEnable]   = new propertyListElement(SPPropertyTypeBoolean, "AcquisitionFrameRateEnable");
+        propertyList_[SPFrameRateEnable]   = new propertyListElement(pNodeMap_, "AcquisitionFrameRateEnable");
     } else {
         pBase = (CNodePtr)pNodeMap_->GetNode("AcquisitionFrameRateEnabled");
         if (IsAvailable(pBase)) {
-          propertyList_[SPFrameRateEnable] = new propertyListElement(SPPropertyTypeBoolean, "AcquisitionFrameRateEnabled");
+          propertyList_[SPFrameRateEnable] = new propertyListElement(pNodeMap_, "AcquisitionFrameRateEnabled");
         }
     }
 
@@ -957,6 +1009,8 @@ asynStatus ADSpinnaker::getSPProperty(int paramIndex, void *pValue, bool setPara
             case SPPropertyTypeCmd: {
                 break;
             }
+            default:
+                break;
         }
     }
     catch (Spinnaker::Exception &e) {
@@ -1147,6 +1201,8 @@ asynStatus ADSpinnaker::setSPProperty(int paramIndex, void *pValue, void *pReadb
                     driverName, functionName, nodeName);
                 break;
             }
+            default:
+                break;
         }
     }
     catch (Spinnaker::Exception &e) {
@@ -1204,6 +1260,8 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
                 (function == ADTriggerMode)       ||
                 (function == SPTriggerSource)     ||
                 (function == SPTriggerActivation) ||
+                (function == SPGainAuto)          ||
+                (function == SPExposureAuto)      ||
                 (function == SPSoftwareTrigger)) {
         status = setSPProperty(function, &value);
     } else if (function == ADReadStatus) {
@@ -1316,7 +1374,11 @@ asynStatus ADSpinnaker::readEnum(asynUser *pasynUser, char *strings[], int value
 
     propertyListElement *pElement = findProperty(function);
 
-    if ((pElement == 0) || (pElement->propertyType_ != SPPropertyTypeEnum)) {
+    if (pElement == 0) {
+        return asynError;
+    }
+    if ((pElement->propertyType_ != SPPropertyTypeEnum) && 
+        (pElement->propertyType_ != SPPropertyTypeUnknown)) {
         return asynError;
     }
     const char *nodeName = pElement->nodeName_;
@@ -1702,69 +1764,114 @@ asynStatus ADSpinnaker::readStatus()
     return asynSuccess;
 }
 
+// This helper function deals with output indentation, of which there is a lot.
+void indent(FILE *fp, unsigned int level)
+{
+	for (unsigned int i=0; i<level; i++) {
+		fprintf(fp, "   ");
+	}
+}
+
+void ADSpinnaker::reportNode(FILE *fp, INodeMap *pNodeMap, const char *nodeName, int level)
+{
+    static const char *functionName = "reportStringNode";
+    
+    try {
+        CNodePtr pBase = (CNodePtr)pNodeMap->GetNode(nodeName);
+        if (IsAvailable(pBase) && IsReadable(pBase)) {
+            gcstring value;
+        		gcstring displayName = pBase->GetDisplayName();
+    				switch (pBase->GetPrincipalInterfaceType()) {
+    				case intfIString: {
+            		CStringPtr pNode = static_cast<CStringPtr>(pBase);
+            		value = pNode->GetValue();
+     					  break;
+                }
+    				case  intfIInteger: {
+            		CIntegerPtr pNode = static_cast<CIntegerPtr>(pBase);
+            		value = pNode->ToString();
+    					  break; 
+    					  }
+    
+    				case intfIFloat: {
+            		CFloatPtr pNode = static_cast<CFloatPtr>(pBase);
+            		value = pNode->ToString();
+    					  break;
+    					  }
+    				case intfIBoolean: {
+            		CBooleanPtr pNode = static_cast<CBooleanPtr>(pBase);
+            		value = pNode->ToString();
+    					  break;
+                }
+    				case intfICommand: {
+            		CCommandPtr pNode = static_cast<CCommandPtr>(pBase);
+		            value = pNode->GetToolTip();
+    					  break;
+                }
+    				case intfIEnumeration: {
+            		CEnumerationPtr pNode = static_cast<CEnumerationPtr>(pBase);
+    		        CEnumEntryPtr pEntry = pNode->GetCurrentEntry();
+            		value = pEntry->GetSymbolic();
+    					  break;
+    					 }
+    				default:
+    				   break; 
+    				}
+         		indent(fp, level);
+        		fprintf(fp, "%s (%s):%s\n", displayName.c_str(), nodeName, value.c_str());
+        }
+    } 
+    catch (Spinnaker::Exception &e) {
+    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+    	    "%s::%s node %s exception %s\n",
+    	    driverName, functionName, nodeName, e.what());
+    }
+}
+
 
 /** Print out a report; calls ADDriver::report to get base class report as well.
   * \param[in] fp File pointer to write output to
   * \param[in] details Level of detail desired.  If >1 prints information about 
                supported video formats and modes, etc.
  */
-/*
+
 void ADSpinnaker::report(FILE *fp, int details)
 {
-    unsigned int numCameras;
-    Error error;
-    Camera cam;
-    int mode, rate;
-    int source;
-    unsigned int i, j;
-    asynStatus status;
-    bool supported;
-    int property;
-    int pixelFormatIndex;
+    int numCameras;
+//    int mode, rate;
+//    int source;
+    int i;
+//    asynStatus status;
+//    bool supported;
+//    int property;
+//    int pixelFormatIndex;
     static const char *functionName = "report";
+
+    try {    
+        numCameras = camList_.GetSize();
+        fprintf(fp, "\nNumber of cameras detected: %d\n", numCameras);
+        if (details <1) return;
+        for (i=0; i<numCameras; i++) {
+            CameraPtr pCamera;
+            pCamera = camList_.GetByIndex(i);
+    		    INodeMap *pNodeMap = &pCamera->GetTLDeviceNodeMap();
     
-    error = pBusMgr_->GetNumOfCameras(&numCameras);
-    if (checkError(error, functionName, "GetNumOfCameras")) return;
-
-    fprintf(fp, "\nNumber of cameras detected: %u\n", numCameras);
-
-    for (i=0; i<numCameras; i++) {
-        PGRGuid guid;
-        CameraInfo camInfo;
-        error = pBusMgr_->GetCameraFromIndex(i, &guid);
-        if (checkError(error, functionName, "GetCameraFromIndex")) return;
-
-        // Connect to camera
-        error = cam.Connect(&guid);
-        if (checkError(error, functionName, "Connect")) return;
-
-        // Get the camera information
-        error = cam.GetCameraInfo(&camInfo);
-        if (checkError(error, functionName, "GetCameraInfo")) return;
-
-        fprintf(fp, "\n");
-        fprintf(fp, "Serial number:       %u\n", camInfo.serialNumber);
-        fprintf(fp, "Camera model:        %s\n", camInfo.modelName);
-        fprintf(fp, "Camera vendor:       %s\n", camInfo.vendorName);
-        fprintf(fp, "Sensor:              %s\n", camInfo.sensorInfo);
-        fprintf(fp, "Resolution:          %s\n", camInfo.sensorResolution);
-        fprintf(fp, "Firmware version:    %s\n", camInfo.firmwareVersion);
-        fprintf(fp, "Firmware build time: %s\n", camInfo.firmwareBuildTime);
-
-        // Disconnect from camera
-        error = cam.Disconnect();
-        if (checkError(error, functionName, "Connect")) return;
+            fprintf(fp, "Camera %d\n", i);
+            reportNode(fp, pNodeMap, "DeviceVendorName", 1);
+            reportNode(fp, pNodeMap, "DeviceModelName", 1);
+            reportNode(fp, pNodeMap, "DeviceSerialNumber", 1);
+            reportNode(fp, pNodeMap, "DeviceVersion", 1);
+            reportNode(fp, pNodeMap, "DeviceType", 1);
+        }
+    }
+    catch (Spinnaker::Exception &e)
+    {
+    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+    	    "%s::%s exception %s\n",
+    	    driverName, functionName, e.what());
     }
     
-    // It seems like disconnected from the cam object here causes the already found camera to
-    // need to be reconnected
-    status = connectCamera();
-    if (status) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s::%s error calling connectCamera()\n",
-            driverName, functionName);
-    }
-    
+/*    
     if (pCamera_) {
         getIntegerParam(PGFormat7Mode, &mode);
         pFormat7Info_->mode = (Mode)mode;
@@ -1783,21 +1890,6 @@ void ADSpinnaker::report(FILE *fp, int details)
         fprintf(fp, "  pixelFormatBitField       0x%x\n", pFormat7Info_->pixelFormatBitField);
         fprintf(fp, "  vendorPixelFormatBitField 0x%x\n", pFormat7Info_->vendorPixelFormatBitField);
                     
-    } else if (pGigECamera_) {
-        error = pGigECamera_->GetGigEImageSettingsInfo(pGigEImageSettingsInfo_);
-        if (checkError(error, functionName, "GetGigEImageSettingsInfo")) 
-            return;
-        fprintf(fp, "\n");
-        fprintf(fp, "Currently connected GigE camera image information\n");
-        fprintf(fp, "  maxWidth:        %d\n", pGigEImageSettingsInfo_->maxWidth);
-        fprintf(fp, "  maxHeight:       %d\n", pGigEImageSettingsInfo_->maxHeight);
-        fprintf(fp, "  offsetHStepSize: %d\n", pGigEImageSettingsInfo_->offsetHStepSize);
-        fprintf(fp, "  offsetVStepSize: %d\n", pGigEImageSettingsInfo_->offsetVStepSize);
-        fprintf(fp, "  imageHStepSize:  %d\n", pGigEImageSettingsInfo_->imageHStepSize);
-        fprintf(fp, "  imageVStepSize:  %d\n", pGigEImageSettingsInfo_->imageVStepSize);
-        fprintf(fp, "  pixelFormatBitField       0x%x\n", pGigEImageSettingsInfo_->pixelFormatBitField);
-        fprintf(fp, "  vendorPixelFormatBitField 0x%x\n", pGigEImageSettingsInfo_->vendorPixelFormatBitField);
-    }
 
     if (details < 1) goto done;
     
@@ -2028,12 +2120,12 @@ void ADSpinnaker::report(FILE *fp, int details)
     fprintf(fp, "   # resend packets received: %u\n", pCameraStats_->numResendPacketsReceived);
     fprintf(fp, "                  Time stamp: %f\n", pCameraStats_->timeStamp.seconds + 
                                                       pCameraStats_->timeStamp.microSeconds/1e6);
-    done:          
+    done:
+*/          
     ADDriver::report(fp, details);
     return;
 }
 
-*/
 static const iocshArg configArg0 = {"Port name", iocshArgString};
 static const iocshArg configArg1 = {"cameraId", iocshArgInt};
 static const iocshArg configArg2 = {"traceMask", iocshArgInt};
