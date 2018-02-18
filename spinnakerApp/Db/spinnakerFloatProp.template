@@ -1,0 +1,17 @@
+## Float
+record(ao, "$(P)$(R)$(PROPERTY)") {
+  field(PINI, "$(PINI)")
+  field(DTYP, "asynFloat64")
+  field(OUT,  "@asyn($(PORT) 0)$(USER_INFO)")
+  field(PREC, "$(PREC)")
+  field(VAL, "$(VAL)")
+  info(asyn:READBACK, "$(READBACK)")
+}
+
+record(ai, "$(P)$(R)$(PROPERTY)_RBV") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)$(USER_INFO)")
+  field(PREC, "$(PREC)")
+  field(SCAN, "I/O Intr")
+}
+
