@@ -1,35 +1,39 @@
-# Note.  These substutitions are mostly generic.
-# However the PINI, PINI_VALB, and PINI_ABS fields should be changed to only be
-# YES for the features the camera actually supports in device or absolute
-# mode, otherwise error messages will appear on startup.
-# One would normally set either PINI or PINI_ABS to YES (but not both) because
-# if they are both YES the results are unpredictable, depending
-# on which happens last. 
-# PINI_VALB should only be set to YES for the WhiteBalance property in color cameras 
-# that support WhiteBalance.
-
-file "$(ADSPINNAKER)/db/spinnakerProperty.template" 
+file "$(ADSPINNAKER)/db/spinnakerFloatProp.template" 
 { 
 pattern
-{     P,     R,   PORT,     PROPERTY,     N, PINI, PINI_VALB, PINI_ABS, PHAS}
-{13PG1:, cam1:,    PG1,   Brightness,     0,   NO,        NO,      YES,    1}
-{13PG1:, cam1:,    PG1, AutoExposure,     1,   NO,        NO,      YES,    1}
-{13PG1:, cam1:,    PG1,    Sharpness,     2,   NO,        NO,      YES,    1}
-{13PG1:, cam1:,    PG1, WhiteBalance,     3,  YES,       YES,       NO,    1}
-{13PG1:, cam1:,    PG1,          Hue,     4,   NO,        NO,      YES,    1}
-{13PG1:, cam1:,    PG1,   Saturation,     5,   NO,        NO,      YES,    1}
-{13PG1:, cam1:,    PG1,        Gamma,     6,   NO,        NO,      YES,    1}
-{13PG1:, cam1:,    PG1,         Iris,     7,  YES,        NO,       NO,    1}
-{13PG1:, cam1:,    PG1,        Focus,     8,  YES,        NO,       NO,    1}
-{13PG1:, cam1:,    PG1,         Zoom,     9,  YES,        NO,       NO,    1}
-{13PG1:, cam1:,    PG1,          Pan,    10,  YES,        NO,       NO,    1}
-{13PG1:, cam1:,    PG1,         Tilt,    11,  YES,        NO,       NO,    1}
-# Don't set PINI on Shutter property, it is set from AcquireTime record
-{13PG1:, cam1:,    PG1,      Shutter,    12,   NO,        NO,       NO,    1}
-# Don't set PINI on Gain property, it is set from Gain record
-{13PG1:, cam1:,    PG1,         Gain,    13,   NO,        NO,       NO,    1}
-{13PG1:, cam1:,    PG1,  TriggerMode,    14,   NO,        NO,       NO,    1}
-{13PG1:, cam1:,    PG1, TriggerDelay,    15,   NO,        NO,      YES,    1}
-{13PG1:, cam1:,    PG1,    FrameRate,    16,   NO,        NO,      YES,    1}
-{13PG1:, cam1:,    PG1,  Temperature,    17,   NO,        NO,       NO,    1}
+{  P,     R,      PORT,     PROPERTY,           USER_INFO,         PREC,  VAL,    READBACK}
+{13SP1:, cam1:,    SP1,     FrameRate,          SP_FRAME_RATE,     3,     10.,    1}
+{13SP1:, cam1:,    SP1,     Gamma,              SP_GAMMA,          3,     0.,     0}
+{13SP1:, cam1:,    SP1,     BlackLevel,         SP_BLACK_LEVEL,    3,     0.,     0}
+{13SP1:, cam1:,    SP1,     TriggerDelay,       SP_TRIGGER_DELAY,  3,     0.01,   0}
+}
+
+file "$(ADSPINNAKER)/db/spinnakerMenuProp.template" 
+{ 
+pattern
+{  P,     R,      PORT,     PROPERTY,           USER_INFO}
+{13SP1:, cam1:,    SP1,     VideoMode,          SP_VIDEO_MODE}
+{13SP1:, cam1:,    SP1,     PixelFormat,        SP_PIXEL_FORMAT}
+{13SP1:, cam1:,    SP1,     TriggerSource,      SP_TRIGGER_SOURCE}
+{13SP1:, cam1:,    SP1,     TriggerPolarity,    SP_TRIGGER_ACTIVATION}
+}
+
+file "$(ADSPINNAKER)/db/spinnakerPropEnable.template" 
+{ 
+pattern
+{  P,     R,      PORT,     PROPERTY,           USER_INFO}
+{13SP1:, cam1:,    SP1,     FrameRate,          SP_FRAME_RATE}
+{13SP1:, cam1:,    SP1,     Gamma,              SP_GAMMA}
+}
+
+file "$(ADSPINNAKER)/db/spinnakerPropAuto.template" 
+{ 
+pattern
+{  P,     R,      PORT,     PROPERTY,           USER_INFO}
+{13SP1:, cam1:,    SP1,     FrameRate,          SP_FRAME_RATE}
+{13SP1:, cam1:,    SP1,     Exposure,           SP_EXPOSURE}
+{13SP1:, cam1:,    SP1,     Gamma,              SP_GAMMA}
+{13SP1:, cam1:,    SP1,     Gain,               SP_GAIN}
+{13SP1:, cam1:,    SP1,     BlackLevel,         SP_BLACK_LEVEL}
+{13SP1:, cam1:,    SP1,     BlackLevelBalance,  SP_BLACK_LEVEL_BALANCE}
 }
