@@ -1,8 +1,7 @@
 ## spinnaker.template
-## Template database file to control the features of a Point Grey camera using Spinnaker SDk.
+## Template database file to control the features of a Point Grey camera using Spinnaker SDK.
 ##
-## Note: the strings and values for the mbbo and mbbi records in this database
-## are built dynamically at run-time based on the capabilites of the specific camera
+## Note: this file contains only the records that are not handled by the generic property template files.
 
 include "ADBase.template"
 
@@ -20,19 +19,6 @@ record(ao, "$(P)$(R)AcquirePeriod")
 {
    field(PINI, "NO")
    info(asyn:READBACK, "1")
-}
-
-## Pixel format
-record(mbbo, "$(P)$(R)PixelFormat") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_PIXEL_FORMAT")
-}
-
-record(mbbi, "$(P)$(R)PixelFormat_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_PIXEL_FORMAT")
 }
 
 ## Convert pixel format
@@ -72,46 +58,6 @@ record(mbbi, "$(P)$(R)ConvertPixelFormat_RBV") {
   field(INP,  "@asyn($(PORT) 0)SP_CONVERT_PIXEL_FORMAT")
 }
 
-
-## Video mode
-record(mbbo, "$(P)$(R)VideoMode") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_VIDEO_MODE")
-}
-
-record(mbbi, "$(P)$(R)VideoMode_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_VIDEO_MODE")
-}
-
-## Trigger source
-record(mbbo, "$(P)$(R)TriggerSource") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_TRIGGER_SOURCE")
-}
-
-record(mbbi, "$(P)$(R)TriggerSource_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_TRIGGER_SOURCE")
-}
-
-## Trigger polarity
-record(bo, "$(P)$(R)TriggerPolarity") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_TRIGGER_ACTIVATION")
-}
-
-record(bi, "$(P)$(R)TriggerPolarity_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_TRIGGER_ACTIVATION")
-}
-
 ## Software trigger
 record(bo, "$(P)$(R)SoftwareTrigger") {
   field(PINI, "NO")
@@ -120,137 +66,3 @@ record(bo, "$(P)$(R)SoftwareTrigger") {
   field(ZNAM, "Done")
   field(OUT,  "@asyn($(PORT) 0)SP_SOFTWARE_TRIGGER")
 }
-
-## Trigger delay
-record(ao, "$(P)$(R)TriggerDelay") {
-  field(PINI, "YES")
-  field(DTYP, "asynFloat64")
-  field(OUT,  "@asyn($(PORT) 0)SP_TRIGGER_DELAY")
-  field(PREC, "3")
-  field(VAL, ".01")
-}
-
-record(ai, "$(P)$(R)TriggerDelay_RBV") {
-  field(DTYP, "asynFloat64")
-  field(INP,  "@asyn($(PORT) 0)SP_TRIGGER_DELAY")
-  field(PREC, "3")
-  field(SCAN, "I/O Intr")
-}
-
-
-## Frame rate
-record(ao, "$(P)$(R)FrameRate") {
-  field(PINI, "YES")
-  field(DTYP, "asynFloat64")
-  field(OUT,  "@asyn($(PORT) 0)SP_FRAME_RATE")
-  field(PREC, "3")
-  field(VAL, "10.")
-  info(asyn:READBACK, "1")
-}
-
-record(ai, "$(P)$(R)FrameRate_RBV") {
-  field(DTYP, "asynFloat64")
-  field(INP,  "@asyn($(PORT) 0)SP_FRAME_RATE")
-  field(PREC, "3")
-  field(SCAN, "I/O Intr")
-}
-
-## Frame rate enable
-record(bo, "$(P)$(R)FrameRateEnable") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_FRAME_RATE_ENABLE")
-  field(ZNAM, "Disable")
-  field(ONAM, "Enable")
-}
-
-record(bi, "$(P)$(R)FrameRateEnable_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_FRAME_RATE_ENABLE")
-  field(ZNAM, "Disable")
-  field(ONAM, "Enable")
-}
-
-## Frame rate auto
-record(mbbo, "$(P)$(R)FrameRateAuto") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_FRAME_RATE_AUTO")
-}
-
-record(mbbi, "$(P)$(R)FrameRateAuto_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_FRAME_RATE_AUTO")
-}
-
-## Black level
-record(ao, "$(P)$(R)BlackLevel") {
-  field(PINI, "YES")
-  field(DTYP, "asynFloat64")
-  field(OUT,  "@asyn($(PORT) 0)SP_BLACK_LEVEL")
-  field(PREC, "3")
-  field(VAL,  "0.")
-}
-
-record(ai, "$(P)$(R)BlackLevel_RBV") {
-  field(DTYP, "asynFloat64")
-  field(INP,  "@asyn($(PORT) 0)SP_BLACK_LEVEL")
-  field(PREC, "3")
-  field(SCAN, "I/O Intr")
-}
-
-## Black level auto
-record(mbbo, "$(P)$(R)BlackLevelAuto") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_BLACK_LEVEL_AUTO")
-}
-
-record(mbbi, "$(P)$(R)BlackLevelAuto_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_BLACK_LEVEL_AUTO")
-}
-
-## Black level balance auto
-record(mbbo, "$(P)$(R)BlackLevelBalanceAuto") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_BLACK_LEVEL_BALANCE_AUTO")
-}
-
-record(mbbi, "$(P)$(R)BlackLevelBalanceAuto_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_BLACK_LEVEL_BALANCE_AUTO")
-}
-
-## Gain auto
-record(mbbo, "$(P)$(R)GainAuto") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_GAIN_AUTO")
-}
-
-record(mbbi, "$(P)$(R)GainAuto_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_GAIN_AUTO")
-}
-
-## Exposure auto
-record(mbbo, "$(P)$(R)ExposureAuto") {
-  field(PINI, "YES")
-  field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)SP_EXPOSURE_AUTO")
-}
-
-record(mbbi, "$(P)$(R)ExposureAuto_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)SP_EXPOSURE_AUTO")
-}
-
-
