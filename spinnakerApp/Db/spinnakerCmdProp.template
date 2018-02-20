@@ -1,0 +1,8 @@
+## Command
+record(bo, "$(P)$(R)$(PROP)") {
+  field(PINI, "NO")
+  field(DTYP, "asynInt32")
+  field(ONAM, "Execute")
+  field(ZNAM, "Done")
+  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
+}

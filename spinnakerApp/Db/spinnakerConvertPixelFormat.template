@@ -1,0 +1,36 @@
+## Convert pixel format
+record(mbbo, "$(P)$(R)ConvertPixelFormat") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(ZRVL, "0")
+  field(ZRST, "None")
+  field(ONVL, "1")
+  field(ONST, "Mono8")
+  field(TWVL, "2")
+  field(TWST, "Mono16")
+  field(THVL, "3")
+  field(THST, "Raw16")
+  field(FRVL, "4")
+  field(FRST, "RGB8")
+  field(FVVL, "5")
+  field(FVST, "RGB16")
+  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
+}
+
+record(mbbi, "$(P)$(R)ConvertPixelFormat_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(ZRVL, "0")
+  field(ZRST, "None")
+  field(ONVL, "1")
+  field(ONST, "Mono8")
+  field(TWVL, "2")
+  field(TWST, "Mono16")
+  field(THVL, "3")
+  field(THST, "Raw16")
+  field(FRVL, "4")
+  field(FRST, "RGB8")
+  field(FVVL, "5")
+  field(FVST, "RGB16")
+  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
+}
