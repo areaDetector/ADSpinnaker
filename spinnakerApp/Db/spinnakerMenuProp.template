@@ -1,13 +1,13 @@
 ## Menu
-record(mbbo, "$(P)$(R)$(PROPERTY)") {
+record(mbbo, "$(P)$(R)$(PROP)") {
   field(PINI, "YES")
   field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)$(USER_INFO)")
+  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
 }
 
-record(mbbi, "$(P)$(R)$(PROPERTY)_RBV") {
+record(mbbi, "$(P)$(R)$(PROP)_RBV") {
   field(SCAN, "I/O Intr")
   field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)$(USER_INFO)")
+  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
 }
 

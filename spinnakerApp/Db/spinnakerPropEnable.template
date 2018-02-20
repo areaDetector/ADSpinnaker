@@ -1,16 +1,16 @@
 ## Enable
-record(bo, "$(P)$(R)$(PROPERTY)Enable") {
+record(bo, "$(P)$(R)$(PROP)Enable") {
   field(PINI, "YES")
   field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)$(USER_INFO)_ENABLE")
+  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_ENABLE")
   field(ZNAM, "Disable")
   field(ONAM, "Enable")
 }
 
-record(bi, "$(P)$(R)$(PROPERTY)Enable_RBV") {
+record(bi, "$(P)$(R)$(PROP)Enable_RBV") {
   field(SCAN, "I/O Intr")
   field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)$(USER_INFO)_ENABLE")
+  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_ENABLE")
   field(ZNAM, "Disable")
   field(ONAM, "Enable")
 }

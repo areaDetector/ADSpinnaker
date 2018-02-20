@@ -1,12 +1,12 @@
 ## Auto
-record(mbbo, "$(P)$(R)$(PROPERTY)Auto") {
+record(mbbo, "$(P)$(R)$(PROP)Auto") {
   field(PINI, "YES")
   field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) 0)$(USER_INFO)")
+  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_AUTO")
 }
 
-record(mbbi, "$(P)$(R)$(PROPERTY)Auto_RBV") {
+record(mbbi, "$(P)$(R)$(PROP)Auto_RBV") {
   field(SCAN, "I/O Intr")
   field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) 0)$(USER_INFO)_AUTO")
+  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_AUTO")
 }

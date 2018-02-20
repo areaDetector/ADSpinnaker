@@ -1,59 +1,59 @@
 ## Float
-record(ao, "$(P)$(R)$(PROPERTY)") {
-  field(PINI, "$(PINI)")
+record(ao, "$(P)$(R)$(PROP)") {
+  field(PINI, "$(PINI=YES)")
   field(DTYP, "asynFloat64")
-  field(OUT,  "@asyn($(PORT) 0)$(USER_INFO)")
-  field(PREC, "$(PREC)")
-  field(VAL, "$(VAL)")
-  info(asyn:READBACK, "$(READBACK)")
+  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_FLOAT_VALUE")
+  field(PREC, "$(PREC=3)")
+  field(VAL, "$(VAL=0)")
+  info(asyn:READBACK, "$(READBACK=0)")
 }
 
-record(ai, "$(P)$(R)$(PROPERTY)_RBV") {
+record(ai, "$(P)$(R)$(PROP)_RBV") {
   field(DTYP, "asynFloat64")
-  field(INP,  "@asyn($(PORT) 0)$(USER_INFO)")
-  field(PREC, "$(PREC)")
+  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_FLOAT_VALUE")
+  field(PREC, "$(PREC=3)")
   field(SCAN, "I/O Intr")
 }
 
 # Min and Max
-record(ai, "$(P)$(R)$(PROPERTY)_MAX") {
+record(ai, "$(P)$(R)$(PROP)_MAX") {
   field(DTYP, "asynFloat64")
-  field(INP, "@asyn($(PORT) 0)$(USER_INFO)_MAX")
+  field(INP, "@asyn($(PORT) $(PN))SP_PROP_MAX_VALUE")
   field(SCAN, "I/O Intr")
-  field(FLNK, "$(P)$(R)$(PROPERTY)_DRVH")
+  field(FLNK, "$(P)$(R)$(PROP)_DRVH")
 }
 # Set DRLH field of the value PV
-record(ao, "$(P)$(R)$(PROPERTY)_DRVH") {
-  field(DOL, "$(P)$(R)$(PROPERTY)_MAX NPP NMS")
+record(ao, "$(P)$(R)$(PROP)_DRVH") {
+  field(DOL, "$(P)$(R)$(PROP)_MAX NPP NMS")
   field(OMSL, "closed_loop")
-  field(OUT, "$(P)$(R)$(PROPERTY).DRVH NPP NMS")
-  field(FLNK, "$(P)$(R)$(PROPERTY)_HOPR")
+  field(OUT, "$(P)$(R)$(PROP).DRVH NPP NMS")
+  field(FLNK, "$(P)$(R)$(PROP)_HOPR")
 }
 # Set HOPR field of the value PV
-record(ao, "$(P)$(R)$(PROPERTY)_HOPR") {
-  field(DOL, "$(P)$(R)$(PROPERTY)_MAX NPP NMS")
+record(ao, "$(P)$(R)$(PROP)_HOPR") {
+  field(DOL, "$(P)$(R)$(PROP)_MAX NPP NMS")
   field(OMSL, "closed_loop")
-  field(OUT, "$(P)$(R)$(PROPERTY).HOPR NPP NMS")
+  field(OUT, "$(P)$(R)$(PROP).HOPR NPP NMS")
 }
 
 # Read the feature absolute value min boundary
-record(ai, "$(P)$(R)$(PROPERTY)_MIN") {
+record(ai, "$(P)$(R)$(PROP)_MIN") {
   field(DTYP, "asynFloat64")
-  field(INP, "@asyn($(PORT) 0)$(USER_INFO)_MIN")
+  field(INP, "@asyn($(PORT) $(PN))SP_PROP_MIN_VALUE")
   field(SCAN, "I/O Intr")
-  field(FLNK, "$(P)$(R)$(PROPERTY)_DRVL")
+  field(FLNK, "$(P)$(R)$(PROP)_DRVL")
 }
 
 # Set DRLV field of the value PV
-record(ao, "$(P)$(R)$(PROPERTY)_DRVL") {
-  field(DOL, "$(P)$(R)$(PROPERTY)_MIN NPP NMS")
+record(ao, "$(P)$(R)$(PROP)_DRVL") {
+  field(DOL, "$(P)$(R)$(PROP)_MIN NPP NMS")
   field(OMSL, "closed_loop")
-  field(OUT, "$(P)$(R)$(PROPERTY).DRVL NPP NMS")
-  field(FLNK, "$(P)$(R)$(PROPERTY)_LOPR")
+  field(OUT, "$(P)$(R)$(PROP).DRVL NPP NMS")
+  field(FLNK, "$(P)$(R)$(PROP)_LOPR")
 }
 # Set LOPR field of the value PV
-record(ao, "$(P)$(R)$(PROPERTY)_LOPR") {
-  field(DOL, "$(P)$(R)$(PROPERTY)_MIN NPP NMS")
+record(ao, "$(P)$(R)$(PROP)_LOPR") {
+  field(DOL, "$(P)$(R)$(PROP)_MIN NPP NMS")
   field(OMSL, "closed_loop")
-  field(OUT, "$(P)$(R)$(PROPERTY).LOPR NPP NMS")
+  field(OUT, "$(P)$(R)$(PROP).LOPR NPP NMS")
 }

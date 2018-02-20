@@ -12,8 +12,10 @@ include $(TOP)/configure/CONFIG
 # databases, templates, substitutions like this
 
 DB += spinnaker.template
+DB += spinnakerConvertPixelFormat.template
 DB += spinnakerFloatProp.template
 DB += spinnakerMenuProp.template
+DB += spinnakerCmdProp.template
 DB += spinnakerPropAuto.template
 DB += spinnakerPropEnable.template
 
