@@ -179,7 +179,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)FrameEnable_RBV"
+		chan="$(P)$(R)FrameRateEnable_RBV"
 		clr=53
 		bclr=4
 	}
@@ -342,7 +342,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)SaturatioEnable_RBV"
+		chan="$(P)$(R)SaturationEnable_RBV"
 		clr=53
 		bclr=4
 	}
@@ -584,7 +584,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)SharpneningEnable_RBV"
+		chan="$(P)$(R)SharpeningEnable_RBV"
 		clr=53
 		bclr=4
 	}
@@ -871,7 +871,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)BlackLevelMode"
+		chan="$(P)$(R)BlackLevelAuto"
 		clr=14
 		bclr=51
 	}

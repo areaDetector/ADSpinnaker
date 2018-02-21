@@ -1386,7 +1386,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)GainAuto"
+		chan="$(P)$(R)SPGainAuto"
 		clr=14
 		bclr=51
 	}
@@ -1412,7 +1412,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)GainAuto_RBV"
+		chan="$(P)$(R)SPGainAuto_RBV"
 		clr=54
 		bclr=4
 	}
