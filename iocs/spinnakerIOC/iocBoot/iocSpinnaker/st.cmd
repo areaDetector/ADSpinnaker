@@ -7,11 +7,11 @@ spinnakerApp_registerRecordDeviceDriver(pdbbase)
 # Prefix for all records
 epicsEnvSet("PREFIX", "13SP1:")
 # Use this line for the first Point Grey camera in the system
-#epicsEnvSet("CAMERA_ID", "0")
+epicsEnvSet("CAMERA_ID", "0")
 # Use this line for a specific camera by serial number, in this case a Grasshopper3 USB
 #epicsEnvSet("CAMERA_ID", "17476170")
 # Use this line for a specific camera by serial number, in this case a BlackFlyS GigE
-epicsEnvSet("CAMERA_ID", "17165235")
+#epicsEnvSet("CAMERA_ID", "17165235")
 
 # The port name for the detector
 epicsEnvSet("PORT",   "SP1")
@@ -31,42 +31,37 @@ epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db")
 epicsEnvSet("NELEMENTS", "12592912")
 
 # The following environment variables define the property numbers.  These must be consistent with the enum values in ADSpinnaker.cpp
-#    SPVideoMode,            // 0;
-#    SPFrameRate,            // 1; Has enable and auto
-#    SPExposure,             // 2; Has auto
-#    SPGain,                 // 3; Has auto
-#    SPBlackLevel,           // 4; Has auto
-#    SPBlackLevelBalance,    // 5; Has auto
-#    SPSaturation,           // 6; Has enable
-#    SPGamma,                // 7; Has enable
-#    SPSharpening,           // 8; Has enable and auto
-#    SPPixelFormat,          // 9;
-#    SPConvertPixelFormat,   // 10;
-#    SPTriggerSource,        // 11;
-#    SPTriggerActivation,    // 12;
-#    SPTriggerDelay,         // 13;
-#    SPSoftwareTrigger,      // 14;
-
-
-epicsEnvSet(SPVideoMode,          0)
-epicsEnvSet(SPFrameRate,          1)
-epicsEnvSet(SPExposure,           2)
-epicsEnvSet(SPGain,               3)
-epicsEnvSet(SPBlackLevel,         4)
-epicsEnvSet(SPBlackLevelBalance,  5)
-epicsEnvSet(SPSaturation,         6)
-epicsEnvSet(SPGamma,              7)
-epicsEnvSet(SPSharpening,         8)
-epicsEnvSet(SPPixelFormat,        9)
-epicsEnvSet(SPConvertPixelFormat, 10)
-epicsEnvSet(SPTriggerSource,      11)
-epicsEnvSet(SPTriggerActivation,  12)
-epicsEnvSet(SPTriggerDelay,       13)
-epicsEnvSet(SPSoftwareTrigger,    14)
+epicsEnvSet(SPVideoMode,             0)
+epicsEnvSet(SPFrameRate,             1)
+epicsEnvSet(SPFrameRateAuto,         2)
+epicsEnvSet(SPFrameRateEnable,       3)
+epicsEnvSet(SPExposure,              4)
+epicsEnvSet(SPExposureAuto,          5)
+epicsEnvSet(SPGain,                  6)
+epicsEnvSet(SPGainAuto,              7)
+epicsEnvSet(SPBlackLevel,            8)
+epicsEnvSet(SPBlackLevelAuto,        9)
+epicsEnvSet(SPBlackLevelBalanceAuto, 10)
+epicsEnvSet(SPSaturation,            11)
+epicsEnvSet(SPSaturationEnable,      12)
+epicsEnvSet(SPGamma,                 13)
+epicsEnvSet(SPGammaEnable,           14)
+epicsEnvSet(SPSharpening,            15)
+epicsEnvSet(SPSharpeningAuto,        16)
+epicsEnvSet(SPSharpeningEnable,      17)
+epicsEnvSet(SPPixelFormat,           18)
+epicsEnvSet(SPConvertPixelFormat,    19)
+epicsEnvSet(SPTriggerSource,         20)
+epicsEnvSet(SPTriggerActivation,     21)
+epicsEnvSet(SPTriggerDelay,          22)
+epicsEnvSet(SPSoftwareTrigger,       23)
+epicsEnvSet(SPBalanceRatio,          24)
+epicsEnvSet(SPBalanceRatioSelector,  25)
+epicsEnvSet(SPBalanceWhiteAuto,      26)
 
 # ADSpinnakerConfig(const char *portName, const char *cameraId, int traceMask, int memoryChannel,
 #                 int maxBuffers, size_t maxMemory, int priority, int stackSize)
-ADSpinnakerConfig("$(PORT)", $(CAMERA_ID), 0x1, 0)
+ADSpinnakerConfig("$(PORT)", $(CAMERA_ID), 0xff, 0)
 asynSetTraceIOMask($(PORT), 0, 2)
 # Set ASYN_TRACE_WARNING and ASYN_TRACE_ERROR
 asynSetTraceMask($(PORT), 0, 0x21)
@@ -81,36 +76,41 @@ dbLoadRecords("$(ADSPINNAKER)/db/spinnakerMenuProp.template",  "P=$(PREFIX),R=ca
 
 # Frame rate
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template",   "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=FrameRate,PN=$(SPFrameRate),VAL=10.,READBACK=1")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",    "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=FrameRate,PN=$(SPFrameRate)")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropEnable.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=FrameRate,PN=$(SPFrameRate)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",    "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=FrameRate,PN=$(SPFrameRateAuto)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropEnable.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=FrameRate,PN=$(SPFrameRateEnable)")
 
 # Exposure
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Exposure,PN=$(SPExposure),VAL=0.1")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Exposure,PN=$(SPExposure)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Exposure,PN=$(SPExposure),PINI=NO")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Exposure,PN=$(SPExposureAuto)")
 
 # Gain
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=SPGain,PN=$(SPGain),VAL=0.0")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=SPGain,PN=$(SPGain)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=SPGain,PN=$(SPGain),PINI=NO")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=SPGain,PN=$(SPGainAuto)")
 
 # Black level
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=BlackLevel,PN=$(SPBlackLevel),VAL=0.0")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=BlackLevel,PN=$(SPBlackLevel)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=BlackLevel,PN=$(SPBlackLevelAuto)")
 
 # Black level balance.  No value, only auto
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=BlackLevelBalance,PN=$(SPBlackLevelBalance)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=BlackLevelBalance,PN=$(SPBlackLevelBalanceAuto)")
+
+# White balance controls
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=WhiteBalanceRatio,    PN=$(SPBalanceRatio),VAL=0.0")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerMenuProp.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=WhiteBalanceSelector, PN=$(SPBalanceRatioSelector)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=WhiteBalance,         PN=$(SPBalanceWhiteAuto)")
 
 # Saturation
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Saturation,PN=$(SPSaturation),VAL=0.1")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropEnable.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Saturation,PN=$(SPSaturation)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropEnable.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Saturation,PN=$(SPSaturationEnable)")
 
 # Gamma
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Gamma,PN=$(SPGamma),VAL=1.0")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropEnable.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Gamma,PN=$(SPGamma)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropEnable.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Gamma,PN=$(SPGammaEnable)")
 
 # Sharpening
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template",   "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Sharpening,PN=$(SPSharpening)")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",    "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Sharpening,PN=$(SPSharpening)")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropEnable.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Sharpening,PN=$(SPSharpening)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",    "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Sharpening,PN=$(SPSharpeningAuto)")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropEnable.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Sharpening,PN=$(SPSharpeningEnable)")
 
 # Pixel format
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerMenuProp.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=PixelFormat,PN=$(SPPixelFormat)")
