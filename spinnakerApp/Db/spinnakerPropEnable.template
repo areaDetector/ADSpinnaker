@@ -2,7 +2,7 @@
 record(bo, "$(P)$(R)$(PROP)Enable") {
   field(PINI, "YES")
   field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_ENABLE")
+  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
   field(ZNAM, "Disable")
   field(ONAM, "Enable")
 }
@@ -10,7 +10,7 @@ record(bo, "$(P)$(R)$(PROP)Enable") {
 record(bi, "$(P)$(R)$(PROP)Enable_RBV") {
   field(SCAN, "I/O Intr")
   field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_ENABLE")
+  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
   field(ZNAM, "Disable")
   field(ONAM, "Enable")
 }
