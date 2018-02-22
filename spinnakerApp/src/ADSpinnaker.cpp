@@ -50,35 +50,39 @@ static const char *driverName = "ADSpinnaker";
 #define SPPropStringValueString   "SP_PROP_STRING_VALUE"
 #define SPPropMinValueString      "SP_PROP_MIN_VALUE"
 #define SPPropMaxValueString      "SP_PROP_MAX_VALUE"
-#define SPPropAutoString          "SP_PROP_AUTO"
-#define SPPropEnableString        "SP_PROP_ENABLE"
 
 typedef enum {
-    SPVideoMode,            // 0;
-    SPFrameRate,            // 1; Has enable and auto
-    SPExposure,             // 2; Has auto
-    SPGain,                 // 3; Has auto
-    SPBlackLevel,           // 4; Has auto
-    SPBlackLevelBalance,    // 5; Has auto
-    SPSaturation,           // 6; Has enable
-    SPGamma,                // 7; Has enable
-    SPSharpening,           // 8; Has enable and auto
-    SPPixelFormat,          // 9;
-    SPConvertPixelFormat,   // 10;
-    SPTriggerSource,        // 11;
-    SPTriggerActivation,    // 12;
-    SPTriggerDelay,         // 13;
-    SPSoftwareTrigger,      // 14;
+    SPVideoMode,            // 0
+    SPFrameRate,            // 1 
+    SPFrameRateAuto,        // 2
+    SPFrameRateEnable,      // 3
+    SPExposure,             // 4
+    SPExposureAuto,         // 5
+    SPGain,                 // 6
+    SPGainAuto,             // 7
+    SPBlackLevel,           // 8
+    SPBlackLevelAuto,       // 9
+    SPBlackLevelBalanceAuto,// 10
+    SPSaturation,           // 11
+    SPSaturationEnable,     // 12
+    SPGamma,                // 13
+    SPGammaEnable,          // 14
+    SPSharpening,           // 15
+    SPSharpeningAuto,       // 16
+    SPSharpeningEnable,     // 17
+    SPPixelFormat,          // 18
+    SPConvertPixelFormat,   // 19
+    SPTriggerSource,        // 20
+    SPTriggerActivation,    // 21
+    SPTriggerDelay,         // 22
+    SPSoftwareTrigger,      // 23
+    SPBalanceRatio,         // 24
+    SPBalanceRatioSelector, // 25
+    SPBalanceWhiteAuto,     // 26
     SP_NUM_PROPERTIES
 } SPPropertyNum_t; 
 
 /*
-#define PGSkipFramesString            "PG_SKIP_FRAMES"
-#define PGStrobeSourceString          "PG_STROBE_SOURCE"
-#define PGStrobePolarityString        "PG_STROBE_POLARITY"
-#define PGStrobeEnableString          "PG_STROBE_ENABLE"
-#define PGStrobeDelayString           "PG_STROBE_DELAY"
-#define PGStrobeDurationString        "PG_STROBE_DURATION"
 #define PGPacketSizeString            "PG_PACKET_SIZE"
 #define PGPacketSizeActualString      "PG_PACKET_SIZE_ACTUAL"
 #define PGMaxPacketSizeString         "PG_MAX_PACKET_SIZE"
@@ -119,24 +123,12 @@ typedef enum {
 
 
 /*
-static const char *propertyTypeStrings[] = {
-    "Brightness",
-    "AutoExposuure",
-    "Sharpness",
-    "WhiteBalance",
-    "Hue",
-    "Saturation",
-    "Gamma",
-
-};
-
 static const char *gigEPropertyTypeStrings[NUM_GIGE_PROPERTIES] = {
     "Heartbeat",
     "HeartbeatTimeout",
     "PacketSize",
     "PacketDelay"
 };
-
 */
 
 typedef enum {
@@ -199,14 +191,7 @@ protected:
     int SPPropStringValue;   /** String                                           (string write/read) */
     int SPPropMinValue;      /** Minimum value                                    (float64 read) */
     int SPPropMaxValue;      /** Maximum value                                    (float64 read) */
-    int SPPropAuto;          /** Auto                                             (int32 write/read) */
-    int SPPropEnable;        /** Enable                                           (int32 write/read) */
 
-//    int PGStrobeSource;           /** Strobe source GPIO pin                          (int32 write/read) */
-//    int PGStrobePolarity;         /** Strobe polarity (low/high)                      (int32 write/read) */
-//    int PGStrobeEnable;           /** Strobe enable/disable strobe                    (int32 write/read) */
-//    int PGStrobeDelay;            /** Strobe delay                                    (float64 write/read) */
-//    int PGStrobeDuration;         /** Strobe duration                                 (float64 write/read) */
 //    int PGPacketSize;             /** Size of data packets from camera                (int32 write/read) */
 //    int PGPacketSizeActual;       /** Size of data packets from camera                (int32 write/read) */
 //    int PGMaxPacketSize;          /** Maximum size of data packets from camera        (int32 write/read) */
@@ -222,25 +207,18 @@ protected:
 private:
     class SPProperty {
         public:
-            SPProperty(ADSpinnaker *pDrvIn, int asynParamIn, int asynAddrIn, 
-                       const char *nodeNameIn, const char *nodeNameAuto=0, const char *nodeNameEnable=0);
+            SPProperty(ADSpinnaker *pDrvIn, int asynParamIn, int asynAddrIn, const char *nodeNameIn);
             ADSpinnaker *pDrv;
-            INodeMap *pNodeMap;
             SPPropertyType_t propertyType;
             int asynParam;
             int asynAddr;
             const char *nodeName;
-            CNodePtr pNodeValue;
-            CNodePtr pNodeAuto;
-            CNodePtr pNodeEnable;
-            bool hasValue;
-            bool hasAuto;
-            bool hasEnable;
+            CNodePtr pBase;
+            bool isImplemented;
             asynStatus setValue(void *value=0, void *readbackValue=0, bool setParam=true);
             asynStatus getValue(void *value=0, bool setParam=true);
-            asynStatus setAuto(int *value=0, void *readbackValue=0, bool setParam=true);
-            asynStatus setEnable(int *value=0, void *readbackValue=0, bool setParam=true);
-    };
+            asynStatus update();
+   };
 
     /* Local methods to this class */
     asynStatus grabImage();
@@ -254,20 +232,15 @@ private:
     SPProperty* findProperty(int asynParam, int asynAddr);
 
     /* camera property control functions */
-    asynStatus setSPProperty (int asynParam, int asynAddr=0, void *value=0, void *readbackValue=0, bool setParam=true);
-    asynStatus setSPPropertyAuto (int asynParam, int asynAddr=0, int *value=0, void *readbackValue=0, bool setParam=true);
-    asynStatus setSPPropertyEnable (int asynParam, int asynAddr=0, int *value=0, void *readbackValue=0, bool setParam=true);
-    asynStatus getSPProperty (int asynParam, int asynAddr=0, void *value=0, bool setParam=true);
+    asynStatus setSPProperty(int asynParam, int asynAddr=0, void *value=0, void *readbackValue=0, bool setParam=true);
+    asynStatus getSPProperty(int asynParam, int asynAddr=0, void *value=0, bool setParam=true);
+    asynStatus updateSPProperties();
 
     asynStatus setImageParams();
     
     void imageEventCallback(ImagePtr pImage);
     void reportNode(FILE *fp, INodeMap *pNodeMap, const char *nodeName, int level);
-/*
-    asynStatus getAllProperties();
-    asynStatus setTrigger();
-    asynStatus setStrobe();
-*/
+
     /* Data */
     int cameraId_;
     int memoryChannel_;
@@ -286,25 +259,21 @@ private:
     NDArray *pRaw_;
 };
 
-ADSpinnaker::SPProperty::SPProperty(ADSpinnaker *pDrvIn, int asynParamIn, int asynAddrIn, 
-                                    const char *nodeNameIn, const char *nodeNameAuto, const char *nodeNameEnable)
+ADSpinnaker::SPProperty::SPProperty(ADSpinnaker *pDrvIn, int asynParamIn, int asynAddrIn, const char *nodeNameIn)
 
     : pDrv(pDrvIn),
-      pNodeMap(pDrv->pNodeMap_),
       propertyType(SPPropertyTypeUnknown),
       asynParam(asynParamIn),
       asynAddr(asynAddrIn),
-      nodeName(nodeNameIn), 
-      hasValue(false),
-      hasAuto(false),
-      hasEnable(false)
+      nodeName(nodeNameIn),
+      isImplemented(false)
 {
     try {
         if (nodeName) {
             CNodePtr pNode = (CNodePtr)pDrv->pNodeMap_->GetNode(nodeName);
             if (IsImplemented(pNode)) {
-                hasValue = true;
-                pNodeValue = pNode;
+                isImplemented = true;
+                pBase = pNode;
                 switch (pNode->GetPrincipalInterfaceType()) {
                     case intfIString:
                     		propertyType = SPPropertyTypeString;
@@ -329,20 +298,6 @@ ADSpinnaker::SPProperty::SPProperty(ADSpinnaker *pDrvIn, int asynParamIn, int as
                 }
             }
         }
-        if (nodeNameAuto) {
-            CNodePtr pNode = (CNodePtr)pNodeMap->GetNode(nodeNameAuto);
-            if (IsImplemented(pNode)) {
-                hasAuto = true;
-                pNodeAuto = pNode;
-            }
-        }
-        if (nodeNameEnable) {
-            CNodePtr pNode = (CNodePtr)pNodeMap->GetNode(nodeNameEnable);
-            if (IsImplemented(pNode)) {
-                hasEnable = true;
-                pNodeEnable = pNode;
-            }
-        }
     }
     catch (Spinnaker::Exception &e)
     {
@@ -355,15 +310,15 @@ asynStatus ADSpinnaker::SPProperty::getValue(void *pValue, bool setParam)
 {
     static const char *functionName = "SPProperty::getValue";
 
-    if (!hasValue) return asynError;
+    if (!isImplemented) return asynError;
     try {
-        if (!IsAvailable(pNodeValue)) {
+        if (!IsAvailable(pBase)) {
              asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
                 "%s::%s Error: node %s is not available\n",
                 driverName, functionName, nodeName);
              return asynError;
         }
-        if (!IsReadable(pNodeValue)) {
+        if (!IsReadable(pBase)) {
              asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_WARNING, 
                 "%s::%s Warning: node %s is not readable\n",
                 driverName, functionName, nodeName);
@@ -371,38 +326,144 @@ asynStatus ADSpinnaker::SPProperty::getValue(void *pValue, bool setParam)
         }
         switch (propertyType) {
             case SPPropertyTypeInt: {
-                CIntegerPtr pNode = (CIntegerPtr)pNodeValue;
+                CIntegerPtr pNode = (CIntegerPtr)pBase;
                 epicsInt32 value = (epicsInt32)pNode->GetValue();
                 if (pValue) *(epicsInt32*)pValue = value;
                 if (setParam) pDrv->setIntegerParam(asynAddr, asynParam, value);
                 break;
             }
             case SPPropertyTypeBoolean: {
-                CBooleanPtr pNode = (CBooleanPtr)pNodeValue;
+                CBooleanPtr pNode = (CBooleanPtr)pBase;
                 epicsInt32 value = (epicsInt32)pNode->GetValue();
                 if (pValue) *(epicsInt32*)pValue = value;
                 if (setParam) pDrv->setIntegerParam(asynAddr, asynParam, value);
                 break;
             }
             case SPPropertyTypeDouble: {
-                CFloatPtr pNode = (CFloatPtr)pNodeValue;
+                CFloatPtr pNode = (CFloatPtr)pBase;
                 epicsFloat64 value = (epicsFloat64)pNode->GetValue();
                 if (pValue) *(epicsFloat64*)pValue = value;
                 if (setParam) pDrv->setDoubleParam(asynAddr, asynParam, value);
                 break;
             }
             case SPPropertyTypeEnum: {
-                CEnumerationPtr pNode = (CEnumerationPtr)pNodeValue;
+                CEnumerationPtr pNode = (CEnumerationPtr)pBase;
                 epicsInt32 value = (epicsInt32)pNode->GetIntValue();
                 if (pValue) *(epicsInt32*)pValue = value;
                 if (setParam) pDrv->setIntegerParam(asynAddr, asynParam, value);
                 break;
             }
             case SPPropertyTypeString: {
-                CStringPtr pNode = (CStringPtr)pNodeValue;
+                CStringPtr pNode = (CStringPtr)pBase;
                 std::string value = epicsStrDup((pNode->GetValue()).c_str());
                 if (pValue) *(std::string *)pValue = value;
                 if (setParam) pDrv->setStringParam(asynAddr, asynParam, value);
+                break;
+            }
+            case SPPropertyTypeCmd: {
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    catch (Spinnaker::Exception &e) {
+        asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s node %s exception %s\n",
+            driverName, functionName, nodeName, e.what());
+        return asynError;
+    }
+    return asynSuccess;
+}
+
+
+asynStatus ADSpinnaker::SPProperty::update()
+{
+    static const char *functionName = "SPProperty::update";
+
+    if (!isImplemented) return asynError;
+    try {
+        if ((propertyType == SPPropertyTypeEnum) &&
+            (!IsAvailable(pBase) || !IsWritable(pBase))) {
+            char *enumStrings[1];
+            int enumValues[1];
+            int enumSeverities[1];
+            enumStrings[0] = epicsStrDup("N.A.");
+            enumValues[0] = 0;
+            enumSeverities[0] = 0;
+            pDrv->doCallbacksEnum(enumStrings, enumValues, enumSeverities, 
+                                  1, asynParam, asynAddr);
+            return asynSuccess;
+        }
+        if (!IsAvailable(pBase)) {
+             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s::%s Error: node %s is not available\n",
+                driverName, functionName, nodeName);
+             return asynError;
+        }
+        if (!IsReadable(pBase)) {
+             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_WARNING, 
+                "%s::%s Warning: node %s is not readable\n",
+                driverName, functionName, nodeName);
+             return asynError;
+        }
+        switch (propertyType) {
+            case SPPropertyTypeInt: {
+                CIntegerPtr pNode = (CIntegerPtr)pBase;
+                epicsInt32 value = (epicsInt32)pNode->GetValue();
+                pDrv->setIntegerParam(asynAddr, asynParam, value);
+                pDrv->setDoubleParam(asynAddr, pDrv->SPPropMinValue, (epicsInt32)pNode->GetMin());
+                pDrv->setDoubleParam(asynAddr, pDrv->SPPropMaxValue, (epicsInt32)pNode->GetMax());
+                break;
+            }
+            case SPPropertyTypeBoolean: {
+                CBooleanPtr pNode = (CBooleanPtr)pBase;
+                epicsInt32 value = (epicsInt32)pNode->GetValue();
+                pDrv->setIntegerParam(asynAddr, asynParam, value);
+                break;
+            }
+            case SPPropertyTypeDouble: {
+                CFloatPtr pNode = (CFloatPtr)pBase;
+                epicsFloat64 value = (epicsFloat64)pNode->GetValue();
+                pDrv->setDoubleParam(asynAddr, asynParam, value);
+                if (asynParam == pDrv->SPPropFloatValue) {
+                    pDrv->setDoubleParam(asynAddr, pDrv->SPPropMinValue, pNode->GetMin());
+                    pDrv->setDoubleParam(asynAddr, pDrv->SPPropMaxValue, pNode->GetMax());
+printf("node %s asynAddr=%d, min=%f, max=%f\n", nodeName, asynAddr, pNode->GetMin(), pNode->GetMax());
+                }
+                break;
+            }
+            case SPPropertyTypeEnum: {
+                CEnumerationPtr pNode = (CEnumerationPtr)pBase;
+                epicsInt32 value = (epicsInt32)pNode->GetIntValue();
+                pDrv->setIntegerParam(asynAddr, asynParam, value);
+                NodeList_t entries;
+                pNode->GetEntries(entries);
+                int numEnums = (int)entries.size();
+                char **enumStrings = new char*[numEnums];
+                int *enumValues = new int[numEnums];
+                int *enumSeverities = new int[numEnums];
+                int j=0;
+                for (int i=0; i<numEnums; i++) {
+                    IEnumEntry *pEntry= dynamic_cast<IEnumEntry *>(entries[i]);
+                    const char *pString = epicsStrDup((pEntry->GetSymbolic()).c_str());
+                    if (IsAvailable(pEntry) && IsReadable(pEntry)) {
+                        enumStrings[j] = epicsStrDup(pString);
+                        long long entryValue = pEntry->GetValue();
+                        enumValues[j] = (int)entryValue;
+                        enumSeverities[j] = 0;
+                        j++;
+                    }
+                }
+                pDrv->doCallbacksEnum(enumStrings, enumValues, enumSeverities, 
+                                      j, asynParam, asynAddr);
+                delete [] enumStrings; delete [] enumValues; delete [] enumSeverities;
+                break;
+            }
+            case SPPropertyTypeString: {
+                CStringPtr pNode = (CStringPtr)pBase;
+                std::string value = epicsStrDup((pNode->GetValue()).c_str());
+                pDrv->setStringParam(asynAddr, asynParam, value);
                 break;
             }
             case SPPropertyTypeCmd: {
@@ -426,15 +487,15 @@ asynStatus ADSpinnaker::SPProperty::setValue(void *pValue, void *pReadbackValue,
 {
     static const char *functionName = "SPProperty::setValue";
 
-    if (!hasValue) return asynError;
+    if (!isImplemented) return asynError;
     try {
-        if (!IsAvailable(pNodeValue)) {
+        if (!IsAvailable(pBase)) {
              asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
                 "%s::%s Error: node %s is not available\n",
                 driverName, functionName, nodeName);
              return asynError;
         }
-        if (!IsWritable(pNodeValue)) {
+        if (!IsWritable(pBase)) {
              asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_WARNING, 
                 "%s::%s Warning: node %s is not writable\n",
                 driverName, functionName, nodeName);
@@ -442,7 +503,7 @@ asynStatus ADSpinnaker::SPProperty::setValue(void *pValue, void *pReadbackValue,
         }
         switch (propertyType) {
             case SPPropertyTypeInt: {
-                CIntegerPtr pNode = (CIntegerPtr)pNodeValue;
+                CIntegerPtr pNode = (CIntegerPtr)pBase;
                 epicsInt32 value;
                 if (pValue)
                     value = *(epicsInt32*)pValue;
@@ -482,13 +543,13 @@ asynStatus ADSpinnaker::SPProperty::setValue(void *pValue, void *pReadbackValue,
                 break;
             }
             case SPPropertyTypeBoolean: {
-                CBooleanPtr pNode = (CBooleanPtr)pNodeValue;
+                CBooleanPtr pNode = (CBooleanPtr)pBase;
                 epicsInt32 value;
                 if (pValue) 
                     value = *(epicsInt32*)pValue;
                 else
                     pDrv->getIntegerParam(asynAddr, asynParam, &value);
-                *pNode = (bool)value;
+                *pNode = value ? true : false;
                 asynPrint(pDrv->pasynUserSelf, ASYN_TRACEIO_DRIVER, 
                     "%s::%s set property %s to %d\n",
                     driverName, functionName, nodeName, value);
@@ -503,7 +564,7 @@ asynStatus ADSpinnaker::SPProperty::setValue(void *pValue, void *pReadbackValue,
                 break;
             }
             case SPPropertyTypeDouble: {
-                CFloatPtr pNode = (CFloatPtr)pNodeValue;
+                CFloatPtr pNode = (CFloatPtr)pBase;
                 epicsFloat64 value;
                 if (pValue) 
                     value = *(epicsFloat64*)pValue;
@@ -539,7 +600,7 @@ asynStatus ADSpinnaker::SPProperty::setValue(void *pValue, void *pReadbackValue,
                 break;
             }
             case SPPropertyTypeEnum: {
-                CEnumerationPtr pNode = (CEnumerationPtr)pNodeValue;
+                CEnumerationPtr pNode = (CEnumerationPtr)pBase;
                 epicsInt32 value;
                 if (pValue) 
                     value = *(epicsInt32*)pValue;
@@ -560,7 +621,7 @@ asynStatus ADSpinnaker::SPProperty::setValue(void *pValue, void *pReadbackValue,
                 break;
             }
             case SPPropertyTypeString: {
-                CStringPtr pNode = (CStringPtr)pNodeValue;
+                CStringPtr pNode = (CStringPtr)pBase;
                 const char *value;
                 if (pValue) 
                     value = (const char*)pValue;
@@ -584,7 +645,7 @@ asynStatus ADSpinnaker::SPProperty::setValue(void *pValue, void *pReadbackValue,
                 break;
             }
             case SPPropertyTypeCmd: {
-                CCommandPtr pNode = (CCommandPtr)pNodeValue;
+                CCommandPtr pNode = (CCommandPtr)pBase;
                 pNode->Execute();
                 asynPrint(pDrv->pasynUserSelf, ASYN_TRACEIO_DRIVER, 
                     "%s::%s executed command %s\n",
@@ -603,110 +664,6 @@ asynStatus ADSpinnaker::SPProperty::setValue(void *pValue, void *pReadbackValue,
     }
     return asynSuccess;
 }
-
-asynStatus ADSpinnaker::SPProperty::setAuto(int *pValue, void *pReadbackValue, bool setParam)
-{
-    static const char *functionName = "SPProperty::setAuto";
-
-    if (!hasAuto) {
-         asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s Error: node %s does not support auto\n",
-            driverName, functionName, nodeNameAuto);
-         return asynError;
-    }
-    try {
-        if (!IsAvailable(pNodeAuto)) {
-             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s::%s Error: node %s is not available\n",
-                driverName, functionName, nodeNameAuto);
-             return asynError;
-        }
-        if (!IsWritable(pNodeAuto)) {
-             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_WARNING, 
-                "%s::%s Warning: node %s is not writable\n",
-                driverName, functionName, nodeNameAuto);
-             return asynError;
-        }
-        CEnumerationPtr pNode = (CEnumerationPtr)pNodeEnable;
-        epicsInt32 value;
-        if (pValue) 
-            value = *(epicsInt32*)pValue;
-        else
-            pDrv->getIntegerParam(asynAddr, asynParam, &value);
-        pNode->SetIntValue(value);
-        asynPrint(pDrv->pasynUserSelf, ASYN_TRACEIO_DRIVER, 
-            "%s::%s set property %s to %d\n",
-            driverName, functionName, nodeNameAuto, value);
-        if (IsReadable(pNode)) {
-            epicsInt32 readback = (epicsInt32)pNode->GetIntValue();
-            if (pReadbackValue) *(epicsInt32*)pReadbackValue = readback;
-            asynPrint(pDrv->pasynUserSelf, ASYN_TRACEIO_DRIVER, 
-                "%s::%s readback property %s is %d\n",
-                driverName, functionName, nodeNameAuto, readback);
-            if (setParam) pDrv->setIntegerParam(asynAddr, asynParam, readback);
-        }
-    }
-    catch (Spinnaker::Exception &e) {
-        asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s node %s exception %s\n",
-            driverName, functionName, nodeNameAuto, e.what());
-        return asynError;
-    }
-    return asynSuccess;
-}
-
-asynStatus ADSpinnaker::SPProperty::setEnable(int *pValue, void *pReadbackValue, bool setParam)
-{
-    static const char *functionName = "SPProperty::setEnable";
-
-    if (!hasEnable) {
-         asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s Error: node %s does not support auto\n",
-            driverName, functionName, nodeNameEnable);
-         return asynError;
-    }
-    try {
-        if (!IsAvailable(pNodeEnble)) {
-             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s::%s Error: node %s is not available\n",
-                driverName, functionName, nodeNameEnable);
-             return asynError;
-        }
-        if (!IsWritable(pNodeEnble)) {
-             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_WARNING, 
-                "%s::%s Warning: node %s is not writable\n",
-                driverName, functionName, nodeNameEnable);
-             return asynError;
-        }
-        CBooleanPtr pNode = (CBooleanPtr)pNodeEnable;
-        epicsInt32 value;
-        if (pValue) 
-            value = *(epicsInt32*)pValue;
-        else
-            pDrv->getIntegerParam(asynAddr, asynParam, &value);
-        *pNode = (bool)value;
-        asynPrint(pDrv->pasynUserSelf, ASYN_TRACEIO_DRIVER, 
-            "%s::%s set property %s to %d\n",
-            driverName, functionName, nodeNameEnable, value);
-        if (IsReadable(pNode)) {
-            epicsInt32 readback = (epicsInt32)pNode->GetValue();
-            if (pReadbackValue) *(epicsInt32*)pReadbackValue = readback;
-            asynPrint(pDrv->pasynUserSelf, ASYN_TRACEIO_DRIVER, 
-                "%s::%s readback property %s is %d\n",
-                driverName, functionName, nodeNameEnable, readback);
-            if (setParam) pDrv->setIntegerParam(asynAddr, asynParam, readback);
-        }
-    }
-    catch (Spinnaker::Exception &e) {
-        asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s node %s exception %s\n",
-            driverName, functionName, nodeName, e.what());
-        return asynError;
-    }
-    return asynSuccess;
-}
-
-
 
 /** Configuration function to configure one camera.
  *
@@ -792,15 +749,8 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createParam(SPPropStringValueString,        asynParamOctet,   &SPPropStringValue);
     createParam(SPPropMinValueString,         asynParamFloat64,   &SPPropMinValue);
     createParam(SPPropMaxValueString,         asynParamFloat64,   &SPPropMaxValue);
-    createParam(SPPropAutoString,               asynParamInt32,   &SPPropAuto);
-    createParam(SPPropEnableString,             asynParamInt32,   &SPPropEnable);
 
 /*
-    createParam(PGStrobeSourceString,           asynParamInt32,   &PGStrobeSource);
-    createParam(PGStrobePolarityString,         asynParamInt32,   &PGStrobePolarity);
-    createParam(PGStrobeEnableString,           asynParamInt32,   &PGStrobeEnable);
-    createParam(PGStrobeDelayString,            asynParamFloat64, &PGStrobeDelay);
-    createParam(PGStrobeDurationString,         asynParamFloat64, &PGStrobeDuration);
     createParam(PGPacketSizeString,             asynParamInt32,   &PGPacketSize);
     createParam(PGPacketSizeActualString,       asynParamInt32,   &PGPacketSizeActual);
     createParam(PGMaxPacketSizeString,          asynParamInt32,   &PGMaxPacketSize);
@@ -822,8 +772,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     setStringParam(ADStringToServer, "<not used by driver>");
     setStringParam(ADStringFromServer, "<not used by driver>");
     setIntegerParam(SPTriggerSource, 0);
-//    setIntegerParam(PGStrobeSource, 1);
-//    setIntegerParam(PGBinningMode, 1);
 
     // Retrieve singleton reference to system object
     system_ = System::GetInstance();
@@ -838,24 +786,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
         return;
     }
 
-/*
-    SPVideoMode,            // 0;
-    SPFrameRate,            // 1; Has enable and auto
-    SPExposure,             // 2; Has auto
-    SPGain,                 // 3; Has auto
-    SPBlackLevel,           // 4; Has auto
-    SPBlackLevelBalance,    // 5; Has auto
-    SPSaturation,           // 6; Has enable
-    SPGamma,                // 7; Has enable
-    SPSharpening,           // 8; Has enable and auto
-    SPPixelFormat,          // 9;
-    SPConvertPixelFormat,   // 10;
-    SPTriggerSource,        // 11;
-    SPTriggerActivation,    // 12;
-    SPTriggerDelay,         // 13;
-    SPSoftwareTrigger,      // 14;
-    SP_NUM_PROPERTIES
-*/
     // Construct property list.
     // String properties
     propertyList_.push_back(new SPProperty(this, ADImageMode,                        0, "AcquisitionMode"));
@@ -881,11 +811,13 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
 
     // Float properties
     propertyList_.push_back(new SPProperty(this, ADAcquireTime,                      0, "ExposureTime"));
-    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,          SPExposure, "ExposureTime", 
-                                                                                        "ExposureAuto"));
+    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,          SPExposure, "ExposureTime")); 
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,        SPExposureAuto, "ExposureAuto"));
     propertyList_.push_back(new SPProperty(this, ADGain,                             0, "Gain"));
-    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,              SPGain, "Gain",   
-                                                                                        "GainAuto"));
+    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,              SPGain, "Gain"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,            SPGainAuto, "GainAuto"));
+    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,         SPFrameRate, "AcquisitionFrameRate")); 
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,       SPFrameRateAuto, "AcquisitionFrameRateAuto"));
     gcstring tempString = "AcquisitionFrameRateEnable";
     CNodePtr pBase = (CNodePtr)pNodeMap_->GetNode(tempString);
     if (!IsAvailable(pBase)) {
@@ -895,21 +827,22 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
             printf("Error: neither AcquisitionFrameRateEnable nor AcquisitionFrameRateEnabled exist\n");
         }
     }
-    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,         SPFrameRate, "AcquisitionFrameRate", 
-                                                                                        "AcquisitionFrameRateAuto", 
-                                                                                        tempString));
-    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,      SPTriggerDelay, "TriggerDelay"));
-    propertyList_.push_back(new SPProperty(this, ADTemperatureActual,                0, "DeviceTemperature"));
-    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,        SPBlackLevel, "BlackLevel"));
-    propertyList_.push_back(new SPProperty(this, SPPropFloatValue, SPBlackLevelBalance, 0,
-                                                                                        "BlackLevelBalanceAuto"));
-    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,        SPSaturation, "Saturation", 0,
-                                                                                        "SaturationEnable"));
-    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,             SPGamma, "Gamma", 0,
-                                                                                        "GammaEnable"));
-    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,        SPSharpening, "Sharpening",
-                                                                                        "SharpeningAuto",
-                                                                                        "SharpeningEnable"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,       SPFrameRateEnable, tempString));
+    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,        SPTriggerDelay, "TriggerDelay"));
+    propertyList_.push_back(new SPProperty(this, ADTemperatureActual,                  0, "DeviceTemperature"));
+    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,          SPBlackLevel, "BlackLevel"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,        SPBlackLevelAuto, "BlackLevelAuto"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue, SPBlackLevelBalanceAuto, "BlackLevelBalanceAuto"));
+    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,        SPBalanceRatio, "BalanceRatio"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,  SPBalanceRatioSelector, "BalanceRatioSelector"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,      SPBalanceWhiteAuto, "BalanceWhiteAuto"));
+    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,          SPSaturation, "Saturation"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,      SPSaturationEnable, "SaturationEnable"));
+    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,               SPGamma, "Gamma"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,           SPGammaEnable, "GammaEnable"));
+    propertyList_.push_back(new SPProperty(this, SPPropFloatValue,          SPSharpening, "Sharpening"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,        SPSharpeningAuto, "SharpeningAuto"));
+    propertyList_.push_back(new SPProperty(this, SPPropIntValue,      SPSharpeningEnable, "SharpeningEnable"));
 
     // Enum properties
     propertyList_.push_back(new SPProperty(this, SPPropIntValue,         SPPixelFormat, "PixelFormat"));
@@ -919,6 +852,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     propertyList_.push_back(new SPProperty(this, SPPropIntValue,       SPTriggerSource, "TriggerSource"));
     propertyList_.push_back(new SPProperty(this, SPPropIntValue,   SPTriggerActivation, "TriggerActivation"));
 
+    updateSPProperties();
     report(stdout, 1);
 
 		epicsInt32 iValue;
@@ -1069,23 +1003,6 @@ asynStatus ADSpinnaker::connectCamera(void)
     return asynSuccess;
 }
 
-/*
-asynStatus ADSpinnaker::disconnectCamera(void) 
-{
-    Error error;
-    static const char *functionName = "disconnectCamera";
-
-    if (pCameraBase_->IsConnected()) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-            "%s::%s calling CameraBase::Disconnect, pCameraBase_=%p\n",
-            driverName, functionName, pCameraBase_);
-        error = pCameraBase_->Disconnect();
-        if (checkError(error, functionName, "Disconnect")) return asynError;
-    }
-    printf("%s:%s disconnect camera OK\n", driverName, functionName);
-    return asynSuccess;
-}
-*/
 
 /** Task to grab images off the camera and send them up to areaDetector
  *
@@ -1226,7 +1143,7 @@ asynStatus ADSpinnaker::grabImage()
 //    setDoubleParam(PGBandwidth, bandwidth);
 
     // Convert the pixel format if requested
-    getIntegerParam(SPConvertPixelFormat, &convertPixelFormat);
+    getIntegerParam(SPConvertPixelFormat, SPPropIntValue, &convertPixelFormat);
     if (convertPixelFormat != SPPixelConvertNone) {
         PixelFormatEnums convertedFormat;
         switch (convertPixelFormat) {
@@ -1406,12 +1323,10 @@ ADSpinnaker::SPProperty* ADSpinnaker::findProperty(int asynParam, int asynAddr)
 {
     static const char *functionName = "findProperty";
     SPProperty *pProperty;
-    std::vector<SPProperty*>::iterator p;
-    for (p=propertyList_.begin(); p<propertyList_.end(); p++) {
-        pProperty = *p;
-        if (((asynParam == pProperty->asynParam) && (asynAddr == pProperty->asynAddr)) ||
-            ((asynParam == SPPropEnable)         && (asynAddr == pProperty->asynAddr)) ||
-            ((asynParam == SPPropAuto)           && (asynAddr == pProperty->asynAddr))) {
+    std::vector<SPProperty*>::iterator it;
+    for (it=propertyList_.begin(); it<propertyList_.end(); it++) {
+        pProperty = *it;
+        if ((asynParam == pProperty->asynParam) && (asynAddr == pProperty->asynAddr)) {
             return pProperty;
         }
     }
@@ -1431,20 +1346,20 @@ asynStatus ADSpinnaker::setSPProperty(int asynParam, int asynAddr, void *pValue,
 {
     SPProperty* pElement = findProperty(asynParam, asynAddr);
     return pElement->setValue(pValue, pReadbackValue, setParam);
+    return pElement->setValue(pValue, pReadbackValue, setParam);
 }
 
-asynStatus ADSpinnaker::setSPPropertyAuto(int asynParam, int asynAddr, int *pValue, void *pReadbackValue, bool setParam)
+asynStatus ADSpinnaker::updateSPProperties()
 {
-    SPProperty* pElement = findProperty(asynParam, asynAddr);
-    return pElement->setAuto(pValue, pReadbackValue, setParam);
+    //static const char *functionName = "updateSPProperties";
+    SPProperty *pProperty;
+    std::vector<SPProperty*>::iterator it;
+    for (it=propertyList_.begin(); it<propertyList_.end(); it++) {
+        pProperty = *it;
+        pProperty->update();
+    }
+    return asynSuccess;
 }
-
-asynStatus ADSpinnaker::setSPPropertyEnable(int asynParam, int asynAddr, int *pValue, void *pReadbackValue, bool setParam)
-{
-    SPProperty* pElement = findProperty(asynParam, asynAddr);
-    return pElement->setEnable(pValue, pReadbackValue, setParam);
-}
-
 
 /** Sets an int32 parameter.
   * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
@@ -1488,15 +1403,20 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
         status = setSPProperty(function, addr, &value);
     } else if (function == SPPropIntValue) {
         status = setSPProperty(function, addr, &value);
-    } else if (function == SPPropAuto) {
-        status = setSPPropertyAuto(function, addr, &value);
-    } else if (function == SPPropEnable) {
-       status = setSPPropertyEnable(function, addr, &value);
     } else if (function == ADReadStatus) {
         status = readStatus();
     } else {
         // If this parameter belongs to a base class call its method
         if (function < FIRST_SP_PARAM) status = ADDriver::writeInt32(pasynUser, value);
+    }
+    
+    // When some parameters are changed they can cause others to change limits, enum choices, etc.
+    if ((function==SPPropIntValue && addr==SPFrameRateAuto) ||
+        (function==SPPropIntValue && addr==SPGainAuto) ||
+        (function==SPPropIntValue && addr==SPVideoMode) ||
+        (function == ADTriggerMode) ||
+        (function==SPPropIntValue && addr==SPTriggerSource)) {
+        updateSPProperties();
     }
 
     asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
@@ -1617,16 +1537,13 @@ asynStatus ADSpinnaker::readEnum(asynUser *pasynUser, char *strings[], int value
             IEnumEntry *pEntry= dynamic_cast<IEnumEntry *>(entries[i]);
             const char *pString = epicsStrDup((pEntry->GetSymbolic()).c_str());
             if (IsAvailable(pEntry) && IsReadable(pEntry)) {
-printf("%s:%s is available\n", nodeName, pString);               
                 if (strings[*nIn]) free(strings[*nIn]);
                 strings[*nIn] = epicsStrDup(pString);
                 entryValue = pEntry->GetValue();
                 values[*nIn] = (int)entryValue;
-printf("%s:%s value=%lld, (int)value=%d\n", nodeName, pString, entryValue, values[*nIn]);               
                 severities[*nIn] = 0;
                 (*nIn)++;
             } else {
-printf("%s:%s is not available\n", nodeName, pString);
             }
         }
     }
@@ -1706,109 +1623,6 @@ asynStatus ADSpinnaker::setImageParams()
     return asynSuccess;
 }
 
-
-/** Read all the propertyType settings and values from the camera.
- * This function will collect all the current values and settings from the camera,
- * and set the appropriate integer/double parameters in the param lib. If a certain propertyType
- * is not available in the given camera, this function will set all the parameters relating to that
- * propertyType to -1 or -1.0 to indicate it is not available.
- * Note the caller is responsible for calling any update callbacks if I/O interrupts
- * are to be processed after calling this function.
- * Returns asynStatus asynError or asynSuccess as an int.
- */
-/*
-asynStatus ADSpinnaker::getAllProperties()
-{
-    PropertyInfo *pPropInfo;
-    Property *pProperty;
-    Error error;
-    int addr;
-    double dtmp;
-    static const char *functionName="getAllProperties";
-
-    // Iterate through all of the available properties and update their values and settings 
-    for (addr=0; addr<NUM_PROPERTIES; addr++) {
-        pPropInfo = allPropInfos_[addr];
-        pProperty = allProperties_[addr];
-        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-            "%s::%s calling CameraBase::GetPropertyInfo, pCameraBase_=%p, pPropInfo=%p, propertyType=%d\n",
-            driverName, functionName, pCameraBase_, pPropInfo, pProperty->type);
-        error = pCameraBase_->GetPropertyInfo(pPropInfo);
-        if (checkError(error, functionName, "GetPropertyInfo")) 
-            return asynError;
-        error = pCameraBase_->GetProperty(pProperty);
-        if (checkError(error, functionName, "GetProperty")) 
-            return asynError;
-        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-            "%s::%s called CameraBase::GetProperty, pCameraBase_=%p, pProperty=%p, pProperty->valueA=%d\n",
-            driverName, functionName, pCameraBase_, pProperty, pProperty->valueA);
-        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-            "%s:%s: checking propertyType %d\n",
-            driverName, functionName, addr);
-
-        if (pPropInfo->present) {
-            setIntegerParam(addr, PGPropertyAvail,        1);
-            setIntegerParam(addr, PGPropertyOnOffAvail,   pPropInfo->onOffSupported);
-            setIntegerParam(addr, PGPropertyOnePushAvail, pPropInfo->onePushSupported);
-            setIntegerParam(addr, PGPropertyAutoAvail,    pPropInfo->autoSupported);
-            setIntegerParam(addr, PGPropertyManAvail,     pPropInfo->manualSupported);
-            setIntegerParam(addr, PGPropertyAbsAvail,     pPropInfo->absValSupported);
-            setIntegerParam(addr, PGPropertyOnOff,        pProperty->onOff);
-            setIntegerParam(addr, PGPropertyAutoMode,     pProperty->autoManualMode);
-            setIntegerParam(addr, PGPropertyAbsMode,      pProperty->absControl);
-            setIntegerParam(addr, PGPropertyValue,        pProperty->valueA);
-            setIntegerParam(addr, PGPropertyValueB,       pProperty->valueB);
-            setIntegerParam(addr, PGPropertyValueMin,     pPropInfo->min);
-            setIntegerParam(addr, PGPropertyValueMax,     pPropInfo->max);
-        } else {
-            // If the propertyType is not available in the camera, we just set
-             * all the parameters to 0 or -1 to indicate this is not available to the user.
-            setIntegerParam(addr, PGPropertyAvail,        0);
-            setIntegerParam(addr, PGPropertyOnOffAvail,   0);
-            setIntegerParam(addr, PGPropertyOnOff,        0);
-            setIntegerParam(addr, PGPropertyOnePushAvail, 0);
-            setIntegerParam(addr, PGPropertyAutoAvail,    0);
-            setIntegerParam(addr, PGPropertyManAvail,     0);
-            setIntegerParam(addr, PGPropertyAbsAvail,     0);
-            setIntegerParam(addr, PGPropertyAutoMode,     0);
-            setIntegerParam(addr, PGPropertyAbsMode,      -1);
-            setIntegerParam(addr, PGPropertyValue,        -1);
-            setIntegerParam(addr, PGPropertyValueMin,     -1);
-            setIntegerParam(addr, PGPropertyValueMax,     -1);
-        }
-
-        // If the propertyType does not support 'absolute' control then we just
-         * set all the absolute values to -1.0 to indicate it is not available to the user
-        if (pPropInfo->absValSupported) { 
-            setDoubleParam(addr,  PGPropertyValueAbs,    pProperty->absValue);
-            setDoubleParam(addr,  PGPropertyValueAbsMin, pPropInfo->absMin);
-            setDoubleParam(addr,  PGPropertyValueAbsMax, pPropInfo->absMax);
-        } else {
-            setDoubleParam(addr,  PGPropertyValueAbs,    -1.0);
-            setDoubleParam(addr,  PGPropertyValueAbsMax, -1.0);
-            setDoubleParam(addr,  PGPropertyValueAbsMin, -1.0);
-        }
-    }
-
-    // Map a few of the AreaDetector parameters on to the camera properties
-    getDoubleParam(SHUTTER, PGPropertyValueAbs, &dtmp);
-    // Camera units are ms
-    setDoubleParam(ADAcquireTime, dtmp/1000.);
-
-    getDoubleParam(FRAME_RATE, PGPropertyValueAbs, &dtmp);
-    // Camera units are fps
-    setDoubleParam(ADAcquirePeriod, 1./dtmp);
-
-    getDoubleParam(GAIN, PGPropertyValueAbs, &dtmp);
-    setDoubleParam(ADGain, dtmp);
-
-    // Do callbacks for each propertyType
-    for (addr=0; addr<NUM_PROPERTIES; addr++) callParamCallbacks(addr);
-
-    return asynSuccess;
-}
-
-*/
 
 asynStatus ADSpinnaker::startCapture()
 {
@@ -1994,7 +1808,7 @@ void ADSpinnaker::report(FILE *fp, int details)
             pProperty = *p;
             fprintf(fp, "\n  Node name: %s\n", pProperty->nodeName);
             fprintf(fp, "  asynParam, asynAddr: %d, %d\n", pProperty->asynParam, pProperty->asynAddr);
-            fprintf(fp, "  hasValue, hasAuto, hasEnable: %d %d %d\n", pProperty->hasValue, pProperty->hasAuto, pProperty->hasEnable);
+            fprintf(fp, "  isImplemented: %d\n", pProperty->isImplemented);
         }
     }
     catch (Spinnaker::Exception &e)
@@ -2006,254 +1820,13 @@ void ADSpinnaker::report(FILE *fp, int details)
     
 /*    
     if (pCamera_) {
-        getIntegerParam(PGFormat7Mode, &mode);
-        pFormat7Info_->mode = (Mode)mode;
-        error = pCamera_->GetFormat7Info(pFormat7Info_, &supported);
-        if (checkError(error, functionName, "GetFormat7Info")) 
-            return;
-        fprintf(fp, "\n");
-        fprintf(fp, "Currently connected IIDC camera Format7 information\n");
-        fprintf(fp, "  mode:            %d\n", pFormat7Info_->mode);
-        fprintf(fp, "  maxWidth:        %d\n", pFormat7Info_->maxWidth);
-        fprintf(fp, "  maxHeight:       %d\n", pFormat7Info_->maxHeight);
-        fprintf(fp, "  offsetHStepSize: %d\n", pFormat7Info_->offsetHStepSize);
-        fprintf(fp, "  offsetVStepSize: %d\n", pFormat7Info_->offsetVStepSize);
-        fprintf(fp, "  imageHStepSize:  %d\n", pFormat7Info_->imageHStepSize);
-        fprintf(fp, "  imageVStepSize:  %d\n", pFormat7Info_->imageVStepSize);
-        fprintf(fp, "  pixelFormatBitField       0x%x\n", pFormat7Info_->pixelFormatBitField);
-        fprintf(fp, "  vendorPixelFormatBitField 0x%x\n", pFormat7Info_->vendorPixelFormatBitField);
-                    
 
     if (details < 1) goto done;
     
     if (pCamera_) {
         VideoMode videoMode;
         FrameRate frameRate;
-        unsigned int packetSize;
-        float percentage;
-        Format7ImageSettings f7Settings;
-        fprintf(fp, "\nSupported IIDC video modes and rates:\n");
-        for (mode=0; mode<NUM_VIDEOMODES; mode++) {
-            videoMode = (VideoMode)mode;
-            if (videoMode == VIDEOMODE_FORMAT7) continue;
-            for (rate=0; rate<NUM_FRAMERATES; rate++) {
-                frameRate = (FrameRate)rate;
-                if (frameRate == FRAMERATE_FORMAT7) continue;
-                error = pCamera_->GetVideoModeAndFrameRateInfo(videoMode, frameRate, &supported);
-                if (checkError(error, functionName, "GetVideoModeAndFrameRateInfo")) 
-                    return;
-                if (supported) {
-                    fprintf(fp, "    Video mode %d (%s) and frame rate %d (%s)\n", 
-                    mode, videoModeStrings[mode], rate, frameRateStrings[rate]);
-                }
-            }
-        }
-        error = pCamera_->GetVideoModeAndFrameRate(&videoMode, &frameRate);
-        if (checkError(error, functionName, "GetVideoModeAndFrameRate")) 
-            return;
-        fprintf(fp, "\nCurrent image settings\n");
-        fprintf(fp, "  Mode: %d (%s)\n", videoMode, videoModeStrings[videoMode]);
-        fprintf(fp, "  Rate: %d (%s)\n", frameRate, frameRateStrings[frameRate]);
-        if (videoMode == VIDEOMODE_FORMAT7) {
-            error = pCamera_->GetFormat7Configuration(&f7Settings, &packetSize, &percentage);
-            if (checkError(error, functionName, "GetFormat7Configuration")) 
-                return;
-            pixelFormatIndex = getPixelFormatIndex(f7Settings.pixelFormat);     
-            fprintf(fp, "  Format7 video format currently selected\n");
-            fprintf(fp, "    Packet size: %d\n",    packetSize);
-            fprintf(fp, "    Bandwidth %%: %f\n",   percentage);
-            fprintf(fp, "           Mode: %d\n",    f7Settings.mode);
-            fprintf(fp, "         Offset: %d %d\n", f7Settings.offsetX, f7Settings.offsetY);
-            fprintf(fp, "           Size: %d %d\n", f7Settings.width, f7Settings.height);
-            fprintf(fp, "    PixelFormat: index=%d, value=0x%x [%s]\n",
-                             pixelFormatIndex, f7Settings.pixelFormat, pixelFormatStrings[pixelFormatIndex]);
-        }
 
-    } else if (pGigECamera_) {
-        int packetSize;
-        int packetDelay;
-        int heartBeat;
-        int heartBeatTimeout;
-        unsigned int binX, binY;
-        GigEImageSettings gigESettings;
-        Mode gigEMode;
-        error = pGigECamera_->GetGigEImagingMode(&gigEMode);
-        if (checkError(error, functionName, "GetGigEImagingMode")) 
-            return;
-        fprintf(fp, "\nSupported GigE modes:\n");
-        for (mode=0; mode<NUM_MODES; mode++) {
-            error = pGigECamera_->QueryGigEImagingMode((Mode)mode, &supported);
-            if (checkError(error, functionName, "QueryGigEImagingMode")) 
-                return;
-            if (supported) {
-                fprintf(fp, "    GigE mode %d\n", mode);
-                asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-                    "%s::%s calling GigECamera::SetGigEImagingMode, pGigECamera_=%p, mode=%d\n",
-                    driverName, functionName, pGigECamera_, mode);
-                error = pGigECamera_->SetGigEImagingMode((Mode)mode);
-                if (checkError(error, functionName, "SetGigEImagingMode"))
-                    return;
-                asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-                    "%s::%s calling GigECamera::GetGigEImageSettingsInfo, pGigECamera_=%p, pGigEImageSettingsInfo_=%p\n",
-                    driverName, functionName, pGigECamera_, pGigEImageSettingsInfo_);
-                error = pGigECamera_->GetGigEImageSettingsInfo(pGigEImageSettingsInfo_);
-                if (checkError(error, functionName, "GetGigEImageSettingsInfo")) 
-                    return;
-                fprintf(fp, "     maxWidth:        %d\n", pGigEImageSettingsInfo_->maxWidth);
-                fprintf(fp, "     maxHeight:       %d\n", pGigEImageSettingsInfo_->maxHeight);
-                fprintf(fp, "     offsetHStepSize: %d\n", pGigEImageSettingsInfo_->offsetHStepSize);
-                fprintf(fp, "     offsetVStepSize: %d\n", pGigEImageSettingsInfo_->offsetVStepSize);
-                fprintf(fp, "     imageHStepSize:  %d\n", pGigEImageSettingsInfo_->imageHStepSize);
-                fprintf(fp, "     imageVStepSize:  %d\n", pGigEImageSettingsInfo_->imageVStepSize);
-                fprintf(fp, "     pixelFormatBitField       0x%x\n", pGigEImageSettingsInfo_->pixelFormatBitField);
-                fprintf(fp, "     vendorPixelFormatBitField 0x%x\n", pGigEImageSettingsInfo_->vendorPixelFormatBitField);
-            }    
-        }
-        error = pGigECamera_->SetGigEImagingMode(gigEMode);
-        if (checkError(error, functionName, "SetGigEImagingMode")) 
-            return;
-        error = pGigECamera_->GetGigEImageSettings(&gigESettings);
-        if (checkError(error, functionName, "GetGigEImageSettings")) 
-            return;
-        error = pGigECamera_->GetGigEImageBinningSettings(&binX, &binY);
-        if (checkError(error, functionName, "GetGigEImageBinningSettings")) 
-            return;
-        pixelFormatIndex = getPixelFormatIndex(gigESettings.pixelFormat);
-        getAllGigEProperties();
-        getIntegerParam(PACKET_SIZE,       PGGigEPropertyValue, &packetSize);
-        getIntegerParam(PACKET_DELAY,      PGGigEPropertyValue, &packetDelay);
-        getIntegerParam(HEARTBEAT,         PGGigEPropertyValue, &heartBeat);
-        getIntegerParam(HEARTBEAT_TIMEOUT, PGGigEPropertyValue, &heartBeatTimeout);
-        fprintf(fp, "\n");
-        fprintf(fp, "Current GigE image settings\n");
-        fprintf(fp, "               Mode: %d\n",    gigEMode);
-        fprintf(fp, "        Packet size: %d\n",    packetSize);
-        fprintf(fp, "       Packet delay: %d\n",    packetDelay);
-        fprintf(fp, "          Heartbeat: %d\n",    heartBeat);
-        fprintf(fp, "  Heartbeat timeout: %d\n",    heartBeatTimeout);
-        fprintf(fp, "             Offset: %d %d\n", gigESettings.offsetX, gigESettings.offsetY);
-        fprintf(fp, "               Size: %d %d\n", gigESettings.width, gigESettings.height);
-        fprintf(fp, "            Binning: %u %u\n", binX, binY);
-        fprintf(fp, "        PixelFormat: index=%d, value=0x%x [%s]\n",
-                             pixelFormatIndex, gigESettings.pixelFormat, pixelFormatStrings[pixelFormatIndex]);
-    }
-
-    // Iterate through all of the available properties and report on them 
-    fprintf(fp, "\nSupported properties\n");
-    Property *pProperty;
-    PropertyInfo *pPropInfo;
-    for (property=0; property<NUM_PROPERTIES; property++) {
-        pProperty = allProperties_[property];
-        pPropInfo = allPropInfos_[property];
-        error = pCameraBase_->GetProperty(pProperty);
-        if (checkError(error, functionName, "GetProperty")) 
-            return;
-        error = pCameraBase_->GetPropertyInfo(pPropInfo);
-        if (checkError(error, functionName, "GetPropertyInfo")) 
-            return;
-        if (pProperty->present) {
-            fprintf(fp, "Property %s \n",                       propertyTypeStrings[property]);
-            fprintf(fp, "  min           = %d\n",               pPropInfo->min);
-            fprintf(fp, "  max           = %d\n",               pPropInfo->max);
-            fprintf(fp, "  value         = %d\n",               pProperty->valueA);
-            fprintf(fp, "  hasAutoMode   = %d     status=%d\n", pPropInfo->autoSupported,    pProperty->autoManualMode);
-            fprintf(fp, "  hasManualMode = %d     status=%d\n", pPropInfo->manualSupported,  !pProperty->autoManualMode);
-            fprintf(fp, "  hasOnOff      = %d     status=%d\n", pPropInfo->onOffSupported,   pProperty->onOff);
-            fprintf(fp, "  hasOnePush    = %d     status=%d\n", pPropInfo->onePushSupported, pProperty->onePush);
-            fprintf(fp, "  hasReadout    = %d\n",               pPropInfo->readOutSupported);
-            fprintf(fp, "  hasAbsControl = %d     status=%d\n", pPropInfo->absValSupported,  pProperty->absControl);
-            if (pPropInfo->absValSupported) { 
-                fprintf(fp, "    units        = %s    abbreviated=%s\n", pPropInfo->pUnits, pPropInfo->pUnitAbbr);
-                fprintf(fp, "    min          = %f\n", pPropInfo->absMin);
-                fprintf(fp, "    max          = %f\n", pPropInfo->absMax);
-                fprintf(fp, "    value        = %f\n", pProperty->absValue);
-            }
-        }
-        else {
-            fprintf(fp, "Property %s is not supported\n", propertyTypeStrings[property]);
-        }
-
-    }
-
-    error = pCameraBase_->GetTriggerMode(pTriggerMode_);
-    if (checkError(error, functionName, "GetTriggerMode")) 
-        return;
-    fprintf(fp, "\nTrigger mode\n");
-    fprintf(fp, "       Mode: %d\n", pTriggerMode_->mode);
-    fprintf(fp, "      onOff: %d\n", pTriggerMode_->onOff);
-    fprintf(fp, "   polarity: %d\n", pTriggerMode_->polarity);
-    fprintf(fp, "     source: %d\n", pTriggerMode_->source);
-    fprintf(fp, "  parameter: %d\n", pTriggerMode_->parameter);
-
-    error = pCameraBase_->GetTriggerModeInfo(pTriggerModeInfo_);
-    if (checkError(error, functionName, "GetTriggerModeInfo")) 
-        return;
-    fprintf(fp, "\nTrigger mode information\n");
-    fprintf(fp, "                   present: %d\n",   pTriggerModeInfo_->present);
-    fprintf(fp, "          readOutSupported: %d\n",   pTriggerModeInfo_->readOutSupported);
-    fprintf(fp, "            onOffSupported: %d\n",   pTriggerModeInfo_->onOffSupported);
-    fprintf(fp, "         polaritySupported: %d\n",   pTriggerModeInfo_->polaritySupported);
-    fprintf(fp, "             valueReadable: %d\n",   pTriggerModeInfo_->valueReadable);
-    fprintf(fp, "                sourceMask: 0x%x\n", pTriggerModeInfo_->sourceMask);
-    fprintf(fp, "  softwareTriggerSupported: %d\n",   pTriggerModeInfo_->softwareTriggerSupported);
-    fprintf(fp, "                  modeMask: 0x%x\n", pTriggerModeInfo_->modeMask);
-
-    fprintf(fp, "\nStrobe information\n");
-    source = pStrobeControl_->source;
-    for (j=0; j<NUM_GPIO_PINS; j++) {
-        pStrobeInfo_->source = j;
-        error = pCameraBase_->GetStrobeInfo(pStrobeInfo_);
-        if (checkError(error, functionName, "GetStrobeInfo")) 
-            return;
-        if (pStrobeInfo_->present) {
-            fprintf(fp, "     Strobe source %d: present\n", j);
-            fprintf(fp, "     readOutSupported: %d\n", pStrobeInfo_->readOutSupported);
-            fprintf(fp, "       onOffSupported: %d\n", pStrobeInfo_->onOffSupported);
-            fprintf(fp, "    polaritySupported: %d\n", pStrobeInfo_->polaritySupported);
-            fprintf(fp, "             minValue: %f\n", pStrobeInfo_->minValue);
-            fprintf(fp, "             maxValue: %f\n", pStrobeInfo_->maxValue);
-            pStrobeControl_->source = j;
-            error = pCameraBase_->GetStrobe(pStrobeControl_);
-            if (checkError(error, functionName, "GetStrobe")) 
-                return;
-            fprintf(fp, "                onOff: %d\n", pStrobeControl_->onOff);
-            fprintf(fp, "             polarity: %u\n", pStrobeControl_->polarity);
-            fprintf(fp, "                delay: %f\n", pStrobeControl_->delay);
-            fprintf(fp, "             duration: %f\n", pStrobeControl_->duration);
-        }
-    }
-    pStrobeControl_->source = source;
-
-
-    error = pCameraBase_->GetStats(pCameraStats_);
-    if (checkError(error, functionName, "GetStats")) 
-        return;
-    if (pCameraStats_->imageXmitFailed == 0x80000000) pCameraStats_->imageXmitFailed = 0;
-    fprintf(fp, "\nCamera statistics\n");
-    fprintf(fp, "              Images dropped: %u\n", pCameraStats_->imageDropped);
-    fprintf(fp, "              Images corrupt: %u\n", pCameraStats_->imageCorrupt);
-    fprintf(fp, "             Transmit failed: %u\n", pCameraStats_->imageXmitFailed);
-    fprintf(fp, "              Driver dropped: %u\n", pCameraStats_->imageDriverDropped);
-    fprintf(fp, "        Register read failed: %u\n", pCameraStats_->regReadFailed);
-    fprintf(fp, "       Register write failed: %u\n", pCameraStats_->regWriteFailed);
-    fprintf(fp, "                 Port errors: %u\n", pCameraStats_->portErrors);
-    fprintf(fp, "             Camera power up: %d\n", pCameraStats_->cameraPowerUp);
-    fprintf(fp, "                  # voltages: %d\n", pCameraStats_->numVoltages);
-    for (j=0; j<pCameraStats_->numVoltages; j++) {
-        fprintf(fp, "                   voltage %d: %f\n", j, pCameraStats_->cameraVoltages[j]);
-    }
-    fprintf(fp, "                  # currents: %d\n", pCameraStats_->numCurrents);
-    for (j=0; j<pCameraStats_->numCurrents; j++) {
-        fprintf(fp, "                   current %d: %f\n", j, pCameraStats_->cameraCurrents[j]);
-    }
-    fprintf(fp, "             Temperature (C): %f\n", pCameraStats_->temperature/10. - 273.15);
-    fprintf(fp, "   Time since initialization: %u\n", pCameraStats_->timeSinceInitialization);
-    fprintf(fp, "        Time since bus reset: %u\n", pCameraStats_->timeSinceBusReset);
-    fprintf(fp, "  # resend packets requested: %u\n", pCameraStats_->numResendPacketsRequested);
-    fprintf(fp, "   # resend packets received: %u\n", pCameraStats_->numResendPacketsReceived);
-    fprintf(fp, "                  Time stamp: %f\n", pCameraStats_->timeStamp.seconds + 
-                                                      pCameraStats_->timeStamp.microSeconds/1e6);
-    done:
 */          
     ADDriver::report(fp, details);
     return;
