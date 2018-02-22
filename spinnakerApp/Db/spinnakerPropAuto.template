@@ -2,11 +2,11 @@
 record(mbbo, "$(P)$(R)$(PROP)Auto") {
   field(PINI, "YES")
   field(DTYP, "asynInt32")
-  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_AUTO")
+  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
 }
 
 record(mbbi, "$(P)$(R)$(PROP)Auto_RBV") {
   field(SCAN, "I/O Intr")
   field(DTYP, "asynInt32")
-  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_AUTO")
+  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
 }
