@@ -4,5 +4,5 @@ record(bo, "$(P)$(R)$(PROP)") {
   field(DTYP, "asynInt32")
   field(ONAM, "Execute")
   field(ZNAM, "Done")
-  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
+  field(OUT,  "@asyn($(PORT) 0)$(PN)")
 }

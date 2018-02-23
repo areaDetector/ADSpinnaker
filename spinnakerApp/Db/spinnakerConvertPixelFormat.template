@@ -14,7 +14,7 @@ record(mbbo, "$(P)$(R)ConvertPixelFormat") {
   field(FRST, "RGB8")
   field(FVVL, "5")
   field(FVST, "RGB16")
-  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
+  field(OUT,  "@asyn($(PORT) 0)$(PN)")
 }
 
 record(mbbi, "$(P)$(R)ConvertPixelFormat_RBV") {
@@ -32,5 +32,5 @@ record(mbbi, "$(P)$(R)ConvertPixelFormat_RBV") {
   field(FRST, "RGB8")
   field(FVVL, "5")
   field(FVST, "RGB16")
-  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_INT_VALUE")
+  field(INP,  "@asyn($(PORT) 0)$(PN)")
 }

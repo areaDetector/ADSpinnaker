@@ -2,7 +2,7 @@
 record(ao, "$(P)$(R)$(PROP)") {
   field(PINI, "$(PINI=YES)")
   field(DTYP, "asynFloat64")
-  field(OUT,  "@asyn($(PORT) $(PN))SP_PROP_FLOAT_VALUE")
+  field(OUT,  "@asyn($(PORT) 0)$(PN)")
   field(PREC, "$(PREC=3)")
   field(VAL, "$(VAL=0)")
   info(asyn:READBACK, "$(READBACK=0)")
@@ -10,7 +10,7 @@ record(ao, "$(P)$(R)$(PROP)") {
 
 record(ai, "$(P)$(R)$(PROP)_RBV") {
   field(DTYP, "asynFloat64")
-  field(INP,  "@asyn($(PORT) $(PN))SP_PROP_FLOAT_VALUE")
+  field(INP,  "@asyn($(PORT) 0)$(PN)")
   field(PREC, "$(PREC=3)")
   field(SCAN, "I/O Intr")
 }
@@ -18,7 +18,7 @@ record(ai, "$(P)$(R)$(PROP)_RBV") {
 # Min and Max
 record(ai, "$(P)$(R)$(PROP)_MAX") {
   field(DTYP, "asynFloat64")
-  field(INP, "@asyn($(PORT) $(PN))SP_PROP_MAX_VALUE")
+  field(INP, "@asyn($(PORT) 0)$(PN)_MAX")
   field(SCAN, "I/O Intr")
   field(FLNK, "$(P)$(R)$(PROP)_DRVH")
 }
@@ -39,7 +39,7 @@ record(ao, "$(P)$(R)$(PROP)_HOPR") {
 # Read the feature absolute value min boundary
 record(ai, "$(P)$(R)$(PROP)_MIN") {
   field(DTYP, "asynFloat64")
-  field(INP, "@asyn($(PORT) $(PN))SP_PROP_MIN_VALUE")
+  field(INP, "@asyn($(PORT) 0)$(PN)_MIN")
   field(SCAN, "I/O Intr")
   field(FLNK, "$(P)$(R)$(PROP)_DRVL")
 }
