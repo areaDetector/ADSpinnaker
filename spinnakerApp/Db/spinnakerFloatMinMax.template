@@ -1,0 +1,42 @@
+# Min and Max
+record(ai, "$(P)$(R)$(PROP)_MAX") {
+  field(DTYP, "asynFloat64")
+  field(INP, "@asyn($(PORT) 0)$(PN)_MAX")
+  field(SCAN, "I/O Intr")
+  field(FLNK, "$(P)$(R)$(PROP)_DRVH")
+}
+# Set DRLH field of the value PV
+record(ao, "$(P)$(R)$(PROP)_DRVH") {
+  field(DOL, "$(P)$(R)$(PROP)_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(PROP).DRVH NPP NMS")
+  field(FLNK, "$(P)$(R)$(PROP)_HOPR")
+}
+# Set HOPR field of the value PV
+record(ao, "$(P)$(R)$(PROP)_HOPR") {
+  field(DOL, "$(P)$(R)$(PROP)_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(PROP).HOPR NPP NMS")
+}
+
+# Read the feature absolute value min boundary
+record(ai, "$(P)$(R)$(PROP)_MIN") {
+  field(DTYP, "asynFloat64")
+  field(INP, "@asyn($(PORT) 0)$(PN)_MIN")
+  field(SCAN, "I/O Intr")
+  field(FLNK, "$(P)$(R)$(PROP)_DRVL")
+}
+
+# Set DRLV field of the value PV
+record(ao, "$(P)$(R)$(PROP)_DRVL") {
+  field(DOL, "$(P)$(R)$(PROP)_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(PROP).DRVL NPP NMS")
+  field(FLNK, "$(P)$(R)$(PROP)_LOPR")
+}
+# Set LOPR field of the value PV
+record(ao, "$(P)$(R)$(PROP)_LOPR") {
+  field(DOL, "$(P)$(R)$(PROP)_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(PROP).LOPR NPP NMS")
+}
