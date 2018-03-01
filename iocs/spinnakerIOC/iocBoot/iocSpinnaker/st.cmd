@@ -26,7 +26,7 @@ epicsEnvSet("NCHANS", "2048")
 # The maximum number of frames buffered in the NDPluginCircularBuff plugin
 epicsEnvSet("CBUFFS", "500")
 # The search path for database files
-epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db")
+epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db;$(ADSPINNAKER)/db")
 # Define NELEMENTS to be enough for a 2048x2048x3 (color) image
 epicsEnvSet("NELEMENTS", "12592912")
 
@@ -50,13 +50,13 @@ dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template",   "P=$(PREFIX),R=
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",    "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=FrameRate,PN=SP_FRAME_RATE")
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropEnable.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=FrameRate,PN=SP_FRAME_RATE")
 
-# Exposure
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Exposure,PN=SP_EXPOSURE,PINI=NO")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Exposure,PN=SP_EXPOSURE")
+# Acquire time
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",     "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=AcquireTime,PN=ACQ_TIME")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatMinMax.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=AcquireTime,PN=ACQ_TIME")
 
 # Gain
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=SPGain,PN=SP_GAIN,PINI=NO")
-dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=SPGain,PN=SP_GAIN")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerPropAuto.template",     "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Gain,PN=GAIN")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatMinMax.template",  "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=Gain,PN=GAIN")
 
 # Black level
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=BlackLevel,PN=SP_BLACK_LEVEL,VAL=0.0")
