@@ -992,7 +992,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)ExposureAuto"
+		chan="$(P)$(R)AcquireTimeAuto"
 		clr=14
 		bclr=51
 	}
@@ -1005,7 +1005,7 @@ menu {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)ExposureAuto_RBV"
+		chan="$(P)$(R)AcquireTimeAuto_RBV"
 		clr=53
 		bclr=4
 	}
@@ -1115,7 +1115,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)SPGainAuto"
+		chan="$(P)$(R)GainAuto"
 		clr=14
 		bclr=51
 	}
@@ -1128,7 +1128,7 @@ menu {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)SPGainAuto_RBV"
+		chan="$(P)$(R)GainAuto_RBV"
 		clr=53
 		bclr=4
 	}
