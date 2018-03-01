@@ -17,6 +17,11 @@ USR_INCLUDES += -I ../../../spinnakerSupport/include
 USR_CXXFLAGS_Linux += -D LINUX
 USR_CXXFLAGS_Linux += -std=c++11 -Wno-unknown-pragmas
 
+#PROD_IOC_Linux += MeasureTemperature
+PROD_IOC_WIN32 += MeasureTemperature
+MeasureTemperature_SRCS += MeasureTemperature.cpp
+
+
 #PROD_IOC_Linux += Enumeration
 PROD_IOC_WIN32 += Enumeration
 Enumeration_SRCS += Enumeration.cpp
