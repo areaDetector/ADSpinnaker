@@ -1386,7 +1386,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)SPGainAuto"
+		chan="$(P)$(R)GainAuto"
 		clr=14
 		bclr=51
 	}
@@ -1412,7 +1412,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)SPGainAuto_RBV"
+		chan="$(P)$(R)GainAuto_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1607,15 +1607,15 @@ text {
 }
 text {
 	object {
-		x=10
+		x=20
 		y=495
-		width=130
+		width=120
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Exposure time"
+	textix="Acquire time"
 	align="horiz. right"
 }
 "text entry" {
@@ -1656,22 +1656,22 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)ExposureAuto"
+		chan="$(P)$(R)AcquireTimeAuto"
 		clr=14
 		bclr=51
 	}
 }
 text {
 	object {
-		x=10
+		x=20
 		y=520
-		width=130
+		width=120
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Exposure auto"
+	textix="Acquire auto"
 	align="horiz. right"
 }
 "text update" {
@@ -1682,7 +1682,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)ExposureAuto_RBV"
+		chan="$(P)$(R)AcquireTimeAuto_RBV"
 		clr=54
 		bclr=4
 	}
