@@ -14,6 +14,7 @@ include $(TOP)/configure/CONFIG
 DB += spinnaker.template
 DB += spinnakerConvertPixelFormat.template
 DB += spinnakerFloatProp.template
+DB += spinnakerFloatMinMax.template
 DB += spinnakerMenuProp.template
 DB += spinnakerCmdProp.template
 DB += spinnakerPropAuto.template
