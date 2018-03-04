@@ -334,7 +334,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Dropped frames"
+	textix="Transmit fail"
 	align="horiz. right"
 }
 "text update" {
@@ -345,7 +345,7 @@ text {
 		height=16
 	}
 	monitor {
-		chan="$(P)$(R)DroppedFrames_RBV"
+		chan="$(P)$(R)TransmitFailureCount"
 		clr=54
 		bclr=4
 	}
@@ -363,7 +363,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Corrupt frames"
+	textix="Buffer underrun"
 	align="horiz. right"
 }
 "text update" {
@@ -374,7 +374,7 @@ text {
 		height=16
 	}
 	monitor {
-		chan="$(P)$(R)CorruptFrames_RBV"
+		chan="$(P)$(R)BufferUnderrunCount"
 		clr=54
 		bclr=4
 	}
@@ -392,7 +392,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Driver dropped"
+	textix="Failed buffer"
 	align="horiz. right"
 }
 "text update" {
@@ -403,7 +403,7 @@ text {
 		height=16
 	}
 	monitor {
-		chan="$(P)$(R)DriverDropped_RBV"
+		chan="$(P)$(R)FailedBufferCount"
 		clr=54
 		bclr=4
 	}
@@ -421,7 +421,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Transmit failed"
+	textix="Failed packet"
 	align="horiz. right"
 }
 "text update" {
@@ -432,7 +432,7 @@ text {
 		height=16
 	}
 	monitor {
-		chan="$(P)$(R)TransmitFailed_RBV"
+		chan="$(P)$(R)FailedPacketCount"
 		clr=54
 		bclr=4
 	}
