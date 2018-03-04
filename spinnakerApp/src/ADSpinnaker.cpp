@@ -51,10 +51,6 @@ static const char *driverName = "ADSpinnaker";
 #define PGPacketDelayActualString     "PG_PACKET_DELAY_ACTUAL"
 #define PGBandwidthString             "PG_BANDWIDTH"
 #define PGTimeStampModeString         "PG_TIME_STAMP_MODE"
-#define PGCorruptFramesString         "PG_CORRUPT_FRAMES"
-#define PGDriverDroppedString         "PG_DRIVER_DROPPED"
-#define PGTransmitFailedString        "PG_TRANSMIT_FAILED"
-#define PGDroppedFramesString         "PG_DROPPED_FRAMES"
 */
 
 // Default packet delay in microseconds
@@ -95,14 +91,14 @@ static const char *gigEPropertyTypeStrings[NUM_GIGE_PROPERTIES] = {
 */
 
 typedef enum {
-   TimeStampCamera,
-   TimeStampEPICS,
-   TimeStampHybrid
+    TimeStampCamera,
+    TimeStampEPICS,
+    TimeStampHybrid
 } PGTimeStamp_t;
 
 typedef enum {
-   SPConvertToEPICS,
-   SPConvertFromEPICS
+    SPConvertToEPICS,
+    SPConvertFromEPICS
 } SPConvertDirection_t;
 
 
@@ -110,24 +106,22 @@ class ImageEventHandler : public ImageEvent
 {
 public:
 
-	ImageEventHandler(epicsMessageQueue *pMsgQ) 
-	 : pMsgQ_(pMsgQ)
-	{
-	}
-	~ImageEventHandler() {}
-
-	void OnImageEvent(ImagePtr image)
-	{
-      static ImagePtr imageCopy;
-      imageCopy = image;
-
-      if (pMsgQ_->send(&imageCopy, sizeof(imageCopy)) != 0) {
-          printf("OnImageEvent error calling pMsgQ_->send()\n");
-      }
-	}
-	
+    ImageEventHandler(epicsMessageQueue *pMsgQ) 
+     : pMsgQ_(pMsgQ)
+    {}
+    ~ImageEventHandler() {}
+  
+    void OnImageEvent(ImagePtr image) {
+        static ImagePtr imageCopy;
+        imageCopy = image;
+  
+        if (pMsgQ_->send(&imageCopy, sizeof(imageCopy)) != 0) {
+            printf("OnImageEvent error calling pMsgQ_->send()\n");
+        }
+    }
+  
 private:
-  epicsMessageQueue *pMsgQ_;
+    epicsMessageQueue *pMsgQ_;
 
 };
 
@@ -178,6 +172,10 @@ protected:
     int SPBalanceRatio;         // 24
     int SPBalanceRatioSelector; // 25
     int SPBalanceWhiteAuto;     // 26
+    int SPTransmitFailureCount; // 27
+    int SPBufferUnderrunCount;  // 28
+    int SPFailedBufferCount;    // 29
+    int SPFailedPacketCount;    // 30
 
 //    int PGPacketSize;             /** Size of data packets from camera                (int32 write/read) */
 //    int PGPacketSizeActual;       /** Size of data packets from camera                (int32 write/read) */
@@ -186,10 +184,6 @@ protected:
 //    int PGPacketDelayActual;      /** Packet delay in usec from camera, GigE only     (int32 read) */
 //    int PGBandwidth;              /** Bandwidth in MB/s                               (float64 read) */
 //    int PGTimeStampMode;          /** Time stamp mode (PGTimeStamp_t)                 (int32 write/read) */
-//    int PGCorruptFrames;          /** Number of corrupt frames                        (int32 read) */
-//    int PGDriverDropped;          /** Number of driver dropped frames                 (int32 read) */
-//    int PGTransmitFailed;         /** Number of transmit failures                     (int32 read) */
-//    int PGDroppedFrames;          /** Number of dropped frames                        (int32 read) */
 
 private:
     class SPProperty {
@@ -267,23 +261,23 @@ ADSpinnaker::SPProperty::SPProperty(ADSpinnaker *pDrvIn, int asynParamIn, const 
                 if (propertyType == SPPropertyTypeUnknown) {
                     switch (pNode->GetPrincipalInterfaceType()) {
                         case intfIString:
-                        		propertyType = SPPropertyTypeString;
-                         	  break;
+                            propertyType = SPPropertyTypeString;
+                             break;
                         case  intfIInteger:
-                        		propertyType = SPPropertyTypeInt;
-                        	  break; 
+                            propertyType = SPPropertyTypeInt;
+                            break; 
                         case intfIFloat:
-                        		propertyType = SPPropertyTypeDouble;
-                        	  break;
+                            propertyType = SPPropertyTypeDouble;
+                            break;
                         case intfIBoolean:
-                        		propertyType = SPPropertyTypeBoolean;
-                        	  break;
+                            propertyType = SPPropertyTypeBoolean;
+                            break;
                         case intfICommand:
-                        		propertyType = SPPropertyTypeCmd;
-                        	  break;
+                            propertyType = SPPropertyTypeCmd;
+                            break;
                         case intfIEnumeration:
-                        		propertyType = SPPropertyTypeEnum;
-                        	  break;
+                            propertyType = SPPropertyTypeEnum;
+                            break;
                         default:
                            break; 
                     }
@@ -291,9 +285,8 @@ ADSpinnaker::SPProperty::SPProperty(ADSpinnaker *pDrvIn, int asynParamIn, const 
             }
         }
     }
-    catch (Spinnaker::Exception &e)
-    {
-    	printf("SPProperty::SPProperty exception %s\n", e.what());
+    catch (Spinnaker::Exception &e) {
+        printf("SPProperty::SPProperty exception %s\n", e.what());
     }
 }
 
@@ -308,7 +301,7 @@ double ADSpinnaker::SPProperty::convertUnits(double inputValue, SPConvertDirecti
         else
             outputValue = inputValue * 1.e6;
     } 
-    else if (asynParam == pDrv->ADAcquireTime) {
+    else if (asynParam == pDrv->ADAcquirePeriod) {
         // EPICS uses period in seconds, Spinnaker uses rate in Hz
         outputValue = 1. / inputValue;
     }
@@ -358,8 +351,8 @@ asynStatus ADSpinnaker::SPProperty::getValue(void *pValue, bool setParam)
     if (!isImplemented) return asynError;
     try {
         if (!IsAvailable(pBase)) {
-             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s::%s Error: node %s is not available\n",
+             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_WARNING,
+                "%s::%s Warning: node %s is not available\n",
                 driverName, functionName, nodeName.c_str());
              return asynError;
         }
@@ -444,8 +437,8 @@ asynStatus ADSpinnaker::SPProperty::update()
             return asynSuccess;
         }
         if (!IsAvailable(pBase)) {
-             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s::%s Error: node %s is not available\n",
+             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_WARNING, 
+                "%s::%s Warning: node %s is not available\n",
                 driverName, functionName, nodeName.c_str());
              return asynError;
         }
@@ -461,7 +454,6 @@ asynStatus ADSpinnaker::SPProperty::update()
                 epicsFloat64 value = pNode->GetMin();
                 value = convertUnits(value, SPConvertToEPICS);
                 pDrv->setDoubleParam(asynParam, value);
-printf("node %s min=%f\n", nodeName.c_str(), value);
                 break;
             }
             case SPPropertyTypeDoubleMax: {
@@ -469,7 +461,6 @@ printf("node %s min=%f\n", nodeName.c_str(), value);
                 epicsFloat64 value = pNode->GetMax();
                 value = convertUnits(value, SPConvertToEPICS);
                 pDrv->setDoubleParam(asynParam, value);
-printf("node %s max=%f\n", nodeName.c_str(), value);
                 break;
             }
             case SPPropertyTypeEnum: {
@@ -517,12 +508,11 @@ asynStatus ADSpinnaker::SPProperty::setValue(void *pValue, void *pReadbackValue,
 {
     static const char *functionName = "SPProperty::setValue";
 
-printf("%s::%s node=%s entry\n", driverName, functionName, nodeName.c_str());
     if (!isImplemented) return asynError;
     try {
         if (!IsAvailable(pBase)) {
-             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s::%s Error: node %s is not available\n",
+             asynPrint(pDrv->pasynUserSelf, ASYN_TRACE_WARNING, 
+                "%s::%s Warning: node %s is not available\n",
                 driverName, functionName, nodeName.c_str());
              return asynError;
         }
@@ -763,8 +753,8 @@ extern "C" int ADSpinnakerConfig(const char *portName, int cameraId, int traceMa
 
 static void c_shutdown(void *arg)
 {
-  ADSpinnaker *p = (ADSpinnaker *)arg;
-  p->shutdown();
+   ADSpinnaker *p = (ADSpinnaker *)arg;
+   p->shutdown();
 }
 
 
@@ -802,8 +792,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     cameraId_(cameraId), memoryChannel_(memoryChannel), exiting_(0), pRaw_(NULL)
 {
     static const char *functionName = "ADSpinnaker";
-//    int i;
-    //PropertyType propType;
     asynStatus status;
     
     if (traceMask == 0) traceMask = ASYN_TRACE_ERROR;
@@ -818,10 +806,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createParam(PGPacketDelayActualString,      asynParamInt32,   &PGPacketDelayActual);
     createParam(PGBandwidthString,              asynParamFloat64, &PGBandwidth);
     createParam(PGTimeStampModeString,          asynParamInt32,   &PGTimeStampMode);
-    createParam(PGCorruptFramesString,          asynParamInt32,   &PGCorruptFrames);
-    createParam(PGDriverDroppedString,          asynParamInt32,   &PGDriverDropped);
-    createParam(PGTransmitFailedString,         asynParamInt32,   &PGTransmitFailed);
-    createParam(PGDroppedFramesString,          asynParamInt32,   &PGDroppedFrames);
 */
     // Retrieve singleton reference to system object
     system_ = System::GetInstance();
@@ -833,7 +817,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
             driverName, functionName, status);
         // Call report() to get a list of available cameras
         report(stdout, 1);
-//        return;
+        return;
     }
 
     // Construct property list.
@@ -854,6 +838,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createSPProperty(ADBinY,              "BinningVertical");
     createSPProperty(ADNumImages,         "AcquisitionFrameCount");
     createSPProperty(ADAcquireTime,       "ExposureTime");
+    createSPProperty(ADAcquirePeriod,     "AcquisitionFrameRate");
     createSPProperty(ADGain,              "Gain");
     createSPProperty(ADTriggerMode,       "TriggerMode");
     createSPProperty(ADTemperatureActual, "DeviceTemperature");
@@ -886,7 +871,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createSPProperty(&SPSharpeningAuto,        asynParamInt32,   "SP_SHARPENING_AUTO",           "SharpeningAuto");
     createSPProperty(&SPSharpeningEnable,      asynParamInt32,   "SP_SHARPENING_ENABLE",         "SharpeningEnable");
     createSPProperty(&SPPixelFormat,           asynParamInt32,   "SP_PIXEL_FORMAT",              "PixelFormat");
-    createSPProperty(&SPConvertPixelFormat,    asynParamInt32,   "SP_CONVERT_PIXEL_FORMAT",      "ConvertPixelFormat");
+    createParam("SP_CONVERT_PIXEL_FORMAT",     asynParamInt32,   &SPConvertPixelFormat);
     createSPProperty(&SPTriggerSource,         asynParamInt32,   "SP_TRIGGER_SOURCE",            "TriggerSource");
     createSPProperty(&SPTriggerActivation,     asynParamInt32,   "SP_TRIGGER_ACTIVATION",        "TriggerActivation");
     createSPProperty(&SPTriggerDelay,          asynParamFloat64, "SP_TRIGGER_DELAY",             "TriggerDelay");
@@ -894,15 +879,18 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createSPProperty(&SPBalanceRatio,          asynParamFloat64, "SP_WHITE_BALANCE_RATIO",       "BalanceRatio");
     createSPProperty(&SPBalanceRatioSelector,  asynParamInt32,   "SP_WHITE_BALANCE_SELECTOR",    "BalanceRatioSelector");
     createSPProperty(&SPBalanceWhiteAuto,      asynParamInt32,   "SP_WHITE_BALANCE_AUTO",        "BalanceWhiteAuto");
-
-    report(stdout, 1);
+    createSPProperty(&SPTransmitFailureCount,  asynParamInt32,   "SP_TRANSMIT_FAILURE_COUNT",    "TransmitFailureCount");
+    // These are not properties but must be read from the TransportLayerStream class
+    createParam("SP_BUFFER_UNDERRUN_COUNT",    asynParamInt32,   &SPBufferUnderrunCount);
+    createParam("SP_FAILED_BUFFER_COUNT",      asynParamInt32,   &SPFailedBufferCount);
+    createParam("SP_FAILED_PACKET_COUNT",      asynParamInt32,   &SPFailedPacketCount);
 
     updateSPProperties();
 
     report(stdout, 1);
 
-		epicsInt32 iValue;
-		
+    epicsInt32 iValue;
+    
     /* Set initial values of some parameters */
     setIntegerParam(NDDataType, NDUInt8);
     setIntegerParam(NDColorMode, NDColorModeMono);
@@ -913,14 +901,14 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     setStringParam(ADStringFromServer, "<not used by driver>");
     setIntegerParam(SPTriggerSource, 0);
 
-		getSPProperty(ADSerialNumber);
- 		getSPProperty(ADFirmwareVersion);
- 		getSPProperty(ADManufacturer);
- 		getSPProperty(ADModel);
- 		getSPProperty(ADMaxSizeX, &iValue);
-		setIntegerParam(ADSizeX, iValue);
- 		getSPProperty(ADMaxSizeY, &iValue);
-		setIntegerParam(ADSizeY, iValue);
+    getSPProperty(ADSerialNumber);
+    getSPProperty(ADFirmwareVersion);
+    getSPProperty(ADManufacturer);
+    getSPProperty(ADModel);
+    getSPProperty(ADMaxSizeX, &iValue);
+    setIntegerParam(ADSizeX, iValue);
+    getSPProperty(ADMaxSizeY, &iValue);
+    setIntegerParam(ADSizeY, iValue);
 
     // Create the message queue to pass images from the callback class
     pCallbackMsgQ_ = new epicsMessageQueue(CALLBACK_MESSAGE_QUEUE_SIZE, sizeof(ImagePtr));
@@ -928,8 +916,8 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
         cantProceed("ADSpinnaker::ADSpinnaker epicsMessageQueueCreate failure\n");
     }
 
-		pImageEventHandler_ = new ImageEventHandler(pCallbackMsgQ_);
-		pCamera_->RegisterEvent(*pImageEventHandler_);
+    pImageEventHandler_ = new ImageEventHandler(pCallbackMsgQ_);
+    pCamera_->RegisterEvent(*pImageEventHandler_);
 
     startEventId_ = epicsEventCreate(epicsEventEmpty);
 
@@ -952,19 +940,28 @@ void ADSpinnaker::shutdown(void)
     exiting_ = 1;
     
     lock();
-    printf("Shutting down, calling camList.Clear() and system.ReleaseInstance()\n");
     try {
-    		pCamera_->UnregisterEvent(*pImageEventHandler_);
-    		delete pImageEventHandler_;
-    		pCamera_->DeInit();
+printf("shutdown, calling UnRegisterEvent()\n");
+        pCamera_->UnregisterEvent(*pImageEventHandler_);
+printf("shutdown, deleting pImageEventHandler\n");
+        delete pImageEventHandler_;
+printf("shutdown, setting pNodeMap=0\n");
+        pNodeMap_ = 0;
+        if (pImage_ != 0) {
+printf("shutdown, deleting pImage\n");
+            delete pImage_;
+        }
+printf("shutdown, calling pCamera_->DeInit()\n");
+        pCamera_->DeInit();
+printf("shutdown, calling camList_.Clear()\n");
         camList_.Clear();
+printf("shutdown, calling system_->ReleaseInstance()\n");
         system_->ReleaseInstance();
     }
-    catch (Spinnaker::Exception &e)
-    {
-    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-    	    "%s::%s exception %s\n",
-    	    driverName, functionName, e.what());
+    catch (Spinnaker::Exception &e) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+          "%s::%s exception %s\n",
+          driverName, functionName, e.what());
     }
     unlock();
 }
@@ -992,7 +989,6 @@ asynStatus ADSpinnaker::connectCamera(void)
      
             // Clear camera list before releasing system
             camList_.Clear();
-        
             return asynError;
         }
     
@@ -1011,21 +1007,18 @@ asynStatus ADSpinnaker::connectCamera(void)
             pCamera_ = camList_.GetBySerial(tempStdString);
         }
     
-//    		report(stdout, 1);
-    
-    		// Initialize camera
-    		pCamera_->Init();
-    		
-    		// Retrieve GenICam nodemap
-    		pNodeMap_ = &pCamera_->GetNodeMap();
+        // Initialize camera
+        pCamera_->Init();
+        
+        // Retrieve GenICam nodemap
+        pNodeMap_ = &pCamera_->GetNodeMap();
     }
 
-    catch (Spinnaker::Exception &e)
-    {
-    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-    	    "%s::%s exception %s\n",
-    	    driverName, functionName, e.what());
-    	return asynError;
+    catch (Spinnaker::Exception &e) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+          "%s::%s exception %s\n",
+          driverName, functionName, e.what());
+      return asynError;
     }
 
     epicsSnprintf(tempString, sizeof(tempString), "%d.%d.%d", 
@@ -1149,7 +1142,6 @@ asynStatus ADSpinnaker::grabImage()
 {
     asynStatus status = asynSuccess;
     size_t nRows, nCols;
-//    size_t stride;
     NDDataType_t dataType;
     NDColorMode_t colorMode;
     int convertPixelFormat;
@@ -1159,219 +1151,219 @@ asynStatus ADSpinnaker::grabImage()
     PixelFormatEnums pixelFormat;
     int pixelSize;
     size_t dataSize, dataSizePG;
-//    double bandwidth;
-//    double frameRate;
     void *pData;
     int nDims;
-//    long long timeStamp;
-//    int timeStampMode;
     static const char *functionName = "grabImage";
 
-  try {
-    unlock();
-    if (pCallbackMsgQ_->receive(&pImage_, sizeof(pImage_)) != sizeof(pImage_)) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s::%s error receiving from message queue\n",
-                driverName, functionName);
-        return asynError;
-    }
-    lock();
-    imageStatus = pImage_->GetImageStatus();
-    if (imageStatus != IMAGE_NO_ERROR) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-            "%s::%s error GetImageStatus returned %d\n",
-            driverName, functionName, imageStatus);
-        pImage_->Release();
-        return asynError;
-    } 
-    nCols = pImage_->GetWidth();
-    nRows = pImage_->GetHeight();
-    //stride = pImage_->GetStride();
-    pixelFormat = pImage_->GetPixelFormat();
-    gcstring pixelFormatName = pImage_->GetPixelFormatName();
- 
+    try {
+        while(1) {
+            unlock();
+            int recvSize = pCallbackMsgQ_->receive(&pImage_, sizeof(pImage_), 0.1);
+            lock();
+            if (recvSize == sizeof(pImage_)) {
+                break;
+            } else if (recvSize == -1) {
+                // Timeout
+                int acquire;
+                getIntegerParam(ADAcquire, &acquire);
+                if (acquire == 0) {
+                    return asynError;
+                } else {
+                    continue;
+                }
+            } else {
+                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                        "%s::%s error receiving from message queue\n",
+                        driverName, functionName);
+                return asynError;
+            }
+        }
+        imageStatus = pImage_->GetImageStatus();
+        if (imageStatus != IMAGE_NO_ERROR) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
+                "%s::%s error GetImageStatus returned %d\n",
+                driverName, functionName, imageStatus);
+            pImage_->Release();
+            return asynError;
+        } 
+        nCols = pImage_->GetWidth();
+        nRows = pImage_->GetHeight();
+     
 //    timeStamp = pImage_->GetTimeStamp();    
 //    pPGImage = pPGRawImage_;
-    // Calculate bandwidth
-//    dataSizePG = pPGRawImage_->GetReceivedDataSize();
-//    getDoubleParam(FRAME_RATE, PGPropertyValueAbs, &frameRate);
-//    bandwidth = frameRate * dataSizePG / (1024 * 1024);
-//    setDoubleParam(PGBandwidth, bandwidth);
-
-    // Convert the pixel format if requested
-    getIntegerParam(SPConvertPixelFormat, &convertPixelFormat);
-    if (convertPixelFormat != SPPixelConvertNone) {
-        PixelFormatEnums convertedFormat;
-        switch (convertPixelFormat) {
-            case SPPixelConvertMono8:
-                convertedFormat = PixelFormat_Mono8;
+    
+        // Convert the pixel format if requested
+        getIntegerParam(SPConvertPixelFormat, &convertPixelFormat);
+        if (convertPixelFormat != SPPixelConvertNone) {
+            PixelFormatEnums convertedFormat;
+            switch (convertPixelFormat) {
+                case SPPixelConvertMono8:
+                    convertedFormat = PixelFormat_Mono8;
+                    break;
+                case SPPixelConvertMono16:
+                    convertedFormat = PixelFormat_Mono16;
+                    break;
+                case SPPixelConvertRaw16:
+                    convertedFormat = PixelFormat_Raw16;
+                    break;
+                case SPPixelConvertRGB8:
+                    convertedFormat = PixelFormat_RGB8;
+                    break;
+                case SPPixelConvertRGB16:
+                    convertedFormat = PixelFormat_RGB16;
+                    break;
+                default:
+                    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                        "%s::%s Error: Unknown pixel conversion format %d\n",
+                        driverName, functionName, convertPixelFormat);
+                    convertedFormat = PixelFormat_Mono8;
+                    break;
+            }
+    
+            pixelFormat = pImage_->GetPixelFormat();
+printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, convertedFormat);
+            try {
+                ImagePtr pConvertedImage = pImage_->Convert(convertedFormat);
+                pImage_->Release();
+                pImage_ = pConvertedImage;
+            }
+            catch (Spinnaker::Exception &e) {
+                 asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+                     "%s::%s exception %s\n",
+                 driverName, functionName, e.what());
+            }
+        }
+    
+        pixelFormat = pImage_->GetPixelFormat();
+        switch (pixelFormat) {
+            case PixelFormat_Mono8:
+            case PixelFormat_Raw8:
+                dataType = NDUInt8;
+                colorMode = NDColorModeMono;
+                numColors = 1;
+                pixelSize = 1;
                 break;
-            case SPPixelConvertMono16:
-                convertedFormat = PixelFormat_Mono16;
+    
+            case PixelFormat_RGB8:
+                dataType = NDUInt8;
+                colorMode = NDColorModeRGB1;
+                numColors = 3;
+                pixelSize = 1;
                 break;
-            case SPPixelConvertRaw16:
-                convertedFormat = PixelFormat_Raw16;
+    
+            case PixelFormat_Mono16:
+            case PixelFormat_Raw16:
+                dataType = NDUInt16;
+                colorMode = NDColorModeMono;
+                numColors = 1;
+                pixelSize = 2;
                 break;
-            case SPPixelConvertRGB8:
-                convertedFormat = PixelFormat_RGB8;
+    
+            case PixelFormat_RGB16:
+                dataType = NDUInt16;
+                colorMode = NDColorModeRGB1;
+                numColors = 3;
+                pixelSize = 2;
                 break;
-            case SPPixelConvertRGB16:
-                convertedFormat = PixelFormat_RGB16;
-                break;
+    
             default:
                 asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                    "%s::%s Error: Unknown pixel conversion format %d\n",
-                    driverName, functionName, convertPixelFormat);
-                convertedFormat = PixelFormat_Mono8;
-                break;
+                    "%s:%s: unsupported pixel format=0x%x\n",
+                    driverName, functionName, pixelFormat);
+                return asynError;
         }
-
-printf("Converting image to format 0x%x\n", convertedFormat);
-        try {
-            ImagePtr pConvertedImage = pImage_->Convert(convertedFormat);
-            pImage_->Release();
-            pImage_ = pConvertedImage;
+    
+        if (numColors == 1) {
+            nDims = 2;
+            dims[0] = nCols;
+            dims[1] = nRows;
+        } else {
+            nDims = 3;
+            dims[0] = 3;
+            dims[1] = nCols;
+            dims[2] = nRows;
         }
-        catch (Spinnaker::Exception &e) {
-    	       asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-    	           "%s::%s exception %s\n",
-    	       driverName, functionName, e.what());
-        }
-    }
-
-    pixelFormat = pImage_->GetPixelFormat();
-printf("After conversion image format=0x%x\n", pixelFormat);
-    pixelFormatName = pImage_->GetPixelFormatName();
-    switch (pixelFormat) {
-        case PixelFormat_Mono8:
-        case PixelFormat_Raw8:
-            dataType = NDUInt8;
-            colorMode = NDColorModeMono;
-            numColors = 1;
-            pixelSize = 1;
-            break;
-
-        case PixelFormat_RGB8:
-            dataType = NDUInt8;
-            colorMode = NDColorModeRGB1;
-            numColors = 3;
-            pixelSize = 1;
-            break;
-
-        case PixelFormat_Mono16:
-        case PixelFormat_Raw16:
-            dataType = NDUInt16;
-            colorMode = NDColorModeMono;
-            numColors = 1;
-            pixelSize = 2;
-            break;
-
-        case PixelFormat_RGB16:
-            dataType = NDUInt16;
-            colorMode = NDColorModeRGB1;
-            numColors = 3;
-            pixelSize = 2;
-            break;
-
-        default:
+        dataSize = dims[0] * dims[1] * pixelSize;
+        if (nDims == 3) dataSize *= dims[2];
+        dataSizePG = pImage_->GetBufferSize();
+        // Note, we should be testing for equality here.  However, there appears to be a bug in the
+        // SDK when images are converted.  When converting from raw8 to mono8, for example, the
+        // size returned by GetDataSize is the size of an RGB8 image, not a mono8 image.
+        if (dataSize > dataSizePG) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s: unsupported pixel format=0x%x\n",
-                driverName, functionName, pixelFormat);
+                "%s:%s: data size mismatch: calculated=%lu, reported=%lu\n",
+                driverName, functionName, (long)dataSize, (long)dataSizePG);
+            //return asynError;
+        }
+        setIntegerParam(NDArraySizeX, (int)nCols);
+        setIntegerParam(NDArraySizeY, (int)nRows);
+        setIntegerParam(NDArraySize, (int)dataSize);
+        setIntegerParam(NDDataType,dataType);
+        if (nDims == 3) {
+            colorMode = NDColorModeRGB1;
+        } else {
+            // If the color mode is currently set to Bayer leave it alone
+            getIntegerParam(NDColorMode, (int *)&colorMode);
+            if (colorMode != NDColorModeBayer) colorMode = NDColorModeMono;
+        }
+        setIntegerParam(NDColorMode, colorMode);
+    
+        pRaw_ = pNDArrayPool->alloc(nDims, dims, dataType, 0, NULL);
+        if (!pRaw_) {
+            // If we didn't get a valid buffer from the NDArrayPool we must abort
+            // the acquisition as we have nowhere to dump the data...
+            setIntegerParam(ADStatus, ADStatusAborting);
+            callParamCallbacks();
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s::%s [%s] ERROR: Serious problem: not enough buffers left! Aborting acquisition!\n",
+                driverName, functionName, portName);
+            setIntegerParam(ADAcquire, 0);
+            return(asynError);
+        }
+        pData = pImage_->GetData();
+        if (pData) {
+            memcpy(pRaw_->pData, pData, dataSize);
+        } else {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s::%s [%s] ERROR: pData is NULL!\n",
+                driverName, functionName, portName);
             return asynError;
-    }
-
-    if (numColors == 1) {
-        nDims = 2;
-        dims[0] = nCols;
-        dims[1] = nRows;
-    } else {
-        nDims = 3;
-        dims[0] = 3;
-        dims[1] = nCols;
-        dims[2] = nRows;
-    }
-    dataSize = dims[0] * dims[1] * pixelSize;
-    if (nDims == 3) dataSize *= dims[2];
-    dataSizePG = pImage_->GetBufferSize();
-    // Note, we should be testing for equality here.  However, there appears to be a bug in the
-    // SDK when images are converted.  When converting from raw8 to mono8, for example, the
-    // size returned by GetDataSize is the size of an RGB8 image, not a mono8 image.
-    if (dataSize > dataSizePG) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s: data size mismatch: calculated=%lu, reported=%lu\n",
-            driverName, functionName, (long)dataSize, (long)dataSizePG);
-        //return asynError;
-    }
-    setIntegerParam(NDArraySizeX, (int)nCols);
-    setIntegerParam(NDArraySizeY, (int)nRows);
-    setIntegerParam(NDArraySize, (int)dataSize);
-    setIntegerParam(NDDataType,dataType);
-    if (nDims == 3) {
-        colorMode = NDColorModeRGB1;
-    } else {
-        // If the color mode is currently set to Bayer leave it alone
-        getIntegerParam(NDColorMode, (int *)&colorMode);
-        if (colorMode != NDColorModeBayer) colorMode = NDColorModeMono;
-    }
-    setIntegerParam(NDColorMode, colorMode);
-
-    pRaw_ = pNDArrayPool->alloc(nDims, dims, dataType, 0, NULL);
-    if (!pRaw_) {
-        // If we didn't get a valid buffer from the NDArrayPool we must abort
-        // the acquisition as we have nowhere to dump the data...
-        setIntegerParam(ADStatus, ADStatusAborting);
+        }
+        pImage_->Release();
+    
+        // Put the frame number into the buffer
+        pRaw_->uniqueId = (int)pImage_->GetFrameID();
+    //    getIntegerParam(PGTimeStampMode, &timeStampMode);
+        updateTimeStamp(&pRaw_->epicsTS);
+        // Set the timestamps in the buffer
+    //    switch (timeStampMode) {
+    //        case TimeStampCamera:
+    //             pRaw_->timeStamp = timeStamp / 1e9;
+    //             break;
+    //        case TimeStampEPICS:
+                pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
+    //            break;
+    //        case TimeStampHybrid:
+    //            // For now we just use EPICS time
+    //            pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
+    //            break;
+    //   }
+        
+        // Get any attributes that have been defined for this driver        
+        getAttributes(pRaw_->pAttributeList);
+        
+        // Change the status to be readout...
+        setIntegerParam(ADStatus, ADStatusReadout);
         callParamCallbacks();
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s [%s] ERROR: Serious problem: not enough buffers left! Aborting acquisition!\n",
-            driverName, functionName, portName);
-        setIntegerParam(ADAcquire, 0);
-        return(asynError);
-    }
-    pData = pImage_->GetData();
-    if (pData) {
-        memcpy(pRaw_->pData, pData, dataSize);
-    } else {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s [%s] ERROR: pData is NULL!\n",
-            driverName, functionName, portName);
-        return asynError;
-    }
-    pImage_->Release();
-
-    // Put the frame number into the buffer
-    pRaw_->uniqueId = (int)pImage_->GetFrameID();
-//    getIntegerParam(PGTimeStampMode, &timeStampMode);
-    updateTimeStamp(&pRaw_->epicsTS);
-    // Set the timestamps in the buffer
-//    switch (timeStampMode) {
-//        case TimeStampCamera:
-//             pRaw_->timeStamp = timeStamp / 1e9;
-//             break;
-//        case TimeStampEPICS:
-            pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
-//            break;
-//        case TimeStampHybrid:
-//            // For now we just use EPICS time
-//            pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
-//            break;
-//   }
     
-    // Get any attributes that have been defined for this driver        
-    getAttributes(pRaw_->pAttributeList);
-    
-    // Change the status to be readout...
-    setIntegerParam(ADStatus, ADStatusReadout);
-    callParamCallbacks();
-
-    pRaw_->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
-    return status;
-  }
-    catch (Spinnaker::Exception &e)
-    {
-    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-    	    "%s::%s exception %s\n",
-    	    driverName, functionName, e.what());
-    	return asynError;
+        pRaw_->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
+        return status;
+    }
+    catch (Spinnaker::Exception &e) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+          "%s::%s exception %s\n",
+          driverName, functionName, e.what());
+      return asynError;
     }
 }
 
@@ -1381,7 +1373,7 @@ ADSpinnaker::SPProperty* ADSpinnaker::findProperty(int asynParam)
     std::map<int, SPProperty*>::iterator it;
     it = propertyList_.find(asynParam);
     if (it == propertyList_.end()) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING, 
             "%s::%s cannot find property with param=%d\n",
             driverName, functionName, asynParam);
         return 0;
@@ -1392,12 +1384,18 @@ ADSpinnaker::SPProperty* ADSpinnaker::findProperty(int asynParam)
 asynStatus ADSpinnaker::getSPProperty(int asynParam, void *pValue, bool setParam)
 {
     SPProperty* pElement = findProperty(asynParam);
+    if (pElement == 0) {
+        return asynError;
+    }
     return pElement->getValue(pValue, setParam);
 }
 
 asynStatus ADSpinnaker::setSPProperty(int asynParam, void *pValue, void *pReadbackValue, bool setParam)
 {
     SPProperty* pElement = findProperty(asynParam);
+    if (pElement == 0) {
+        return asynError;
+    }
     return pElement->setValue(pValue, pReadbackValue, setParam);
 }
 
@@ -1410,6 +1408,7 @@ epicsTimeGetCurrent(&tStart);
     std::map<int, SPProperty*>::iterator it;
     for (it=propertyList_.begin(); it != propertyList_.end(); it++) {
         pProperty = it->second;
+        pProperty->getValue();
         pProperty->update();
     }
 epicsTimeGetCurrent(&tEnd);
@@ -1458,18 +1457,10 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
     } 
     else if (function < FIRST_SP_PARAM) {
         // If this parameter belongs to a base class call its method
-         status = ADDriver::writeInt32(pasynUser, value);
+        status = ADDriver::writeInt32(pasynUser, value);
     } 
     else {
-printf("%s::%s calling setSPProperty function=%s\n");
-        status = setSPProperty(function, &value);
-    }
-    // When some parameters are changed they can cause others to change limits, enum choices, etc.
-    if ((function == SPFrameRateAuto) ||
-        (function == SPGainAuto) ||
-        (function == SPVideoMode) ||
-        (function == ADTriggerMode) ||
-        (function == SPTriggerSource)) {
+        setSPProperty(function, &value);
         updateSPProperties();
     }
 
@@ -1497,13 +1488,13 @@ asynStatus ADSpinnaker::writeFloat64( asynUser *pasynUser, epicsFloat64 value)
     // Set the value in the parameter library.  This may change later but that's OK
     status = setDoubleParam(function, value);
 
+    setSPProperty(function);
+    updateSPProperties();
+
     if (function < FIRST_SP_PARAM) {
         // If this parameter belongs to a base class call its method
         status = ADDriver::writeFloat64(pasynUser, value);
     } 
-    else {
-        status = setSPProperty(function, &value);
-    }
     
     asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
         "%s::%s function=%d, value=%f, status=%d\n",
@@ -1567,12 +1558,11 @@ asynStatus ADSpinnaker::readEnum(asynUser *pasynUser, char *strings[], int value
         }
     }
 
-    catch (Spinnaker::Exception &e)
-    {
-    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-    	    "%s::%s node %s exception %s\n",
-    	    driverName, functionName, nodeName.c_str(), e.what());
-    	return asynError;
+    catch (Spinnaker::Exception &e) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+          "%s::%s node %s exception %s\n",
+          driverName, functionName, nodeName.c_str(), e.what());
+      return asynError;
     }
     return asynSuccess;   
 }
@@ -1623,12 +1613,11 @@ printf("%s::%s calling BeginAcquisition()\n", driverName, functionName);
         pCamera_->BeginAcquisition();
         epicsEventSignal(startEventId_);
     }
-    catch (Spinnaker::Exception &e)
-    {
-    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-    	    "%s::%s exception %s\n",
-    	    driverName, functionName, e.what());
-    	return asynError;
+    catch (Spinnaker::Exception &e) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+          "%s::%s exception %s\n",
+          driverName, functionName, e.what());
+      return asynError;
     }
     return asynSuccess;
 }
@@ -1653,13 +1642,15 @@ printf("Waiting for ADStatusIdle\n");
     printf("%s::%s calling EndAcquisition()\n", driverName, functionName);
     try {
         pCamera_->EndAcquisition();
+        // Need to empty the message queue it could have some images in it
+        while(pCallbackMsgQ_->tryReceive(&pImage_, sizeof(pImage_)) != -1) {
+        }
     }
-    catch (Spinnaker::Exception &e)
-    {
-    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-    	    "%s::%s exception %s\n",
-    	    driverName, functionName, e.what());
-    	return asynError;
+    catch (Spinnaker::Exception &e) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+          "%s::%s exception %s\n",
+          driverName, functionName, e.what());
+      return asynError;
     }
     return asynSuccess;
 }
@@ -1667,23 +1658,23 @@ printf("Waiting for ADStatusIdle\n");
 
 asynStatus ADSpinnaker::readStatus()
 {
-    //static const char *functionName = "readStatus";
+    static const char *functionName = "readStatus";
 
-    getSPProperty(ADTemperatureActual);
- 
- /*
-    error = pCameraBase_->GetStats(pCameraStats_);
-    if (checkError(error, functionName, "GetStats")) 
+    try {
+        const TransportLayerStream& camInfo = pCamera_->TLStream;
+        getSPProperty(ADTemperatureActual);
+        setIntegerParam(SPBufferUnderrunCount, (int)camInfo.StreamBufferUnderrunCount.GetValue());
+        setIntegerParam(SPFailedBufferCount,   (int)camInfo.StreamFailedBufferCount.GetValue());
+        if (camInfo.StreamType.GetIntValue() == StreamType_GEV) {
+            setIntegerParam(SPFailedPacketCount,   (int)camInfo.GevFailedPacketCount.GetValue());
+        }
+    }
+    catch (Spinnaker::Exception &e) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s exception %s\n",
+            driverName, functionName, e.what());
         return asynError;
-    asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-        "%s::%s calling CameraBase::GetStats, pCameraBase_=%p, pCameraStats_=%p, pCameraStats_->temperature=%d\n",
-        driverName, functionName, pCameraBase_, pCameraStats_, pCameraStats_->temperature);
-    setIntegerParam(PGCorruptFrames,    pCameraStats_->imageCorrupt);
-    setIntegerParam(PGDriverDropped,    pCameraStats_->imageDriverDropped);
-    if (pCameraStats_->imageXmitFailed == 0x80000000) pCameraStats_->imageXmitFailed = 0;
-    setIntegerParam(PGTransmitFailed,   pCameraStats_->imageXmitFailed);
-    setIntegerParam(PGDroppedFrames,    pCameraStats_->imageDropped);
-*/    
+    }
     callParamCallbacks();
     return asynSuccess;
 }
@@ -1691,9 +1682,9 @@ asynStatus ADSpinnaker::readStatus()
 // This helper function deals with output indentation, of which there is a lot.
 void indent(FILE *fp, unsigned int level)
 {
-	for (unsigned int i=0; i<level; i++) {
-		fprintf(fp, "   ");
-	}
+  for (unsigned int i=0; i<level; i++) {
+    fprintf(fp, "   ");
+  }
 }
 
 gcstring ADSpinnaker::getValueAsString(INodeMap *pNodeMap, gcstring nodeName, gcstring & displayName)
@@ -1705,49 +1696,49 @@ gcstring ADSpinnaker::getValueAsString(INodeMap *pNodeMap, gcstring nodeName, gc
         CNodePtr pBase = (CNodePtr)pNodeMap->GetNode(nodeName);
         if (IsAvailable(pBase) && IsReadable(pBase)) {
             displayName = pBase->GetDisplayName();
-    				switch (pBase->GetPrincipalInterfaceType()) {
-        				case intfIString: {
-                		CStringPtr pNode = static_cast<CStringPtr>(pBase);
-                		valueString = pNode->GetValue();
-         					  break;
+            switch (pBase->GetPrincipalInterfaceType()) {
+                case intfIString: {
+                    CStringPtr pNode = static_cast<CStringPtr>(pBase);
+                    valueString = pNode->GetValue();
+                     break;
                     }
-        				case  intfIInteger: {
-                		CIntegerPtr pNode = static_cast<CIntegerPtr>(pBase);
-                		valueString = pNode->ToString();
-        					  break; 
-        					  }
+                case  intfIInteger: {
+                    CIntegerPtr pNode = static_cast<CIntegerPtr>(pBase);
+                    valueString = pNode->ToString();
+                    break; 
+                    }
         
-        				case intfIFloat: {
-                		CFloatPtr pNode = static_cast<CFloatPtr>(pBase);
-                		valueString = pNode->ToString();
-        					  break;
-        					  }
-        				case intfIBoolean: {
-                		CBooleanPtr pNode = static_cast<CBooleanPtr>(pBase);
-                		valueString = pNode->ToString();
-        					  break;
+                case intfIFloat: {
+                    CFloatPtr pNode = static_cast<CFloatPtr>(pBase);
+                    valueString = pNode->ToString();
+                    break;
                     }
-        				case intfICommand: {
-                		CCommandPtr pNode = static_cast<CCommandPtr>(pBase);
+                case intfIBoolean: {
+                    CBooleanPtr pNode = static_cast<CBooleanPtr>(pBase);
+                    valueString = pNode->ToString();
+                    break;
+                    }
+                case intfICommand: {
+                    CCommandPtr pNode = static_cast<CCommandPtr>(pBase);
                     valueString = pNode->GetToolTip();
-        					  break;
+                    break;
                     }
-        				case intfIEnumeration: {
-                		CEnumerationPtr pNode = static_cast<CEnumerationPtr>(pBase);
-        		        CEnumEntryPtr pEntry = pNode->GetCurrentEntry();
-                		valueString = pEntry->GetSymbolic();
-        					  break;
-        					 }
-        				default:
-        				   break; 
-    				}
-    	  }
+                case intfIEnumeration: {
+                    CEnumerationPtr pNode = static_cast<CEnumerationPtr>(pBase);
+                    CEnumEntryPtr pEntry = pNode->GetCurrentEntry();
+                    valueString = pEntry->GetSymbolic();
+                    break;
+                   }
+                default:
+                   break; 
+            }
+        }
     } 
     catch (Spinnaker::Exception &e) {
-    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-    	    "%s::%s node %s exception %s\n",
-    	    driverName, functionName, nodeName.c_str(), e.what());
-    	valueString = "Value not available";
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+          "%s::%s node %s exception %s\n",
+          driverName, functionName, nodeName.c_str(), e.what());
+      valueString = "Value not available";
     }
     return valueString;
 }
@@ -1757,8 +1748,8 @@ void ADSpinnaker::reportNode(FILE *fp, INodeMap *pNodeMap, gcstring nodeName, in
     gcstring displayName;
     gcstring value = getValueAsString(pNodeMap, nodeName, displayName);
     
- 		indent(fp, level);
- 		fprintf(fp, "%s (%s):%s\n", displayName.c_str(), nodeName.c_str(), value.c_str());
+     indent(fp, level);
+     fprintf(fp, "%s (%s):%s\n", displayName.c_str(), nodeName.c_str(), value.c_str());
 }
 
 
@@ -1771,13 +1762,7 @@ void ADSpinnaker::reportNode(FILE *fp, INodeMap *pNodeMap, gcstring nodeName, in
 void ADSpinnaker::report(FILE *fp, int details)
 {
     int numCameras;
-//    int mode, rate;
-//    int source;
     int i;
-//    asynStatus status;
-//    bool supported;
-//    int property;
-//    int pixelFormatIndex;
     static const char *functionName = "report";
 
     try {    
@@ -1787,7 +1772,7 @@ void ADSpinnaker::report(FILE *fp, int details)
         for (i=0; i<numCameras; i++) {
             CameraPtr pCamera;
             pCamera = camList_.GetByIndex(i);
-    		    INodeMap *pNodeMap = &pCamera->GetTLDeviceNodeMap();
+            INodeMap *pNodeMap = &pCamera->GetTLDeviceNodeMap();
     
             fprintf(fp, "Camera %d\n", i);
             reportNode(fp, pNodeMap, "DeviceVendorName", 1);
@@ -1810,23 +1795,12 @@ void ADSpinnaker::report(FILE *fp, int details)
             fprintf(fp, "          value: %s\n", value.c_str());
         }
     }
-    catch (Spinnaker::Exception &e)
-    {
-    	asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-    	    "%s::%s exception %s\n",
-    	    driverName, functionName, e.what());
+    catch (Spinnaker::Exception &e) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+          "%s::%s exception %s\n",
+          driverName, functionName, e.what());
     }
     
-/*    
-    if (pCamera_) {
-
-    if (details < 1) goto done;
-    
-    if (pCamera_) {
-        VideoMode videoMode;
-        FrameRate frameRate;
-
-*/          
     ADDriver::report(fp, details);
     return;
 }
