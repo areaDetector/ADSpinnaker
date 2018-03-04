@@ -167,7 +167,7 @@ rectangle {
 		x=360
 		y=205
 		width=350
-		height=450
+		height=475
 	}
 	"basic attribute" {
 		clr=14
@@ -2284,7 +2284,7 @@ text {
 }
 text {
 	object {
-		x=395
+		x=405
 		y=575
 		width=100
 		height=20
@@ -2297,7 +2297,7 @@ text {
 }
 menu {
 	object {
-		x=500
+		x=510
 		y=575
 		width=100
 		height=20
@@ -2310,97 +2310,13 @@ menu {
 }
 "text update" {
 	object {
-		x=605
+		x=615
 		y=576
-		width=100
+		width=80
 		height=18
 	}
 	monitor {
 		chan="$(P)$(R)VideoMode_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=405
-		y=625
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Timestamp"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=501
-		y=626
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TimeStampMode"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=586
-		y=626
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TimeStampMode_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=385
-		y=600
-		width=110
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Convert raw"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=501
-		y=601
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ConvertPixelFormat"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=586
-		y=601
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)ConvertPixelFormat_RBV"
 		clr=54
 		bclr=4
 	}
@@ -2434,6 +2350,132 @@ text {
 		bclr=4
 	}
 	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=415
+		y=650
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Timestamp"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=511
+		y=651
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TimeStampMode"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=651
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TimeStampMode_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=365
+		y=625
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Convert format"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=511
+		y=626
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ConvertPixelFormat"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=626
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ConvertPixelFormat_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=385
+		y=600
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pixel format"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=511
+		y=601
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PixelFormat"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=601
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PixelFormat_RBV"
+		clr=54
+		bclr=4
+	}
 	format="string"
 	limits {
 	}
