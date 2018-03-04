@@ -101,6 +101,12 @@ dbLoadRecords("$(ADSPINNAKER)/db/spinnakerFloatProp.template", "P=$(PREFIX),R=ca
 # Software trigger
 dbLoadRecords("$(ADSPINNAKER)/db/spinnakerCmdProp.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=SoftwareTrigger,PN=SP_SOFTWARE_TRIGGER")
 
+# Transport diagnostics
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerIntReadback.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=TransmitFailureCount,PN=SP_TRANSMIT_FAILURE_COUNT")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerIntReadback.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=BufferUnderrunCount, PN=SP_BUFFER_UNDERRUN_COUNT")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerIntReadback.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=FailedBufferCount,   PN=SP_FAILED_BUFFER_COUNT")
+dbLoadRecords("$(ADSPINNAKER)/db/spinnakerIntReadback.template", "P=$(PREFIX),R=cam1:,PORT=$(PORT),PROP=FailedPacketCount,   PN=SP_FAILED_PACKET_COUNT")
+
 # Create a standard arrays plugin
 NDStdArraysConfigure("Image1", 5, 0, "$(PORT)", 0, 0)
 # Use this line for 8-bit data only
