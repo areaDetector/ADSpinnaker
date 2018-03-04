@@ -941,7 +941,7 @@ void ADSpinnaker::shutdown(void)
             delete pImage_;
         }
         pCamera_->DeInit();
-        pCamera_ = NULL;
+        pCamera_ = 0;
         camList_.Clear();
         system_->ReleaseInstance();
     }
