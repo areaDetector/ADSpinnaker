@@ -12,3 +12,11 @@ record(bo, $(P)$(R)ReadStatus) {
   field(SDIS, "$(P)$(R)Acquire NPP NMS")
   field(DISV, "1")
 }
+
+# The Point Grey cameras use FrameRate rather than AcquirePeriod.  Make AcquirePeriod slave
+# to FrameRate and disable PINI so only FrameRate is restored from autosave
+record(ao, "$(P)$(R)AcquirePeriod")
+{
+   field(PINI, "NO")
+   info(asyn:READBACK, "1")
+}
