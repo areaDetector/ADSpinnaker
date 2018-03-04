@@ -792,6 +792,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     cameraId_(cameraId), memoryChannel_(memoryChannel), exiting_(0), pRaw_(NULL)
 {
     static const char *functionName = "ADSpinnaker";
+    epicsInt32 iValue;
     asynStatus status;
     
     if (traceMask == 0) traceMask = ASYN_TRACE_ERROR;
@@ -887,10 +888,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
 
     updateSPProperties();
 
-    report(stdout, 1);
-
-    epicsInt32 iValue;
-    
     /* Set initial values of some parameters */
     setIntegerParam(NDDataType, NDUInt8);
     setIntegerParam(NDColorMode, NDColorModeMono);
@@ -901,10 +898,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     setStringParam(ADStringFromServer, "<not used by driver>");
     setIntegerParam(SPTriggerSource, 0);
 
-    getSPProperty(ADSerialNumber);
-    getSPProperty(ADFirmwareVersion);
-    getSPProperty(ADManufacturer);
-    getSPProperty(ADModel);
     getSPProperty(ADMaxSizeX, &iValue);
     setIntegerParam(ADSizeX, iValue);
     getSPProperty(ADMaxSizeY, &iValue);
@@ -937,25 +930,19 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
 void ADSpinnaker::shutdown(void)
 {
     static const char *functionName = "shutdown";
-    exiting_ = 1;
     
     lock();
+    exiting_ = 1;
     try {
-printf("shutdown, calling UnRegisterEvent()\n");
         pCamera_->UnregisterEvent(*pImageEventHandler_);
-printf("shutdown, deleting pImageEventHandler\n");
         delete pImageEventHandler_;
-printf("shutdown, setting pNodeMap=0\n");
         pNodeMap_ = 0;
         if (pImage_ != 0) {
-printf("shutdown, deleting pImage\n");
             delete pImage_;
         }
-printf("shutdown, calling pCamera_->DeInit()\n");
         pCamera_->DeInit();
-printf("shutdown, calling camList_.Clear()\n");
+        pCamera_ = NULL;
         camList_.Clear();
-printf("shutdown, calling system_->ReleaseInstance()\n");
         system_->ReleaseInstance();
     }
     catch (Spinnaker::Exception &e) {
@@ -1403,16 +1390,12 @@ asynStatus ADSpinnaker::updateSPProperties()
 {
     //static const char *functionName = "updateSPProperties";
     SPProperty *pProperty;
-epicsTimeStamp tStart, tEnd;
-epicsTimeGetCurrent(&tStart);
-    std::map<int, SPProperty*>::iterator it;
+printf    std::map<int, SPProperty*>::iterator it;
     for (it=propertyList_.begin(); it != propertyList_.end(); it++) {
         pProperty = it->second;
         pProperty->getValue();
         pProperty->update();
     }
-epicsTimeGetCurrent(&tEnd);
-printf("updateSPProperties, time=%f\n", epicsTimeDiffInSeconds(&tEnd, &tStart));
     return asynSuccess;
 }
 
@@ -1421,13 +1404,15 @@ printf("updateSPProperties, time=%f\n", epicsTimeDiffInSeconds(&tEnd, &tStart));
   * \param[in] value The value for this parameter 
   *
   * Takes action if the function code requires it.  ADAcquire, ADSizeX, and many other
-  * function codes make calls to the Firewire library from this function. */
+  * function codes make calls to the Spinnaker library from this function. */
 
 asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
 {
     asynStatus status = asynSuccess;
     int function = pasynUser->reason;
     static const char *functionName = "writeInt32";
+
+    if (exiting_) return asynSuccess;
 
     // Set the value in the parameter library.  This may change later but that's OK
     status = setIntegerParam(function, value);
@@ -1485,6 +1470,8 @@ asynStatus ADSpinnaker::writeFloat64( asynUser *pasynUser, epicsFloat64 value)
     int function = pasynUser->reason;
     static const char *functionName = "writeFloat64";
     
+    if (exiting_) return asynSuccess;
+
     // Set the value in the parameter library.  This may change later but that's OK
     status = setDoubleParam(function, value);
 
@@ -1553,7 +1540,6 @@ asynStatus ADSpinnaker::readEnum(asynUser *pasynUser, char *strings[], int value
                 values[*nIn] = (int)entryValue;
                 severities[*nIn] = 0;
                 (*nIn)++;
-            } else {
             }
         }
     }
@@ -1608,7 +1594,6 @@ asynStatus ADSpinnaker::startCapture()
     // Start the camera transmission...
     setIntegerParam(ADNumImagesCounter, 0);
     setShutter(1);
-printf("%s::%s calling BeginAcquisition()\n", driverName, functionName);
     try {
         pCamera_->BeginAcquisition();
         epicsEventSignal(startEventId_);
@@ -1634,12 +1619,10 @@ asynStatus ADSpinnaker::stopCapture()
     while (1) {
         getIntegerParam(ADStatus, &status);
         if (status == ADStatusIdle) break;
-printf("Waiting for ADStatusIdle\n");
         unlock();
         epicsThreadSleep(.1);
         lock();
     }
-    printf("%s::%s calling EndAcquisition()\n", driverName, functionName);
     try {
         pCamera_->EndAcquisition();
         // Need to empty the message queue it could have some images in it
