@@ -1390,7 +1390,7 @@ asynStatus ADSpinnaker::updateSPProperties()
 {
     //static const char *functionName = "updateSPProperties";
     SPProperty *pProperty;
-printf    std::map<int, SPProperty*>::iterator it;
+    std::map<int, SPProperty*>::iterator it;
     for (it=propertyList_.begin(); it != propertyList_.end(); it++) {
         pProperty = it->second;
         pProperty->getValue();
