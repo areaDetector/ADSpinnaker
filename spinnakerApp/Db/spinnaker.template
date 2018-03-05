@@ -8,9 +8,10 @@ include "ADBase.template"
 ## These are the records from ADBase.template that we modify
 ## Disable ReadStatus when acquisition is active because querying the detector 
 ## when it is streaming causes dropped frames
-record(bo, $(P)$(R)ReadStatus) {
-  field(SDIS, "$(P)$(R)Acquire NPP NMS")
-  field(DISV, "1")
+record(ao, "$(P)$(R)AcquirePeriod")
+{
+   field(PINI, "NO")
+   info(asyn:READBACK, "1")
 }
 
 # The Point Grey cameras use FrameRate rather than AcquirePeriod.  Make AcquirePeriod slave
@@ -19,4 +20,40 @@ record(ao, "$(P)$(R)AcquirePeriod")
 {
    field(PINI, "NO")
    info(asyn:READBACK, "1")
+}
+
+record(bo, "$(P)$(R)TimeStampMode")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT) 0)SP_TIME_STAMP_MODE")
+   field(ZNAM, "Camera")
+   field(ONAM, "EPICS")
+}
+
+record(bi, "$(P)$(R)TimeStampMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT) 0)SP_TIME_STAMP_MODE")
+   field(ZNAM, "Camera")
+   field(ONAM, "EPICS")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)UniqueIdMode")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT) 0)SP_UNIQUE_ID_MODE")
+   field(ZNAM, "Camera")
+   field(ONAM, "Driver")
+}
+
+record(bi, "$(P)$(R)UniqueIdMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT) 0)SP_UNIQUE_ID_MODE")
+   field(ZNAM, "Camera")
+   field(ONAM, "Driver")
+   field(SCAN, "I/O Intr")
 }
