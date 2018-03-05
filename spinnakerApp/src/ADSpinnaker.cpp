@@ -92,9 +92,14 @@ static const char *gigEPropertyTypeStrings[NUM_GIGE_PROPERTIES] = {
 
 typedef enum {
     TimeStampCamera,
-    TimeStampEPICS,
-    TimeStampHybrid
-} PGTimeStamp_t;
+    TimeStampEPICS
+} SPTimeStamp_t;
+
+typedef enum {
+    UniqueIdCamera,
+    UniqueIdDriver
+} SPUniqueId_t;
+
 
 typedef enum {
     SPConvertToEPICS,
@@ -176,6 +181,8 @@ protected:
     int SPBufferUnderrunCount;  // 28
     int SPFailedBufferCount;    // 29
     int SPFailedPacketCount;    // 30
+    int SPTimeStampMode;        // 31
+    int SPUniqueIdMode;         // 32
 
 //    int PGPacketSize;             /** Size of data packets from camera                (int32 write/read) */
 //    int PGPacketSizeActual;       /** Size of data packets from camera                (int32 write/read) */
@@ -183,7 +190,6 @@ protected:
 //    int PGPacketDelay;            /** Packet delay in usec from camera, GigE only     (int32 write/read) */
 //    int PGPacketDelayActual;      /** Packet delay in usec from camera, GigE only     (int32 read) */
 //    int PGBandwidth;              /** Bandwidth in MB/s                               (float64 read) */
-//    int PGTimeStampMode;          /** Time stamp mode (PGTimeStamp_t)                 (int32 write/read) */
 
 private:
     class SPProperty {
@@ -242,6 +248,7 @@ private:
     epicsEventId startEventId_;
     epicsMessageQueue *pCallbackMsgQ_;
     NDArray *pRaw_;
+    int uniqueId_;
 };
 
 ADSpinnaker::SPProperty::SPProperty(ADSpinnaker *pDrvIn, int asynParamIn, const char *nodeNameIn, SPPropertyType_t propertyTypeIn)
@@ -789,7 +796,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     : ADDriver(portName, 1, 0, maxBuffers, maxMemory,
             asynEnumMask, asynEnumMask,
             ASYN_CANBLOCK | ASYN_MULTIDEVICE, 1, priority, stackSize),
-    cameraId_(cameraId), memoryChannel_(memoryChannel), exiting_(0), pRaw_(NULL)
+    cameraId_(cameraId), memoryChannel_(memoryChannel), exiting_(0), pRaw_(NULL), uniqueId_(0)
 {
     static const char *functionName = "ADSpinnaker";
     epicsInt32 iValue;
@@ -806,7 +813,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createParam(PGPacketDelayString,            asynParamInt32,   &PGPacketDelay);
     createParam(PGPacketDelayActualString,      asynParamInt32,   &PGPacketDelayActual);
     createParam(PGBandwidthString,              asynParamFloat64, &PGBandwidth);
-    createParam(PGTimeStampModeString,          asynParamInt32,   &PGTimeStampMode);
 */
     // Retrieve singleton reference to system object
     system_ = System::GetInstance();
@@ -885,6 +891,8 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createParam("SP_BUFFER_UNDERRUN_COUNT",    asynParamInt32,   &SPBufferUnderrunCount);
     createParam("SP_FAILED_BUFFER_COUNT",      asynParamInt32,   &SPFailedBufferCount);
     createParam("SP_FAILED_PACKET_COUNT",      asynParamInt32,   &SPFailedPacketCount);
+    createParam("SP_TIME_STAMP_MODE",          asynParamInt32,   &SPTimeStampMode);
+    createParam("SP_UNIQUE_ID_MODE",           asynParamInt32,   &SPUniqueIdMode);
 
     updateSPProperties();
 
@@ -1131,6 +1139,8 @@ asynStatus ADSpinnaker::grabImage()
     size_t nRows, nCols;
     NDDataType_t dataType;
     NDColorMode_t colorMode;
+    int timeStampMode;
+    int uniqueIdMode;
     int convertPixelFormat;
     int numColors;
     size_t dims[3];
@@ -1319,22 +1329,22 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
         pImage_->Release();
     
         // Put the frame number into the buffer
-        pRaw_->uniqueId = (int)pImage_->GetFrameID();
-    //    getIntegerParam(PGTimeStampMode, &timeStampMode);
+        getIntegerParam(SPUniqueIdMode, &uniqueIdMode);
+        if (uniqueIdMode == UniqueIdCamera) {
+            pRaw_->uniqueId = (int)pImage_->GetFrameID();
+        } else {
+            pRaw_->uniqueId = uniqueId_;
+        }
+        uniqueId_++;
         updateTimeStamp(&pRaw_->epicsTS);
+        getIntegerParam(SPTimeStampMode, &timeStampMode);
         // Set the timestamps in the buffer
-    //    switch (timeStampMode) {
-    //        case TimeStampCamera:
-    //             pRaw_->timeStamp = timeStamp / 1e9;
-    //             break;
-    //        case TimeStampEPICS:
-                pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
-    //            break;
-    //        case TimeStampHybrid:
-    //            // For now we just use EPICS time
-    //            pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
-    //            break;
-    //   }
+        if (timeStampMode == TimeStampCamera) {
+            long long timeStamp = pImage_->GetTimeStamp();
+            pRaw_->timeStamp = timeStamp / 1e9;
+        } else {
+            pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
+        }
         
         // Get any attributes that have been defined for this driver        
         getAttributes(pRaw_->pAttributeList);
@@ -1347,10 +1357,10 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
         return status;
     }
     catch (Spinnaker::Exception &e) {
-      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-          "%s::%s exception %s\n",
-          driverName, functionName, e.what());
-      return asynError;
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s exception %s\n",
+            driverName, functionName, e.what());
+        return asynError;
     }
 }
 
