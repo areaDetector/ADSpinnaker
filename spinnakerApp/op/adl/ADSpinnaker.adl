@@ -167,7 +167,7 @@ rectangle {
 		x=360
 		y=205
 		width=350
-		height=475
+		height=500
 	}
 	"basic attribute" {
 		clr=14
@@ -2356,48 +2356,6 @@ text {
 }
 text {
 	object {
-		x=415
-		y=650
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Timestamp"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=511
-		y=651
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TimeStampMode"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=615
-		y=651
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TimeStampMode_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
 		x=365
 		y=625
 		width=140
@@ -2473,6 +2431,90 @@ menu {
 	}
 	monitor {
 		chan="$(P)$(R)PixelFormat_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=365
+		y=650
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Timestamp mode"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=511
+		y=651
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TimeStampMode"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=651
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TimeStampMode_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=365
+		y=675
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="UniqueId mode"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=511
+		y=676
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)UniqueIdMode"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=676
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)UniqueIdMode_RBV"
 		clr=54
 		bclr=4
 	}
