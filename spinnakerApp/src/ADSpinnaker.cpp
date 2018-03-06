@@ -117,10 +117,9 @@ public:
     ~ImageEventHandler() {}
   
     void OnImageEvent(ImagePtr image) {
-        static ImagePtr imageCopy;
-        imageCopy = image;
+        ImagePtr *imageCopy = new ImagePtr(image);
   
-        if (pMsgQ_->send(&imageCopy, sizeof(imageCopy)) != 0) {
+        if (pMsgQ_->send(imageCopy, sizeof(*imageCopy)) != 0) {
             printf("OnImageEvent error calling pMsgQ_->send()\n");
         }
     }
@@ -240,7 +239,6 @@ private:
     SystemPtr system_;
     CameraList camList_;
     CameraPtr pCamera_;
-    ImagePtr pImage_;
     ImageEventHandler *pImageEventHandler_;
     std::map<int, SPProperty*> propertyList_;
 
@@ -945,9 +943,6 @@ void ADSpinnaker::shutdown(void)
         pCamera_->UnregisterEvent(*pImageEventHandler_);
         delete pImageEventHandler_;
         pNodeMap_ = 0;
-        if (pImage_ != 0) {
-            delete pImage_;
-        }
         pCamera_->DeInit();
         pCamera_ = 0;
         camList_.Clear();
@@ -1150,14 +1145,15 @@ asynStatus ADSpinnaker::grabImage()
     size_t dataSize, dataSizePG;
     void *pData;
     int nDims;
+    ImagePtr pImage;
     static const char *functionName = "grabImage";
 
     try {
         while(1) {
             unlock();
-            int recvSize = pCallbackMsgQ_->receive(&pImage_, sizeof(pImage_), 0.1);
+            int recvSize = pCallbackMsgQ_->receive(&pImage, sizeof(pImage), 0.1);
             lock();
-            if (recvSize == sizeof(pImage_)) {
+            if (recvSize == sizeof(pImage)) {
                 break;
             } else if (recvSize == -1) {
                 // Timeout
@@ -1175,20 +1171,17 @@ asynStatus ADSpinnaker::grabImage()
                 return asynError;
             }
         }
-        imageStatus = pImage_->GetImageStatus();
+        imageStatus = pImage->GetImageStatus();
         if (imageStatus != IMAGE_NO_ERROR) {
-            asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s error GetImageStatus returned %d\n",
                 driverName, functionName, imageStatus);
-            pImage_->Release();
+            pImage->Release();
             return asynError;
         } 
-        nCols = pImage_->GetWidth();
-        nRows = pImage_->GetHeight();
+        nCols = pImage->GetWidth();
+        nRows = pImage->GetHeight();
      
-//    timeStamp = pImage_->GetTimeStamp();    
-//    pPGImage = pPGRawImage_;
-    
         // Convert the pixel format if requested
         getIntegerParam(SPConvertPixelFormat, &convertPixelFormat);
         if (convertPixelFormat != SPPixelConvertNone) {
@@ -1217,12 +1210,12 @@ asynStatus ADSpinnaker::grabImage()
                     break;
             }
     
-            pixelFormat = pImage_->GetPixelFormat();
+            pixelFormat = pImage->GetPixelFormat();
 printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, convertedFormat);
             try {
-                ImagePtr pConvertedImage = pImage_->Convert(convertedFormat);
-                pImage_->Release();
-                pImage_ = pConvertedImage;
+                ImagePtr pConvertedImage = pImage->Convert(convertedFormat);
+                pImage->Release();
+                pImage = pConvertedImage;
             }
             catch (Spinnaker::Exception &e) {
                  asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
@@ -1231,7 +1224,7 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
             }
         }
     
-        pixelFormat = pImage_->GetPixelFormat();
+        pixelFormat = pImage->GetPixelFormat();
         switch (pixelFormat) {
             case PixelFormat_Mono8:
             case PixelFormat_Raw8:
@@ -1282,7 +1275,7 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
         }
         dataSize = dims[0] * dims[1] * pixelSize;
         if (nDims == 3) dataSize *= dims[2];
-        dataSizePG = pImage_->GetBufferSize();
+        dataSizePG = pImage->GetBufferSize();
         // Note, we should be testing for equality here.  However, there appears to be a bug in the
         // SDK when images are converted.  When converting from raw8 to mono8, for example, the
         // size returned by GetDataSize is the size of an RGB8 image, not a mono8 image.
@@ -1317,7 +1310,7 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
             setIntegerParam(ADAcquire, 0);
             return(asynError);
         }
-        pData = pImage_->GetData();
+        pData = pImage->GetData();
         if (pData) {
             memcpy(pRaw_->pData, pData, dataSize);
         } else {
@@ -1326,12 +1319,11 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
                 driverName, functionName, portName);
             return asynError;
         }
-        pImage_->Release();
     
         // Put the frame number into the buffer
         getIntegerParam(SPUniqueIdMode, &uniqueIdMode);
         if (uniqueIdMode == UniqueIdCamera) {
-            pRaw_->uniqueId = (int)pImage_->GetFrameID();
+            pRaw_->uniqueId = (int)pImage->GetFrameID();
         } else {
             pRaw_->uniqueId = uniqueId_;
         }
@@ -1340,12 +1332,19 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
         getIntegerParam(SPTimeStampMode, &timeStampMode);
         // Set the timestamps in the buffer
         if (timeStampMode == TimeStampCamera) {
-            long long timeStamp = pImage_->GetTimeStamp();
+            long long timeStamp = pImage->GetTimeStamp();
             pRaw_->timeStamp = timeStamp / 1e9;
         } else {
             pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
         }
-        
+        try {
+            pImage->Release();
+        }
+        catch (Spinnaker::Exception &e) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s::%s exception %s\n",
+                driverName, functionName, e.what());
+        }
         // Get any attributes that have been defined for this driver        
         getAttributes(pRaw_->pAttributeList);
         
@@ -1635,8 +1634,9 @@ asynStatus ADSpinnaker::stopCapture()
     }
     try {
         pCamera_->EndAcquisition();
+        ImagePtr pImage;
         // Need to empty the message queue it could have some images in it
-        while(pCallbackMsgQ_->tryReceive(&pImage_, sizeof(pImage_)) != -1) {
+        while(pCallbackMsgQ_->tryReceive(&pImage, sizeof(pImage)) != -1) {
         }
     }
     catch (Spinnaker::Exception &e) {
