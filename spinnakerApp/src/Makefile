@@ -8,8 +8,13 @@ LIBRARY_IOC_Linux += ADSpinnaker
 
 LIB_SRCS += ADSpinnaker.cpp
 
-LIB_LIBS_WIN32 += Spinnaker_v140
-LIB_IBS_Linux  += Spinnaker
+ifeq (debug, $(findstring debug, $(T_A)))
+  LIB_LIBS_WIN32 += Spinnakerd_v140
+else
+  LIB_LIBS_WIN32 += Spinnaker_v140
+endif
+
+LIB_LIBS_Linux  += Spinnaker
 
 DBD += ADSpinnakerSupport.dbd
 
@@ -42,7 +47,11 @@ ImageFormatControl_SRCS += ImageFormatControl.cpp
 PROD_IOC_WIN32 += ChunkData
 ChunkData_SRCS += ChunkData.cpp
 
-PROD_LIBS_WIN32 += Spinnaker_v140
+ifeq (debug, $(findstring debug, $(T_A)))
+  PROD_LIBS_WIN32 += Spinnakerd_v140
+else
+  PROD_LIBS_WIN32 += Spinnaker_v140
+endif
 
 PROD_SYS_LIBS_Linux += Spinnaker
 PROD_SYS_LIBS_Linux += GCBase_gcc540_v3_0
