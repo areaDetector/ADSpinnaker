@@ -50,7 +50,6 @@ static const char *driverName = "ADSpinnaker";
 #define PGPacketDelayString           "PG_PACKET_DELAY"
 #define PGPacketDelayActualString     "PG_PACKET_DELAY_ACTUAL"
 #define PGBandwidthString             "PG_BANDWIDTH"
-#define PGTimeStampModeString         "PG_TIME_STAMP_MODE"
 */
 
 // Default packet delay in microseconds
@@ -117,9 +116,9 @@ public:
     ~ImageEventHandler() {}
   
     void OnImageEvent(ImagePtr image) {
-        ImagePtr *imageCopy = new ImagePtr(image);
+        ImagePtr *imagePtrAddr = new ImagePtr(image);
   
-        if (pMsgQ_->send(imageCopy, sizeof(*imageCopy)) != 0) {
+        if (pMsgQ_->send(&imagePtrAddr, sizeof(imagePtrAddr)) != 0) {
             printf("OnImageEvent error calling pMsgQ_->send()\n");
         }
     }
@@ -1146,14 +1145,15 @@ asynStatus ADSpinnaker::grabImage()
     void *pData;
     int nDims;
     ImagePtr pImage;
+    ImagePtr *imagePtrAddr=0;
     static const char *functionName = "grabImage";
 
     try {
         while(1) {
             unlock();
-            int recvSize = pCallbackMsgQ_->receive(&pImage, sizeof(pImage), 0.1);
+            int recvSize = pCallbackMsgQ_->receive(&imagePtrAddr, sizeof(imagePtrAddr), 0.1);
             lock();
-            if (recvSize == sizeof(pImage)) {
+            if (recvSize == sizeof(imagePtrAddr)) {
                 break;
             } else if (recvSize == -1) {
                 // Timeout
@@ -1171,6 +1171,9 @@ asynStatus ADSpinnaker::grabImage()
                 return asynError;
             }
         }
+        pImage = *imagePtrAddr;
+        // Delete the ImagePtr that was passed to us
+        delete imagePtrAddr;
         imageStatus = pImage->GetImageStatus();
         if (imageStatus != IMAGE_NO_ERROR) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -1470,8 +1473,7 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
   * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
   * \param[in] value The value for this parameter 
   *
-  * Takes action if the function code requires it.  The PGPropertyValueAbs
-  * function code makes calls to the Firewire library from this function. */
+  * Takes action if the function code requires it. */
 
 asynStatus ADSpinnaker::writeFloat64( asynUser *pasynUser, epicsFloat64 value)
 {
