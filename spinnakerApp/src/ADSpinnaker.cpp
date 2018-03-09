@@ -149,38 +149,42 @@ public:
     void shutdown();
 
 protected:
-    int SPVideoMode;            // 0
+    int SPVideoMode;
 #define FIRST_SP_PARAM SPVideoMode
-    int SPFrameRate;            // 1 
-    int SPFrameRateAuto;        // 2
-    int SPFrameRateEnable;      // 3
-    int SPExposureAuto;         // 5
-    int SPGainAuto;             // 7
-    int SPBlackLevel;           // 8
-    int SPBlackLevelAuto;       // 9
-    int SPBlackLevelBalanceAuto;// 10
-    int SPSaturation;           // 11
-    int SPSaturationEnable;     // 12
-    int SPGamma;                // 13
-    int SPGammaEnable;          // 14
-    int SPSharpening;           // 15
-    int SPSharpeningAuto;       // 16
-    int SPSharpeningEnable;     // 17
-    int SPPixelFormat;          // 18
-    int SPConvertPixelFormat;   // 19
-    int SPTriggerSource;        // 20
-    int SPTriggerActivation;    // 21
-    int SPTriggerDelay;         // 22
-    int SPSoftwareTrigger;      // 23
-    int SPBalanceRatio;         // 24
-    int SPBalanceRatioSelector; // 25
-    int SPBalanceWhiteAuto;     // 26
-    int SPTransmitFailureCount; // 27
-    int SPBufferUnderrunCount;  // 28
-    int SPFailedBufferCount;    // 29
-    int SPFailedPacketCount;    // 30
-    int SPTimeStampMode;        // 31
-    int SPUniqueIdMode;         // 32
+    int SPFrameRate;
+    int SPFrameRateAuto;
+    int SPFrameRateEnable;
+    int SPExposureAuto;
+    int SPGainAuto;
+    int SPBlackLevel;
+    int SPBlackLevelAuto;
+    int SPBlackLevelBalanceAuto;
+    int SPSaturation;
+    int SPSaturationEnable;
+    int SPGamma;
+    int SPGammaEnable;
+    int SPSharpening;
+    int SPSharpeningAuto;
+    int SPSharpeningEnable;
+    int SPPixelFormat;
+    int SPConvertPixelFormat;
+    int SPTriggerSource;
+    int SPTriggerActivation;
+    int SPTriggerDelay;
+    int SPTriggerDelayEnable;
+    int SPTriggerOverlap;
+    int SPExposureMode;
+    int SPSoftwareTrigger;
+    int SPBalanceRatio;
+    int SPBalanceRatioSelector;
+    int SPBalanceWhiteAuto;
+    int SPTransmitFailureCount;
+    int SPBufferUnderrunCount;
+    int SPFailedBufferCount;
+    int SPFailedPacketCount;
+    int SPTimeStampMode;
+    int SPUniqueIdMode;
+    int SPColorProcessEnabled;
 
 //    int PGPacketSize;             /** Size of data packets from camera                (int32 write/read) */
 //    int PGPacketSizeActual;       /** Size of data packets from camera                (int32 write/read) */
@@ -854,10 +858,10 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createSPProperty(&SPFrameRateAuto,         asynParamInt32,   "SP_FRAME_RATE_AUTO",           "AcquisitionFrameRateAuto");
     gcstring tempString = "AcquisitionFrameRateEnable";
     CNodePtr pBase = (CNodePtr)pNodeMap_->GetNode(tempString);
-    if (!IsAvailable(pBase)) {
+    if (!IsImplemented(pBase)) {
         tempString = "AcquisitionFrameRateEnabled";
         pBase = (CNodePtr)pNodeMap_->GetNode(tempString);
-        if (!IsAvailable(pBase)) {
+        if (!IsImplemented(pBase)) {
             printf("Error: neither AcquisitionFrameRateEnable nor AcquisitionFrameRateEnabled exist\n");
         }
     }
@@ -879,6 +883,9 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createSPProperty(&SPTriggerSource,         asynParamInt32,   "SP_TRIGGER_SOURCE",            "TriggerSource");
     createSPProperty(&SPTriggerActivation,     asynParamInt32,   "SP_TRIGGER_ACTIVATION",        "TriggerActivation");
     createSPProperty(&SPTriggerDelay,          asynParamFloat64, "SP_TRIGGER_DELAY",             "TriggerDelay");
+    createSPProperty(&SPTriggerDelayEnable,    asynParamInt32,   "SP_TRIGGER_DELAY_ENABLE",      "TriggerDelayEnabled");
+    createSPProperty(&SPTriggerOverlap,        asynParamInt32,   "SP_TRIGGER_OVERLAP",           "TriggerOverlap");
+    createSPProperty(&SPExposureMode,          asynParamInt32,   "SP_EXPOSURE_MODE",             "ExposureMode");
     createSPProperty(&SPSoftwareTrigger,       asynParamInt32,   "SP_SOFTWARE_TRIGGER",          "TriggerSoftware");
     createSPProperty(&SPBalanceRatio,          asynParamFloat64, "SP_WHITE_BALANCE_RATIO",       "BalanceRatio");
     createSPProperty(&SPBalanceRatioSelector,  asynParamInt32,   "SP_WHITE_BALANCE_SELECTOR",    "BalanceRatioSelector");
@@ -890,6 +897,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createParam("SP_FAILED_PACKET_COUNT",      asynParamInt32,   &SPFailedPacketCount);
     createParam("SP_TIME_STAMP_MODE",          asynParamInt32,   &SPTimeStampMode);
     createParam("SP_UNIQUE_ID_MODE",           asynParamInt32,   &SPUniqueIdMode);
+    createSPProperty(&SPColorProcessEnabled,   asynParamInt32,   "SP_COLOR_PROCESS_ENABLED",     "OnBoardColorProcessEnabled");
 
     updateSPProperties();
 
@@ -902,7 +910,8 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     setStringParam(ADStringToServer, "<not used by driver>");
     setStringParam(ADStringFromServer, "<not used by driver>");
     setIntegerParam(SPTriggerSource, 0);
-
+    setSPProperty(SPColorProcessEnabled, 0);
+    
     getSPProperty(ADMaxSizeX, &iValue);
     setIntegerParam(ADSizeX, iValue);
     getSPProperty(ADMaxSizeY, &iValue);
@@ -1429,6 +1438,11 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
     // Set the value in the parameter library.  This may change later but that's OK
     status = setIntegerParam(function, value);
 
+    if (function < FIRST_SP_PARAM) {
+        // If this parameter belongs to a base class call its method
+        status = ADDriver::writeInt32(pasynUser, value);
+    } 
+
     if (function == ADAcquire) {
         if (value) {
             // start acquisition
@@ -1451,10 +1465,6 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
     } 
     else if (function == ADReadStatus) {
         status = readStatus();
-    } 
-    else if (function < FIRST_SP_PARAM) {
-        // If this parameter belongs to a base class call its method
-        status = ADDriver::writeInt32(pasynUser, value);
     } 
     else {
         setSPProperty(function, &value);
