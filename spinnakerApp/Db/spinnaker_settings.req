@@ -23,6 +23,9 @@ $(P)$(R)ConvertPixelFormat
 $(P)$(R)TriggerSource
 $(P)$(R)TriggerActivation
 $(P)$(R)TriggerDelay
+$(P)$(R)TriggerDelayEnable
+$(P)$(R)TriggerOverlap
+$(P)$(R)ExposureMode
 
 #$(P)$(R)PacketSize
 #$(P)$(R)PacketDelay
