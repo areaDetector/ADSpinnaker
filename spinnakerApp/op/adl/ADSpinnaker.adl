@@ -2084,19 +2084,6 @@ menu {
 }
 text {
 	object {
-		x=770
-		y=410
-		width=60
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Source"
-	align="horiz. right"
-}
-text {
-	object {
 		x=750
 		y=510
 		width=80
@@ -2107,32 +2094,6 @@ text {
 	}
 	textix="Software"
 	align="horiz. right"
-}
-text {
-	object {
-		x=790
-		y=385
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Mode"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=835
-		y=385
-		width=110
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TriggerMode"
-		clr=14
-		bclr=51
-	}
 }
 "text update" {
 	object {
@@ -2151,35 +2112,6 @@ menu {
 	limits {
 	}
 }
-menu {
-	object {
-		x=835
-		y=409
-		width=110
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TriggerSource"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=950
-		y=410
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TriggerSource_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
 "message button" {
 	object {
 		x=835
@@ -2194,65 +2126,6 @@ menu {
 	}
 	label="Trigger"
 	press_msg="1"
-}
-"text entry" {
-	object {
-		x=835
-		y=457
-		width=110
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TriggerDelay"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=780
-		y=460
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Delay"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=950
-		y=458
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TriggerDelay_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=950
-		y=386
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TriggerMode_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
 }
 text {
 	object {
@@ -2515,6 +2388,217 @@ menu {
 	}
 	monitor {
 		chan="$(P)$(R)UniqueIdMode_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=790
+		y=385
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mode"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=835
+		y=385
+		width=110
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerMode"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=950
+		y=386
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerMode_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=770
+		y=409
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Source"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=835
+		y=409
+		width=110
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerSource"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=950
+		y=410
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerSource_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=835
+		y=434
+		width=110
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerDelay"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=780
+		y=434
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Delay"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=950
+		y=435
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerDelay_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=770
+		y=460
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Overlap"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=835
+		y=460
+		width=110
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerOverlap"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=950
+		y=461
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerOverlap_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=770
+		y=485
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Exp. mode"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=835
+		y=485
+		width=110
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExposureMode"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=950
+		y=486
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExposureMode_RBV"
 		clr=54
 		bclr=4
 	}

@@ -5,10 +5,10 @@ file {
 }
 display {
 	object {
-		x=154
-		y=77
+		x=301
+		y=81
 		width=1035
-		height=320
+		height=370
 	}
 	clr=14
 	bclr=4
@@ -321,19 +321,6 @@ text {
 	textix="Saturation"
 	align="horiz. right"
 }
-text {
-	object {
-		x=135
-		y=240
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Gamma"
-	align="horiz. right"
-}
 "text update" {
 	object {
 		x=295
@@ -350,22 +337,6 @@ text {
 	limits {
 	}
 }
-"text update" {
-	object {
-		x=295
-		y=240
-		width=100
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)GammaEnable_RBV"
-		clr=53
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
 menu {
 	object {
 		x=190
@@ -375,19 +346,6 @@ menu {
 	}
 	control {
 		chan="$(P)$(R)SaturationEnable"
-		clr=14
-		bclr=51
-	}
-}
-menu {
-	object {
-		x=190
-		y=240
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)GammaEnable"
 		clr=14
 		bclr=51
 	}
@@ -456,70 +414,6 @@ valuator {
 	limits {
 	}
 }
-valuator {
-	object {
-		x=690
-		y=240
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)Gamma"
-		clr=14
-		bclr=51
-	}
-	dPrecision=1.000000
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=795
-		y=240
-		width=75
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)Gamma_RBV"
-		clr=53
-		bclr=4
-	}
-	align="horiz. right"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=875
-		y=240
-		width=75
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)Gamma.DRVL"
-		clr=53
-		bclr=4
-	}
-	align="horiz. right"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=955
-		y=240
-		width=75
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)Gamma.DRVH"
-		clr=53
-		bclr=4
-	}
-	align="horiz. right"
-	limits {
-	}
-}
 "text entry" {
 	object {
 		x=610
@@ -529,21 +423,6 @@ valuator {
 	}
 	control {
 		chan="$(P)$(R)Saturation"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=610
-		y=240
-		width=75
-		height=20
-	}
-	control {
-		chan="$(P)$(R)Gamma"
 		clr=14
 		bclr=51
 	}
@@ -575,22 +454,6 @@ text {
 	}
 	textix="White balance"
 	align="horiz. right"
-}
-"text update" {
-	object {
-		x=295
-		y=165
-		width=100
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)SharpeningEnable_RBV"
-		clr=53
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
 }
 "text update" {
 	object {
@@ -664,19 +527,6 @@ menu {
 	}
 	format="string"
 	limits {
-	}
-}
-menu {
-	object {
-		x=190
-		y=165
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)SharpeningEnable"
-		clr=14
-		bclr=51
 	}
 }
 menu {
@@ -1215,6 +1065,61 @@ valuator {
 	limits {
 	}
 }
+text {
+	object {
+		x=0
+		y=2
+		width=1035
+		height=25
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="ADSpinnaker More - $(P)$(R)"
+	align="horiz. centered"
+}
+menu {
+	object {
+		x=190
+		y=340
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PixelFormat"
+		clr=14
+		bclr=51
+	}
+}
+text {
+	object {
+		x=65
+		y=340
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pixel format"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=295
+		y=340
+		width=100
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)PixelFormat_RBV"
+		clr=53
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
 "text update" {
 	object {
 		x=295
@@ -1244,48 +1149,6 @@ menu {
 		bclr=51
 	}
 }
-menu {
-	object {
-		x=190
-		y=290
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PixelFormat"
-		clr=14
-		bclr=51
-	}
-}
-text {
-	object {
-		x=65
-		y=290
-		width=120
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Pixel format"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=295
-		y=290
-		width=100
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)PixelFormat_RBV"
-		clr=53
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
 text {
 	object {
 		x=5
@@ -1299,16 +1162,330 @@ text {
 	textix="Trigger activation"
 	align="horiz. right"
 }
+"text update" {
+	object {
+		x=295
+		y=290
+		width=100
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)TriggerOverlap_RBV"
+		clr=53
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=190
+		y=290
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerOverlap"
+		clr=14
+		bclr=51
+	}
+}
 text {
 	object {
-		x=0
-		y=2
-		width=1035
-		height=25
+		x=35
+		y=290
+		width=150
+		height=20
 	}
 	"basic attribute" {
-		clr=54
+		clr=14
 	}
-	textix="ADSpinnaker More - $(P)$(R)"
-	align="horiz. centered"
+	textix="Trigger overlap"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=135
+		y=240
+		width=895
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=135
+				y=240
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Gamma"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=295
+				y=240
+				width=100
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)GammaEnable_RBV"
+				clr=53
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=190
+				y=240
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)GammaEnable"
+				clr=14
+				bclr=51
+			}
+		}
+		valuator {
+			object {
+				x=690
+				y=240
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)Gamma"
+				clr=14
+				bclr=51
+			}
+			dPrecision=1.000000
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=795
+				y=240
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)Gamma_RBV"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=875
+				y=240
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)Gamma.DRVL"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=955
+				y=240
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)Gamma.DRVH"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=610
+				y=240
+				width=75
+				height=20
+			}
+			control {
+				chan="$(P)$(R)Gamma"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=55
+		y=315
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Trigger delay"
+	align="horiz. right"
+}
+valuator {
+	object {
+		x=690
+		y=315
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerDelay"
+		clr=14
+		bclr=51
+	}
+	dPrecision=1.000000
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=795
+		y=315
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)TriggerDelay_RBV"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	format="compact"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=875
+		y=315
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)TriggerDelay.DRVL"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	format="compact"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=955
+		y=315
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)TriggerDelay.DRVH"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	format="compact"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=610
+		y=315
+		width=75
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerDelay"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=295
+		y=165
+		width=100
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)SharpeningEnable_RBV"
+		clr=53
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=190
+		y=165
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)SharpeningEnable"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=295
+		y=315
+		width=100
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)TriggerDelayEnable_RBV"
+		clr=53
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=190
+		y=315
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerDelayEnable"
+		clr=14
+		bclr=51
+	}
 }
