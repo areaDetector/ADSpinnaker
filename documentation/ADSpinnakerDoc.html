@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>Point Grey areaDetector driver</title>
+  <title>FLIR Spinnaker areaDetector driver</title>
   <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 </head>
 <body>
@@ -10,7 +10,7 @@
     <h1>
       FLIR Spinnaker areaDetector driver</h1>
     <h2>
-      February 1, 2018</h2>
+      March 26, 2018</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -35,15 +35,21 @@
     Introduction</h2>
   <p>
     This is an <a href="http://www.aps.anl.gov/epics/">EPICS</a> <a href="areaDetector.html">
-      areaDetector</a> driver for cameras from <a href="http://www.flir.com">FLIR</a>.
-    These include GigE, 10GigE, and USB 3.0 cameras. The driver
-    should work with most FLIR cameras. It has been tested on
-    GigE (BlackFly, Flea3, Grasshopper3), and USB 3.0 (Grasshopper3) cameras. The driver
-    has been tested on Windows and Linux with all 3 of these cameras. 
+      areaDetector</a> driver for cameras from <a href="http://www.flir.com">FLIR</a> (formerly Point Grey).
+    It uses their new Spinnaker SDK, while the ADPointGrey driver uses their older FlyCap2 SDK.
+    It should work with most GigE, 10GigE, and USB 3.0 cameras. It has been tested on
+    GigE (BlackFlyS), and USB 3.0 (Grasshopper3) cameras. 
   </p>
   <p>
-    On Linux the Point Grey FlyCap2 SDK requires glibc version XXX. This means it cannot
-    be used on XXX, but it can be used on XXX, and Fedora XXX and higher. 
+    The driver should work on both Windows and Linux.  However, so far it has only been tested on Windows. 
+    The problem is that the Spinnaker SDK is only supported on Ubuntu 16.  There are 2 contraints that prevent it
+    from running on older Linux versions, and on other distributions.  The  libSpinnaker.so file from their Spinnaker SDK
+    was built with gcc 5.4 and requires GLIBC 2.14 and GLIBCXX 3.4.21. This means it cannot be used with gcc 4.8 on RHEL 7,
+    for example.  Furthermore the Spinnaker libraries depend on these shareable libraries: libswscale-ffmpeg.so.3, 
+    libavcodec-ffmpeg.so.56, libavutil-ffmpeg.so.54, and libavformat-ffmpeg.so.56.  These libraries come from an ffmpeg
+    package that appears to only be available for Ubuntu, and not for Red Hat/Centos distributions.  Building ffmpeg from source
+    does not even work because the .so library names and the symbols inside those libraries do not match the ones that the Spinnaker SDK
+    was built with.  This is unfortunate, and I have asked FLIR to consider distributing a version of the SDK that will build on RHEL 7.
   </p>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
@@ -57,239 +63,31 @@
   <p>
     FLIR frequently updates the available firmware for each camera to add features
     and fix bugs. However, they are not very good about putting the link to the latest
-    firmware on their Web site. They claim this is because they only put the firmware
-    on the Web site once it has been tested on all camera models in the camera family
-    on which that firmware runs. In practice the firmware version listed on the Web
-    site is often old and buggy. I have encouraged them to make the latest firmware
-    more easily available. At present one must e-mail the support team (support@ptgrey.com)
+    firmware on their Web site. At present one must e-mail the support team (mv-support@flir.com)
     and ask them if newer firmware is available for a particular camera, and if so to
     provide access to it. They normally do this by sending a link to a Dropbox folder.</p>
   <h2 id="Properties" style="text-align: left">
     Properties</h2>
   <p>
-    The DCAM specification defines a number of standard features, which control things
-    such as the brightness, white balance, shutter time, etc. For each feature the standard
-    defines control in both device units (12-bit integers) and absolute units (floating
-    point). For example shutter time may support absolute seconds, as well as device
-    units. A feature may or may not be supported on a particular camera. If it is supported
-    it may or may not permit control in absolute units. Each feature may support both
-    manual control and automatic control (e.g. automatic gain control).
+    The Spinnaker SDK supports cameras that use the <a href="http://www.emva.org/standards-technology/genicam/">GenICam</a> interface.  
+    This includes <a href="https://en.wikipedia.org/wiki/GigE_Vision">GigE Vision</a> and 
+    <a href="https://www.visiononline.org/vision-standards-details.cfm?id=167&type=5">USB3 Vision</a> cameras.
+    GenICam cameras have an XML file in the camera that describes the complete list of properties that the camera supports.
+    These properties can be accessed in a generic manner.  This means that libraries that support GenICam are quite simple
+    to use, since all properties are accessed in a generic way.  It supports introspection, so that software can determine
+    which properties are supported, and what the allowed ranges and choices for a specific property are.  The ADSpinnaker
+    driver is only 60% of the size of the old ADPointGrey driver because of the simplicity of the SDK.  The choices
+    for menu-type properties are built at run-time from the values supported by the camera.  For some properties these choices
+    can change dynamically when some other property is changed.  EPICS Channel Access does not support callbacks when enum choices
+    change.  This means that GUI clients cannot update the choices on an open screen when the driver changes them.  For this reason
+    enum records that can change their choices at run-time are displayed on a related display (ADSpinnakerMore) that must be closed
+    and re-opened to see the new choices.  The valid range of numeric properties can similarly change dynamically at run-time
+    based on changes in other properties.  These changes will be immediately reflected the DRVL, DRVH, LOPR, and HOPR fields of 
+    the records.  However, EPICS Channel Access does not support callbacks when graphics display limits change, 
+    so EPICS GUI clients do not update slider widget limits when HOPR and LOPR change.  For this reason numeric
+    records that can change their choices at run-time are also displayed on ADSpinnakerMore that must be closed
+    and re-opened to have the slider limits update.  
   </p>
-  <p>
-    Point Grey supports 18 of these DCAM features, which they call Properties.</p>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <td align="center" colspan="3">
-          <b>Point Grey Camera Properties</b> </td>
-      </tr>
-      <tr>
-        <th>
-          Property Number </th>
-        <th>
-          EPICS Record Base Name </th>
-        <th>
-          Point Grey PropertyType enum </th>
-      </tr>
-      <tr>
-        <td>
-          0 </td>
-        <td>
-          Brightness </td>
-        <td>
-          BRIGHTNESS </td>
-      </tr>
-      <tr>
-        <td>
-          1 </td>
-        <td>
-          AutoExposure </td>
-        <td>
-          AUTO_EXPOSURE </td>
-      </tr>
-      <tr>
-        <td>
-          2 </td>
-        <td>
-          Sharpness </td>
-        <td>
-          SHARPNESS </td>
-      </tr>
-      <tr>
-        <td>
-          3 </td>
-        <td>
-          WhiteBalance </td>
-        <td>
-          WHITE_BALANCE </td>
-      </tr>
-      <tr>
-        <td>
-          4 </td>
-        <td>
-          Hue </td>
-        <td>
-          HUE </td>
-      </tr>
-      <tr>
-        <td>
-          5 </td>
-        <td>
-          Saturation = </td>
-        <td>
-          SATURATION </td>
-      </tr>
-      <tr>
-        <td>
-          6 </td>
-        <td>
-          Gamma </td>
-        <td>
-          GAMMA </td>
-      </tr>
-      <tr>
-        <td>
-          7 </td>
-        <td>
-          Iris </td>
-        <td>
-          IRIS </td>
-      </tr>
-      <tr>
-        <td>
-          8 </td>
-        <td>
-          Focus </td>
-        <td>
-          FOCUS </td>
-      </tr>
-      <tr>
-        <td>
-          9 </td>
-        <td>
-          Zoom </td>
-        <td>
-          ZOOM </td>
-      </tr>
-      <tr>
-        <td>
-          10 </td>
-        <td>
-          Pan </td>
-        <td>
-          PAN </td>
-      </tr>
-      <tr>
-        <td>
-          11 </td>
-        <td>
-          Tilt </td>
-        <td>
-          TILT </td>
-      </tr>
-      <tr>
-        <td>
-          12 </td>
-        <td>
-          Shutter </td>
-        <td>
-          SHUTTER </td>
-      </tr>
-      <tr>
-        <td>
-          13 </td>
-        <td>
-          Gain </td>
-        <td>
-          GAIN </td>
-      </tr>
-      <tr>
-        <td>
-          14 </td>
-        <td>
-          TriggerMode </td>
-        <td>
-          TRIGGER_MODE </td>
-      </tr>
-      <tr>
-        <td>
-          15 </td>
-        <td>
-          TriggerDelay </td>
-        <td>
-          TRIGGER_DELAY </td>
-      </tr>
-      <tr>
-        <td>
-          16 </td>
-        <td>
-          FrameRate </td>
-        <td>
-          FRAME_RATE </td>
-      </tr>
-      <tr>
-        <td>
-          17 </td>
-        <td>
-          Temperature </td>
-        <td>
-          TEMPERATURE </td>
-      </tr>
-    </tbody>
-  </table>
-  <h2 id="GigEProperties" style="text-align: left">
-    GigE Properties</h2>
-  <p>
-    Point Grey supports 4 properties that are specific to GigE cameras.
-  </p>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <td align="center" colspan="3">
-          <b>Point Grey Camera Properties</b> </td>
-      </tr>
-      <tr>
-        <th>
-          Property Number </th>
-        <th>
-          EPICS Record Base Name </th>
-        <th>
-          Point Grey PropertyType enum </th>
-      </tr>
-      <tr>
-        <td>
-          0 </td>
-        <td>
-          Heeartbeat </td>
-        <td>
-          HEARTBEAT </td>
-      </tr>
-      <tr>
-        <td>
-          1 </td>
-        <td>
-          HeartbeatTimeout </td>
-        <td>
-          HEARTBEAT_TIMEOUT </td>
-      </tr>
-      <tr>
-        <td>
-          2 </td>
-        <td>
-          PacketSize </td>
-        <td>
-          PACKET_SIZE </td>
-      </tr>
-      <tr>
-        <td>
-          3 </td>
-        <td>
-          PacketDelay </td>
-        <td>
-          PACKET_DELAY </td>
-      </tr>
-    </tbody>
-  </table>
   <h2 id="StandardParameters" style="text-align: left">
     Standard areaDetector parameters</h2>
   <p>
