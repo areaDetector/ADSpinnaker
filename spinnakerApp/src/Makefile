@@ -4,9 +4,9 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 
 LIBRARY_IOC_WIN32 += ADSpinnaker
-LIBRARY_IOC_Linux += ADSpinnaker
+#LIBRARY_IOC_Linux += ADSpinnaker
 
-LIB_SRCS += ADSpinnaker.cpp
+LIB_SRCS_WIN32 += ADSpinnaker.cpp
 
 ifeq (debug, $(findstring debug, $(T_A)))
   LIB_LIBS_WIN32 += Spinnakerd_v140
@@ -48,6 +48,11 @@ NodeMapInfo_SRCS += NodeMapInfo.cpp
 #PROD_IOC_Linux += ImageFormatControl
 PROD_IOC_WIN32 += ImageFormatControl
 ImageFormatControl_SRCS += ImageFormatControl.cpp
+
+#PROD_IOC_Linux += GigEVisionPerformance
+PROD_IOC_WIN32 += GigEVisionPerformance
+GigEVisionPerformance_SRCS += GigEVisionPerformance.cpp
+GigEVisionPerformance_SRCS += CpuUtil.cpp
 
 #PROD_IOC_Linux += ChunkData
 PROD_IOC_WIN32 += ChunkData
