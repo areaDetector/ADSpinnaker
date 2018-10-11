@@ -891,6 +891,8 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createSPProperty(&SPBalanceRatioSelector,  asynParamInt32,   "SP_WHITE_BALANCE_SELECTOR",    "BalanceRatioSelector");
     createSPProperty(&SPBalanceWhiteAuto,      asynParamInt32,   "SP_WHITE_BALANCE_AUTO",        "BalanceWhiteAuto");
     createSPProperty(&SPTransmitFailureCount,  asynParamInt32,   "SP_TRANSMIT_FAILURE_COUNT",    "TransmitFailureCount");
+ //   createSPProperty(&SPDLThroughputLimit,     asynParamInt32,   "SP_DL_THROUGHPUT_LIMIT",       "DeviceLinkThroughputLimit");
+
     // These are not properties but must be read from the TransportLayerStream class
     createParam("SP_BUFFER_UNDERRUN_COUNT",    asynParamInt32,   &SPBufferUnderrunCount);
     createParam("SP_FAILED_BUFFER_COUNT",      asynParamInt32,   &SPFailedBufferCount);
@@ -1667,11 +1669,19 @@ asynStatus ADSpinnaker::readStatus()
 
     try {
         const TransportLayerStream& camInfo = pCamera_->TLStream;
+//  		  cout << "Stream ID: " << camInfo.StreamID.ToString() << endl;
+//	  	  cout << "Stream Type: " << camInfo.StreamType.ToString() << endl;
+//		    cout << "Stream Buffer Count: " << camInfo.StreamDefaultBufferCount.ToString() << endl;
+//		    cout << "Stream Buffer Handling Mode: " << camInfo.StreamBufferHandlingMode.ToString() << endl;
+//        cout << "Stream Packets Received: " << camInfo.GevTotalPacketCount.ToString() << endl;
         getSPProperty(ADTemperatureActual);
+//printf("StreamBufferUnderrunCount = %d\n", (int)camInfo.StreamBufferUnderrunCount.GetValue());
         setIntegerParam(SPBufferUnderrunCount, (int)camInfo.StreamBufferUnderrunCount.GetValue());
         setIntegerParam(SPFailedBufferCount,   (int)camInfo.StreamFailedBufferCount.GetValue());
         if (camInfo.StreamType.GetIntValue() == StreamType_GEV) {
+//printf("GeVFailedPacketCount = %d\n", (int)camInfo.GevFailedPacketCount.GetValue());
             setIntegerParam(SPFailedPacketCount,   (int)camInfo.GevFailedPacketCount.GetValue());
+//printf("GeVTotalPacketCount = %d\n", (int)camInfo.GevTotalPacketCount.GetValue());
         }
     }
     catch (Spinnaker::Exception &e) {
