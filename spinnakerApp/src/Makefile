@@ -4,9 +4,9 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 
 LIBRARY_IOC_WIN32 += ADSpinnaker
-#LIBRARY_IOC_Linux += ADSpinnaker
+LIBRARY_IOC_Linux += ADSpinnaker
 
-LIB_SRCS_WIN32 += ADSpinnaker.cpp
+LIB_SRCS += ADSpinnaker.cpp
 
 ifeq (debug, $(findstring debug, $(T_A)))
   LIB_LIBS_WIN32 += Spinnakerd_v140
