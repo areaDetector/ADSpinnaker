@@ -317,8 +317,9 @@ void SPFeature::writeEnumIndex(int value) {
 
 std::string SPFeature::readEnumString() { 
     CEnumerationPtr pNode = (CEnumerationPtr)mPBase;
-//    return epicsStrDup(pNode->GetValue().c_str());
-    return "";
+    CEnumEntryPtr pEntry = pNode->GetCurrentEntry();
+    gcstring value = pEntry->GetSymbolic();
+    return value.c_str();
 }
 
 void SPFeature::writeEnumString(std::string const &value) { 
@@ -1057,11 +1058,27 @@ void ADSpinnaker::reportNode(FILE *fp, INodeMap *pNodeMap, gcstring nodeName, in
                 value = pNode->ToString();
                 break;
             }
+            case intfIFloat: {
+                CFloatPtr pNode = static_cast<CFloatPtr>(pBase);
+                value = pNode->ToString();
+                break;
+                }
             case intfIBoolean: {
                 CBooleanPtr pNode = static_cast<CBooleanPtr>(pBase);
                 value = pNode->ToString();
                 break;
                 }
+            case intfICommand: {
+                CCommandPtr pNode = static_cast<CCommandPtr>(pBase);
+                value = pNode->GetToolTip();
+                break;
+                }
+            case intfIEnumeration: {
+                CEnumerationPtr pNode = static_cast<CEnumerationPtr>(pBase);
+                CEnumEntryPtr pEntry = pNode->GetCurrentEntry();
+                value = pEntry->GetSymbolic();
+                break;
+               }
             default:
                 value = "Unhandled data type";
                 break;
