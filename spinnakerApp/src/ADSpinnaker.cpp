@@ -1057,6 +1057,11 @@ void ADSpinnaker::reportNode(FILE *fp, INodeMap *pNodeMap, gcstring nodeName, in
                 value = pNode->ToString();
                 break;
             }
+            case intfIBoolean: {
+                CBooleanPtr pNode = static_cast<CBooleanPtr>(pBase);
+                value = pNode->ToString();
+                break;
+                }
             default:
                 value = "Unhandled data type";
                 break;
