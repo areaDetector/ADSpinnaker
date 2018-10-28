@@ -33,9 +33,11 @@ using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
 
-#include "ADGenICam.h"
+#include <ADGenICam.h>
 
 #include <epicsExport.h>
+#include "SPFeature.h"
+#include "ADSpinnaker.h"
 
 #define DRIVER_VERSION      1
 #define DRIVER_REVISION     0
@@ -88,288 +90,7 @@ typedef enum {
 } SPUniqueId_t;
 
 
-class ImageEventHandler : public ImageEvent
-{
-public:
 
-    ImageEventHandler(epicsMessageQueue *pMsgQ) 
-     : pMsgQ_(pMsgQ)
-    {}
-    ~ImageEventHandler() {}
-  
-    void OnImageEvent(ImagePtr image) {
-        ImagePtr *imagePtrAddr = new ImagePtr(image);
-  
-        if (pMsgQ_->send(&imagePtrAddr, sizeof(imagePtrAddr)) != 0) {
-            printf("OnImageEvent error calling pMsgQ_->send()\n");
-        }
-    }
-  
-private:
-    epicsMessageQueue *pMsgQ_;
-
-};
-
-class SPFeature : public GenICamFeature
-{
-public:
-    SPFeature(GenICamFeatureSet *set, std::string const & asynName, asynParamType asynType,
-              std::string const & featureName = "",
-              GCFeatureType_t featureType = GCFeatureTypeUnknown);
-    virtual bool isImplemented(void);
-    virtual bool isAvailable(void);
-    virtual bool isReadable(void);
-    virtual bool isWritable(void);
-    virtual int readInteger(void);
-    virtual int readIntegerMin(void);
-    virtual int readIntegerMax(void);
-    virtual int readIncrement(void);
-    virtual void writeInteger(int value);
-    virtual bool readBoolean(void);
-    virtual void writeBoolean (bool value);
-    virtual double readDouble(void);
-    virtual double readDoubleMin(void);
-    virtual double readDoubleMax(void);
-    virtual void writeDouble(double value);
-    virtual int readEnumIndex(void);
-    virtual void writeEnumIndex(int value);
-    virtual std::string readEnumString(void);
-    virtual void writeEnumString(std::string const & value);
-    virtual void readEnumChoices(std::vector<std::string>& enumStrings, std::vector<int>& enumValues);
-    virtual std::string readString(void);
-    virtual void writeString(std::string const & value);
-    virtual void writeCommand(void);
-
-private:
-    gcstring mNodeName;
-    CNodePtr mPBase;
-    bool mIsImplemented;
-
-};
-
-
-/** Main driver class inherited from areaDetectors ADDriver class.
- * One instance of this class will control one camera.
- */
-class ADSpinnaker : public ADGenICam
-{
-public:
-    ADSpinnaker(const char *portName, int cameraId, int traceMask, int memoryChannel,
-                size_t maxMemory, int priority, int stackSize);
-
-    // virtual methods to override from ADGenICam
-    //virtual asynStatus writeInt32( asynUser *pasynUser, epicsInt32 value);
-    //virtual asynStatus writeFloat64( asynUser *pasynUser, epicsFloat64 value);
-    virtual asynStatus readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], 
-                                size_t nElements, size_t *nIn);
-    void report(FILE *fp, int details);
-    virtual GenICamFeature *createFeature(GenICamFeatureSet *set, 
-                                          std::string const & asynName, asynParamType asynType, 
-                                          std::string const & featureName, GCFeatureType_t featureType);
-    INodeMap *getNodeMap();
-    
-    /**< These should be private but are called from C callback functions, must be public. */
-    void imageGrabTask();
-    void shutdown();
-
-private:
-    int SPVideoMode;
-#define FIRST_SP_PARAM SPVideoMode
-    int SPConvertPixelFormat;
-    int SPTransmitFailureCount;
-    int SPBufferUnderrunCount;
-    int SPFailedBufferCount;
-    int SPFailedPacketCount;
-    int SPTimeStampMode;
-    int SPUniqueIdMode;
-    int SPColorProcessEnabled;
-
-//    int PGPacketSize;             /** Size of data packets from camera                (int32 write/read) */
-//    int PGPacketSizeActual;       /** Size of data packets from camera                (int32 write/read) */
-//    int PGMaxPacketSize;          /** Maximum size of data packets from camera        (int32 write/read) */
-//    int PGPacketDelay;            /** Packet delay in usec from camera, GigE only     (int32 write/read) */
-//    int PGPacketDelayActual;      /** Packet delay in usec from camera, GigE only     (int32 read) */
-//    int PGBandwidth;              /** Bandwidth in MB/s                               (float64 read) */
-
-    /* Local methods to this class */
-    asynStatus grabImage();
-    asynStatus startCapture();
-    asynStatus stopCapture();
-    asynStatus connectCamera();
-    asynStatus disconnectCamera();
-    asynStatus readStatus();
-    void imageEventCallback(ImagePtr pImage);
-    void reportNode(FILE *fp, INodeMap *pNodeMap, gcstring nodeName, int level);
-
-    /* Data */
-    int cameraId_;
-    int memoryChannel_;
-    
-    INodeMap *pNodeMap_;    
-    SystemPtr system_;
-    CameraList camList_;
-    CameraPtr pCamera_;
-    ImageEventHandler *pImageEventHandler_;
-
-    int exiting_;
-    epicsEventId startEventId_;
-    epicsMessageQueue *pCallbackMsgQ_;
-    NDArray *pRaw_;
-    int uniqueId_;
-};
-
-SPFeature::SPFeature(GenICamFeatureSet *set, std::string const & asynName, asynParamType asynType,
-                     std::string const & featureName, GCFeatureType_t featureType)
-                     
-         : GenICamFeature(set, asynName, asynType, featureName, featureType)
-{
-    try {
-        ADSpinnaker *pDrv = (ADSpinnaker *) mSet->getPortDriver();
-        mNodeName = featureName.c_str();
-        mPBase = (CNodePtr)pDrv->getNodeMap()->GetNode(mNodeName);
-        mIsImplemented = IsImplemented(mPBase);
-    }
-    catch (Spinnaker::Exception &e) {
-        printf("SPProperty::SPProperty exception %s\n", e.what());
-    }
-}
-
-bool SPFeature::isImplemented() { 
-    return mIsImplemented; 
-}
-
-bool SPFeature::isAvailable() { 
-    return IsAvailable(mPBase);
-}
-
-bool SPFeature::isReadable() { 
-    return IsReadable(mPBase);
-}
-
-bool SPFeature::isWritable() { 
-    return IsWritable(mPBase);
-}
-
-int SPFeature::readInteger() { 
-    CIntegerPtr pNode = (CIntegerPtr)mPBase;
-    return (int)pNode->GetValue();
-}
-
-int SPFeature::readIntegerMin() {
-    CIntegerPtr pNode = (CIntegerPtr)mPBase;
-    return (int)pNode->GetMin();
-}
-
-int SPFeature::readIntegerMax() {
-    CIntegerPtr pNode = (CIntegerPtr)mPBase;
-    return (int)pNode->GetMax();
-}
-
-int SPFeature::readIncrement() { 
-    CIntegerPtr pNode = (CIntegerPtr)mPBase;
-    return (int)pNode->GetInc();
-}
-
-void SPFeature::writeInteger(int value) { 
-    CIntegerPtr pNode = (CIntegerPtr)mPBase;
-    pNode->SetValue(value);
-}
-
-bool SPFeature::readBoolean() { 
-    CBooleanPtr pNode = (CBooleanPtr)mPBase;
-    return pNode->GetValue();
-}
-
-void SPFeature::writeBoolean(bool value) { 
-    CBooleanPtr pNode = (CBooleanPtr)mPBase;
-    pNode->SetValue(value);
-}
-
-double SPFeature::readDouble() { 
-    CFloatPtr pNode = (CFloatPtr)mPBase;
-    return pNode->GetValue();
-}
-
-void SPFeature::writeDouble(double value) { 
-    CFloatPtr pNode = (CFloatPtr)mPBase;
-    pNode->SetValue(value);
-}
-
-double SPFeature::readDoubleMin() {
-    CFloatPtr pNode = (CFloatPtr)mPBase;
-    return pNode->GetMin();
-}
-
-double SPFeature::readDoubleMax() {
-    CFloatPtr pNode = (CFloatPtr)mPBase;
-    return pNode->GetMax();
-}
-
-int SPFeature::readEnumIndex() { 
-    CEnumerationPtr pNode = (CEnumerationPtr)mPBase;
-    return (int)pNode->GetIntValue();
-}
-
-void SPFeature::writeEnumIndex(int value) { 
-    CEnumerationPtr pNode = (CEnumerationPtr)mPBase;
-    pNode->SetIntValue(value);
-}
-
-std::string SPFeature::readEnumString() { 
-    CEnumerationPtr pNode = (CEnumerationPtr)mPBase;
-    CEnumEntryPtr pEntry = pNode->GetCurrentEntry();
-    gcstring value = pEntry->GetSymbolic();
-    return value.c_str();
-}
-
-void SPFeature::writeEnumString(std::string const &value) { 
-    CEnumerationPtr pNode = (CEnumerationPtr)mPBase;
-//    gcstring str(value.c_str());
-//    pNode->SetValue(str);
-}
-
-std::string SPFeature::readString() { 
-    CStringPtr pNode = (CStringPtr)mPBase;
-    return epicsStrDup((pNode->GetValue()).c_str());
-}
-
-void SPFeature::writeString(std::string const & value) { 
-    CStringPtr pNode = (CStringPtr)mPBase;
-    gcstring str(value.c_str());
-    pNode->SetValue(str);
-}
-
-void SPFeature::writeCommand() { 
-    CCommandPtr pNode = (CCommandPtr)mPBase;
-    pNode->Execute();
-}
-
-void SPFeature::readEnumChoices(std::vector<std::string>& enumStrings, std::vector<int>& enumValues) {
-    CEnumerationPtr pNode = (CEnumerationPtr)mPBase;
-    NodeList_t entries;
-    pNode->GetEntries(entries);
-    int numEnums = (int)entries.size();
-    for (int i=0; i<numEnums; i++) {
-        IEnumEntry *pEntry= dynamic_cast<IEnumEntry *>(entries[i]);
-        if (IsAvailable(pEntry) && IsReadable(pEntry)) {
-            std::string str = pEntry->GetSymbolic().c_str();
-            enumStrings.push_back(str);
-            enumValues.push_back((int)pEntry->GetValue());
-        }
-    }
-}
-
-GenICamFeature *ADSpinnaker::createFeature(GenICamFeatureSet *set, 
-                                           std::string const & asynName, asynParamType asynType, 
-                                           std::string const & featureName, GCFeatureType_t featureType) {
-    return new SPFeature(set, asynName, asynType, featureName, featureType);
-}
-
-INodeMap *ADSpinnaker::getNodeMap() {
-    return pNodeMap_;
-}
-
-    
 /** Configuration function to configure one camera.
  *
  * This function need to be called once for each camera to be used by the IOC. A call to this
@@ -530,6 +251,17 @@ void ADSpinnaker::shutdown(void)
     }
     unlock();
 }
+
+GenICamFeature *ADSpinnaker::createFeature(GenICamFeatureSet *set, 
+                                           std::string const & asynName, asynParamType asynType, 
+                                           std::string const & featureName, GCFeatureType_t featureType) {
+    return new SPFeature(set, asynName, asynType, featureName, featureType);
+}
+
+INodeMap *ADSpinnaker::getNodeMap() {
+    return pNodeMap_;
+}
+
 
 asynStatus ADSpinnaker::connectCamera(void)
 {
