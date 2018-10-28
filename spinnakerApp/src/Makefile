@@ -6,6 +6,7 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC_WIN32 += ADSpinnaker
 LIBRARY_IOC_Linux += ADSpinnaker
 
+LIB_SRCS += SPFeature.cpp
 LIB_SRCS += ADSpinnaker.cpp
 
 ifeq (debug, $(findstring debug, $(T_A)))
