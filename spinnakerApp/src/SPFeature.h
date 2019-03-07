@@ -13,9 +13,9 @@ using namespace std;
 class SPFeature : public GenICamFeature
 {
 public:
-    SPFeature(GenICamFeatureSet *set, std::string const & asynName, asynParamType asynType,
-              std::string const & featureName = "",
-              GCFeatureType_t featureType = GCFeatureTypeUnknown);
+    SPFeature(GenICamFeatureSet *set, 
+              std::string const & asynName, asynParamType asynType, int asynIndex,
+              std::string const & featureName, GCFeatureType_t featureType);
     virtual bool isImplemented(void);
     virtual bool isAvailable(void);
     virtual bool isReadable(void);

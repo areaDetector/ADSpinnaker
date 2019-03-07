@@ -13,10 +13,11 @@ using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
 
-SPFeature::SPFeature(GenICamFeatureSet *set, std::string const & asynName, asynParamType asynType,
+SPFeature::SPFeature(GenICamFeatureSet *set, 
+                     std::string const & asynName, asynParamType asynType, int asynIndex,
                      std::string const & featureName, GCFeatureType_t featureType)
                      
-         : GenICamFeature(set, asynName, asynType, featureName, featureType)
+         : GenICamFeature(set, asynName, asynType, asynIndex, featureName, featureType)
 {
     try {
         ADSpinnaker *pDrv = (ADSpinnaker *) mSet->getPortDriver();

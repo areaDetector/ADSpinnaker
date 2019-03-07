@@ -253,9 +253,9 @@ void ADSpinnaker::shutdown(void)
 }
 
 GenICamFeature *ADSpinnaker::createFeature(GenICamFeatureSet *set, 
-                                           std::string const & asynName, asynParamType asynType, 
+                                           std::string const & asynName, asynParamType asynType, int asynIndex,
                                            std::string const & featureName, GCFeatureType_t featureType) {
-    return new SPFeature(set, asynName, asynType, featureName, featureType);
+    return new SPFeature(set, asynName, asynType, asynIndex, featureName, featureType);
 }
 
 INodeMap *ADSpinnaker::getNodeMap() {

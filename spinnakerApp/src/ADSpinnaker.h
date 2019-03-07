@@ -50,7 +50,7 @@ public:
                                 size_t nElements, size_t *nIn);
     void report(FILE *fp, int details);
     virtual GenICamFeature *createFeature(GenICamFeatureSet *set, 
-                                          std::string const & asynName, asynParamType asynType, 
+                                          std::string const & asynName, asynParamType asynType, int asynIndex,
                                           std::string const & featureName, GCFeatureType_t featureType);
     INodeMap *getNodeMap();
     
