@@ -51,7 +51,7 @@ PROD_IOC_Linux += ImageFormatControl
 PROD_IOC_WIN32 += ImageFormatControl
 ImageFormatControl_SRCS += ImageFormatControl.cpp
 
-PROD_IOC_Linux += GigEVisionPerformance
+#PROD_IOC_Linux += GigEVisionPerformance
 PROD_IOC_WIN32 += GigEVisionPerformance
 GigEVisionPerformance_SRCS += GigEVisionPerformance.cpp
 GigEVisionPerformance_SRCS += CpuUtil.cpp
@@ -73,7 +73,6 @@ PROD_SYS_LIBS_Linux += Log_gcc540_v3_0
 PROD_SYS_LIBS_Linux += MathParser_gcc540_v3_0
 PROD_SYS_LIBS_Linux += NodeMapData_gcc540_v3_0
 PROD_SYS_LIBS_Linux += XmlParser_gcc540_v3_0
-PROD_SYS_LIBS_Linux += ptgreyvideoencoder
 
 include $(ADCORE)/ADApp/commonLibraryMakefile
 
