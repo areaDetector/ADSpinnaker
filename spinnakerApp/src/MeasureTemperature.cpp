@@ -7,7 +7,7 @@ using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
 
-#ifdef Linux
+#ifdef LINUX
   #define Sleep(MS) sleep(MS/1000)
 #endif
 
