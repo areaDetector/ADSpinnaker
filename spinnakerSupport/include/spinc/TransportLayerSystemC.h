@@ -14,26 +14,25 @@
 // SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
+   
+/* Auto-generated file. Do not modify. */
 
-#ifndef PGR_SPINNAKER_IREMOVALEVENT_H
-#define PGR_SPINNAKER_IREMOVALEVENT_H
+#include "QuickSpinC.h"
 
-#include "Event.h"
-#include "SpinnakerPlatform.h"
+#ifndef FLIR_SPINNAKERC_TLSYSTEM_H
+#define FLIR_SPINNAKERC_TLSYSTEM_H
 
-namespace Spinnaker
+/**	
+* @defgroup TLSystemC_h TLSystem Structures
+* @ingroup CQuickSpin
+*/
+/*@{*/
+
+typedef struct _quickSpinTLSystem
 {
-    class IRemovalEvent : public virtual Event
-    {
-    public:
-        virtual ~IRemovalEvent() {};
-        virtual void OnDeviceRemoval(uint64_t serialNumber) = 0;
+	quickSpinIntegerNode EnumerateGEVInterfaces;
+} quickSpinTLSystem;
 
-    protected:
-        IRemovalEvent() {};
-        IRemovalEvent(const IRemovalEvent&) {};
-        IRemovalEvent& operator=(const IRemovalEvent&);
-    };
-}
+/*@}*/
 
-#endif /* PGR_SPINNAKER_IREMOVALEVENT_H */
+#endif // FLIR_SPINNAKERC_TLSYSTEM_H

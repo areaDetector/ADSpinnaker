@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -17,8 +17,8 @@
    
 /* Auto-generated file. Do not modify. */
 
-#ifndef PGR_SPINNAKER_TRANSPORTLAYERDEFS_H
-#define PGR_SPINNAKER_TRANSPORTLAYERDEFS_H
+#ifndef FLIR_SPINNAKER_TRANSPORTLAYERDEFS_H
+#define FLIR_SPINNAKER_TRANSPORTLAYERDEFS_H
 
 namespace Spinnaker
 {
@@ -52,11 +52,18 @@ namespace Spinnaker
 		NUMSTREAMTYPE
 	};
 
-	enum StreamDefaultBufferCountModeEnum	/*!< Controls the number of buffers used for the stream.*/
+	enum StreamDefaultBufferCountModeEnum	/*!< DEPRECATED; Replaced by StreamBufferCountMode. Controls access to setting the number of buffers used for the stream. Locked to Manual mode on 32-bit Windows due to memory constraints.*/
 	{
-		StreamDefaultBufferCountMode_Manual,	/*!< Controls the number of buffers used for the stream.*/
-		StreamDefaultBufferCountMode_Auto,	/*!< The number of buffers used for the stream is automatically calculated based on the device bandwidth.*/
+		StreamDefaultBufferCountMode_Manual,	/*!< DEPRECATED. The number of buffers used for the stream are set by the user.*/
+		StreamDefaultBufferCountMode_Auto,	/*!< DEPRECATED. The number of buffers used for the stream is automatically calculated.*/
 		NUMSTREAMDEFAULTBUFFERCOUNTMODE
+	};
+
+	enum StreamBufferCountModeEnum	/*!< Controls access to setting the number of buffers used for the stream. Locked to Manual mode on 32-bit Windows due to memory constraints.*/
+	{
+		StreamBufferCountMode_Manual,	/*!< The number of buffers used for the stream are set by the user.*/
+		StreamBufferCountMode_Auto,	/*!< The number of buffers used for the stream is automatically calculated based on the device frame rate.*/
+		NUMSTREAMBUFFERCOUNTMODE
 	};
 
 	enum StreamBufferHandlingModeEnum	/*!< Available buffer handling modes of this data stream:*/
@@ -94,6 +101,14 @@ namespace Spinnaker
 		NUMDEVICEACCESSSTATUS
 	};
 
+	enum GevCCPEnum	/*!< Controls the device access privilege of an application.*/
+	{
+		GevCCP_EnumEntry_GevCCP_OpenAccess,	/*!< Open access privilege.*/
+		GevCCP_EnumEntry_GevCCP_ExclusiveAccess,	/*!< Exclusive access privilege.*/
+		GevCCP_EnumEntry_GevCCP_ControlAccess,	/*!< Control access privilege.*/
+		NUMGEVCCP
+	};
+
 	enum GUIXMLLocationEnum	/*!< Sets the location to load GUI XML.*/
 	{
 		GUIXMLLocation_Device,	/*!< Load XML from device*/
@@ -106,14 +121,6 @@ namespace Spinnaker
 		GenICamXMLLocation_Device,	/*!< Load GenICam XML from device*/
 		GenICamXMLLocation_Host,	/*!< Load GenICam XML from host*/
 		NUMGENICAMXMLLOCATION
-	};
-
-	enum GevCCPEnum	/*!< Controls the device access privilege of an application.*/
-	{
-		GevCCP_EnumEntry_GevCCP_OpenAccess,	/*!< Open access privilege.*/
-		GevCCP_EnumEntry_GevCCP_ExclusiveAccess,	/*!< Exclusive access privilege.*/
-		GevCCP_EnumEntry_GevCCP_ControlAccess,	/*!< Control access privilege.*/
-		NUMGEVCCP
 	};
 
 	enum DeviceEndianessMechanismEnum	/*!< Identifies the endianness handling mode.*/
@@ -141,9 +148,17 @@ namespace Spinnaker
 		NUMPOESTATUS
 	};
 
+	enum FilterDriverStatusEnum	/*!< Reports whether FLIR Light Weight Filter Driver is enabled or not.*/
+	{
+		FilterDriverStatus_NotSupported,	/*!< Not Supported*/
+		FilterDriverStatus_Disabled,	/*!< FLIR Light Weight Filter Driver is disabled*/
+		FilterDriverStatus_Enabled,	/*!< FLIR Light Weight Filter Driver is enabled*/
+		NUMFILTERDRIVERSTATUS
+	};
+
 	/*@}*/
 
 	/*@}*/
 
 }
-#endif // PGR_SPINNAKER_TRANSPORTLAYERDEFS_H
+#endif // FLIR_SPINNAKER_TRANSPORTLAYERDEFS_H

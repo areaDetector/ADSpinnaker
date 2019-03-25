@@ -15,33 +15,32 @@
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
 
-#ifndef PGR_SPINNAKER_IMAGESTATISTICS_H
-#define PGR_SPINNAKER_IMAGESTATISTICS_H
+#ifndef FLIR_SPINNAKER_IMAGESTATISTICS_H
+#define FLIR_SPINNAKER_IMAGESTATISTICS_H
 
-#include "Image.h"
-//#include <boost/shared_ptr.hpp>
+#include "Interface/IImageStatistics.h"
 
 namespace Spinnaker
 {
-	class ImageStatsCalculator;
+    class ImageStatsCalculator;
 
-	/**
-	 * @defgroup SpinnakerClasses Spinnaker Classes
-	 */
+    /**
+     * @defgroup SpinnakerClasses Spinnaker Classes
+     */
 
-	/*@{*/
+    /*@{*/
 
-	/**
-	 * @defgroup ImageStatistics_h ImageStatistics Class
-	 */
+    /**
+     * @defgroup ImageStatistics_h ImageStatistics Class
+     */
 
-	/*@{*/
+    /*@{*/
 
     /**
      * @brief Represents image statistics for an image.
      */
-	
-    class  SPINNAKER_API ImageStatistics
+
+    class SPINNAKER_API ImageStatistics: public IImageStatistics
     {
     public:
 
@@ -71,31 +70,31 @@ namespace Spinnaker
          * Enable all channels.
          *
          */
-        void EnableAll();
+        virtual void EnableAll();
 
         /**
          * Disable all channels.
          *
          */
-        void DisableAll();
+        virtual void DisableAll();
 
         /**
          * Enable only the grey channel.
          *
          */
-        void EnableGreyOnly();
+        virtual void EnableGreyOnly();
 
         /**
          * Enable only the RGB channels.
          *
          */
-        void EnableRGBOnly();
+        virtual void EnableRGBOnly();
 
         /**
          * Enable only the HSL channels.
          *
          */
-        void EnableHSLOnly();
+        virtual void EnableHSLOnly();
 
         /**
          * Gets the status of a statistics channel.
@@ -106,7 +105,7 @@ namespace Spinnaker
          * @see SetChannelStatus()
          *
          */
-        void GetChannelStatus(
+        virtual void GetChannelStatus(
             StatisticsChannel channel,
             bool* pEnabled ) const;
 
@@ -119,7 +118,7 @@ namespace Spinnaker
          * @see GetChannelStatus()
          *
          */
-        void SetChannelStatus(
+        virtual void SetChannelStatus(
             StatisticsChannel channel,
             bool enabled );
 
@@ -134,7 +133,7 @@ namespace Spinnaker
          * @param pMax The maximum possible value.
          *
          */
-        void GetRange(
+        virtual void GetRange(
             StatisticsChannel channel,
             unsigned int* pMin,
             unsigned int* pMax ) const;
@@ -148,7 +147,7 @@ namespace Spinnaker
          * @param pPixelValueMax The maximum pixel value.
          *
          */
-        void GetPixelValueRange(
+        virtual void GetPixelValueRange(
             StatisticsChannel channel,
             unsigned int* pPixelValueMin,
             unsigned int* pPixelValueMax ) const;
@@ -160,7 +159,7 @@ namespace Spinnaker
          * @param pNumPixelValues The number of unique pixel values.
          *
          */
-        void GetNumPixelValues(
+        virtual void GetNumPixelValues(
             StatisticsChannel channel,
             unsigned int* pNumPixelValues ) const;
 
@@ -171,7 +170,7 @@ namespace Spinnaker
          * @param pPixelValueMean The mean of the image.
          *
          */
-        void GetMean(
+        virtual void GetMean(
             StatisticsChannel channel,
             float* pPixelValueMean ) const;
 
@@ -182,7 +181,7 @@ namespace Spinnaker
          * @param ppHistogram Pointer to an array containing the histogram.
          *
          */
-        void GetHistogram(
+        virtual void GetHistogram(
             StatisticsChannel channel,
             int** ppHistogram ) const;
 
@@ -199,7 +198,7 @@ namespace Spinnaker
          * @param ppHistogram Pointer to an array containing the histogram.
          *
          */
-        void GetStatistics(
+        virtual void GetStatistics(
             StatisticsChannel channel,
             unsigned int* pRangeMin = NULL,
             unsigned int* pRangeMax = NULL,
@@ -208,15 +207,16 @@ namespace Spinnaker
             unsigned int* pNumPixelValues = NULL,
             float* pPixelValueMean = NULL,
             int** ppHistogram = NULL ) const;
+
     private:
         friend class ImageStatsCalculator;
         struct ImageStatisticsData;
         ImageStatisticsData* m_pData;
     };
 
-	/*@}*/
+    /*@}*/
 
-	/*@}*/
+    /*@}*/
 }
 
-#endif // PGR_SPINNAKER_IMAGESTATISTICS_H
+#endif // FLIR_SPINNAKER_IMAGESTATISTICS_H

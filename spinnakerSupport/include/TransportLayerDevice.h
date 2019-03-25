@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -17,8 +17,8 @@
    
 /* Auto-generated file. Do not modify. */
 
-#ifndef PGR_SPINNAKER_TRANSPORTLAYERDEVICE_H
-#define PGR_SPINNAKER_TRANSPORTLAYERDEVICE_H
+#ifndef FLIR_SPINNAKER_TRANSPORTLAYERDEVICE_H
+#define FLIR_SPINNAKER_TRANSPORTLAYERDEVICE_H
 
 #include "SpinnakerPlatform.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
@@ -99,6 +99,36 @@ namespace Spinnaker
 		GenApi::IEnumerationT<DeviceAccessStatusEnum> &DeviceAccessStatus;
 
 		/**
+		 * Description: Version of the device.
+		 * Visibility: Expert
+		 */
+		GenApi::IString &DeviceVersion;
+
+		/**
+		 * Description: User Defined Name.
+		 * Visibility: Expert
+		 */
+		GenApi::IString &DeviceUserID;
+
+		/**
+		 * Description: Version of the device driver.
+		 * Visibility: Expert
+		 */
+		GenApi::IString &DeviceDriverVersion;
+
+		/**
+		 * Description: Indicates whether the device is in updater mode.
+		 * Visibility: Expert
+		 */
+		GenApi::IBoolean &DeviceIsUpdater;
+
+		/**
+		 * Description: Controls the device access privilege of an application.
+		 * Visibility: Beginner
+		 */
+		GenApi::IEnumerationT<GevCCPEnum> &GevCCP;
+
+		/**
 		 * Description: Sets the location to load GUI XML.
 		 * Visibility: Beginner
 		 */
@@ -121,12 +151,6 @@ namespace Spinnaker
 		 * Visibility: Beginner
 		 */
 		GenApi::IString &GenICamXMLPath;
-
-		/**
-		 * Description: Controls the device access privilege of an application.
-		 * Visibility: Beginner
-		 */
-		GenApi::IEnumerationT<GevCCPEnum> &GevCCP;
 
 		/**
 		 * Description: Current IP address of the GVCP interface of the selected remote device.
@@ -157,24 +181,6 @@ namespace Spinnaker
 		 * Visibility: Expert
 		 */
 		GenApi::IInteger &DeviceLinkSpeed;
-
-		/**
-		 * Description: Version of the device.
-		 * Visibility: Expert
-		 */
-		GenApi::IString &DeviceVersion;
-
-		/**
-		 * Description: Version of the device driver.
-		 * Visibility: Expert
-		 */
-		GenApi::IString &DeviceDriverVersion;
-
-		/**
-		 * Description: User Defined Name.
-		 * Visibility: Expert
-		 */
-		GenApi::IString &DeviceUserID;
 
 		/**
 		 * Description:  Major version of the specification.
@@ -225,6 +231,18 @@ namespace Spinnaker
 		GenApi::IInteger &GevDeviceMaximumPacketSize;
 
 		/**
+		 * Description: Indicates whether the device is on the wrong subnet.
+		 * Visibility: Expert
+		 */
+		GenApi::IBoolean &GevDeviceIsWrongSubnet;
+
+		/**
+		 * Description: Forces the camera to be on the same subnet as its corresponding interface.
+		 * Visibility: Expert
+		 */
+		GenApi::ICommand &GevDeviceForceIP;
+
+		/**
 		 * Description: Controls and indicates if the device is operating in as a Multicast Monitor.
 		 * Visibility: Expert
 		 */
@@ -248,9 +266,16 @@ namespace Spinnaker
 		 */
 		GenApi::IEnumerationT<DeviceCurrentSpeedEnum> &DeviceCurrentSpeed;
 
+		/**
+		 * Description: Indicates whether the device is communicating in U3V Protocol.
+		 * Visibility: Expert
+		 */
+		GenApi::IBoolean &DeviceU3VProtocol;
+
 
 	protected:
 		friend class CameraBase;
+		friend class ICameraBase;
 		friend class CameraInternal;
 
 	};
@@ -259,4 +284,4 @@ namespace Spinnaker
 	/*@}*/
 
 }
-#endif // PGR_SPINNAKER_TRANSPORTLAYERDEVICE_H
+#endif // FLIR_SPINNAKER_TRANSPORTLAYERDEVICE_H
