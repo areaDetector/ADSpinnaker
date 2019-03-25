@@ -1,0 +1,13 @@
+< envPaths
+errlogInit(20000)
+
+dbLoadDatabase("$(TOP)/dbd/spinnakerApp.dbd")
+spinnakerApp_registerRecordDeviceDriver(pdbbase) 
+
+# Prefix for all records
+epicsEnvSet("PREFIX", "13SP1:")
+# Use this line for a specific camera by serial number, in this case a BlackFlyS GigE
+epicsEnvSet("CAMERA_ID",13481965) 
+
+< st.cmd.base
+
