@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -13,26 +13,26 @@
 // PURPOSE, OR NON-INFRINGEMENT. FLIR SHALL NOT BE LIABLE FOR ANY DAMAGES
 // SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
 // THIS SOFTWARE OR ITS DERIVATIVES.
-//=============================================================================*/
+//=============================================================================
 
 /**
  *	@example ChunkData.cpp
  *
- *  @brief ChunkData.cpp shows how to get chunk data on an image, either from 
- *	the nodemap or from the image itself. It relies on information provided in 
+ *  @brief ChunkData.cpp shows how to get chunk data on an image, either from
+ *	the nodemap or from the image itself. It relies on information provided in
  *	the Enumeration, Acquisition, and NodeMapInfo examples.
  *
- *	It can also be helpful to familiarize yourself with the ImageFormatControl 
- *	and Exposure examples. As they are somewhat shorter and simpler, either 
+ *	It can also be helpful to familiarize yourself with the ImageFormatControl
+ *	and Exposure examples. As they are somewhat shorter and simpler, either
  *	provides a strong introduction to camera customization.
  *
  *	Chunk data provides information on various traits of an image. This includes
- *	identifiers such as frame ID, properties such as black level, and more. This 
- *	information can be acquired from either the nodemap or the image itself. 
+ *	identifiers such as frame ID, properties such as black level, and more. This
+ *	information can be acquired from either the nodemap or the image itself.
  *
- *	It may be preferrable to grab chunk data from each individual image, as it 
- *	can be hard to verify whether data is coming from the correct image when 
- *	using the nodemap. This is because chunk data retrieved from the nodemap is 
+ *	It may be preferrable to grab chunk data from each individual image, as it
+ *	can be hard to verify whether data is coming from the correct image when
+ *	using the nodemap. This is because chunk data retrieved from the nodemap is
  *	only valid for the current image; when GetNextImage() is called, chunk data
  *	will be updated to that of the new current image.
  */
@@ -51,8 +51,8 @@ using namespace std;
 // displayed from the image or the nodemap.
 enum chunkDataType
 {
-	IMAGE,
-	NODEMAP
+    IMAGE,
+    NODEMAP
 };
 
 const chunkDataType chosenChunkData = IMAGE;
@@ -63,109 +63,109 @@ const chunkDataType chosenChunkData = IMAGE;
 // and each image.
 int ConfigureChunkData(INodeMap & nodeMap)
 {
-	int result = 0;
+    int result = 0;
 
-	cout << endl << endl << "*** CONFIGURING CHUNK DATA ***" << endl << endl;
+    cout << endl << endl << "*** CONFIGURING CHUNK DATA ***" << endl << endl;
 
-	try
-	{
-		//
-		// Activate chunk mode
-		//
-		// *** NOTES ***
-		// Once enabled, chunk data will be available at the end of the payload
-		// of every image captured until it is disabled. Chunk data can also be 
-		// retrieved from the nodemap.
-		//
-		CBooleanPtr ptrChunkModeActive = nodeMap.GetNode("ChunkModeActive");
+    try
+    {
+        //
+        // Activate chunk mode
+        //
+        // *** NOTES ***
+        // Once enabled, chunk data will be available at the end of the payload
+        // of every image captured until it is disabled. Chunk data can also be 
+        // retrieved from the nodemap.
+        //
+        CBooleanPtr ptrChunkModeActive = nodeMap.GetNode("ChunkModeActive");
 
-		if (!IsAvailable(ptrChunkModeActive) || !IsWritable(ptrChunkModeActive))
-		{
-			cout << "Unable to activate chunk mode. Aborting..." << endl << endl;
-			return -1;
-		}
+        if (!IsAvailable(ptrChunkModeActive) || !IsWritable(ptrChunkModeActive))
+        {
+            cout << "Unable to activate chunk mode. Aborting..." << endl << endl;
+            return -1;
+        }
 
-		ptrChunkModeActive->SetValue(true);
+        ptrChunkModeActive->SetValue(true);
 
-		cout << "Chunk mode activated..." << endl;
+        cout << "Chunk mode activated..." << endl;
 
-		//
-		// Enable all types of chunk data
-		//
-		// *** NOTES ***
-		// Enabling chunk data requires working with nodes: "ChunkSelector"
-		// is an enumeration selector node and "ChunkEnable" is a boolean. It
-		// requires retrieving the selector node (which is of enumeration node 
-		// type), selecting the entry of the chunk data to be enabled, retrieving 
-		// the corresponding boolean, and setting it to true. 
-		//
-		// In this example, all chunk data is enabled, so these steps are 
-		// performed in a loop. Once this is complete, chunk mode still needs to
-		// be activated.
-		//
-		NodeList_t entries;
+        //
+        // Enable all types of chunk data
+        //
+        // *** NOTES ***
+        // Enabling chunk data requires working with nodes: "ChunkSelector"
+        // is an enumeration selector node and "ChunkEnable" is a boolean. It
+        // requires retrieving the selector node (which is of enumeration node 
+        // type), selecting the entry of the chunk data to be enabled, retrieving 
+        // the corresponding boolean, and setting it to true. 
+        //
+        // In this example, all chunk data is enabled, so these steps are 
+        // performed in a loop. Once this is complete, chunk mode still needs to
+        // be activated.
+        //
+        NodeList_t entries;
 
-		// Retrieve the selector node
-		CEnumerationPtr ptrChunkSelector = nodeMap.GetNode("ChunkSelector");
+        // Retrieve the selector node
+        CEnumerationPtr ptrChunkSelector = nodeMap.GetNode("ChunkSelector");
 
-		if (!IsAvailable(ptrChunkSelector) || !IsReadable(ptrChunkSelector))
-		{
-			cout << "Unable to retrieve chunk selector. Aborting..." << endl << endl;
-			return -1;
-		}
+        if (!IsAvailable(ptrChunkSelector) || !IsReadable(ptrChunkSelector))
+        {
+            cout << "Unable to retrieve chunk selector. Aborting..." << endl << endl;
+            return -1;
+        }
 
-		// Retrieve entries
-		ptrChunkSelector->GetEntries(entries);
+        // Retrieve entries
+        ptrChunkSelector->GetEntries(entries);
 
-		cout << "Enabling entries..." << endl;
+        cout << "Enabling entries..." << endl;
 
-		for (int i = 0; i < entries.size(); i++)
-		{
-			// Select entry to be enabled
-			CEnumEntryPtr ptrChunkSelectorEntry = entries.at(i);
+        for (int i = 0; i < entries.size(); i++)
+        {
+            // Select entry to be enabled
+            CEnumEntryPtr ptrChunkSelectorEntry = entries.at(i);
 
-			// Go to next node if problem occurs
-			if (!IsAvailable(ptrChunkSelectorEntry) || !IsReadable(ptrChunkSelectorEntry))
-			{
-				continue;
-			}
+            // Go to next node if problem occurs
+            if (!IsAvailable(ptrChunkSelectorEntry) || !IsReadable(ptrChunkSelectorEntry))
+            {
+                continue;
+            }
 
-			ptrChunkSelector->SetIntValue(ptrChunkSelectorEntry->GetValue());
+            ptrChunkSelector->SetIntValue(ptrChunkSelectorEntry->GetValue());
 
-			cout << "\t" << ptrChunkSelectorEntry->GetSymbolic() << ": ";
+            cout << "\t" << ptrChunkSelectorEntry->GetSymbolic() << ": ";
 
-			// Retrieve corresponding boolean
-			CBooleanPtr ptrChunkEnable = nodeMap.GetNode("ChunkEnable");
+            // Retrieve corresponding boolean
+            CBooleanPtr ptrChunkEnable = nodeMap.GetNode("ChunkEnable");
 
-			// Enable the boolean, thus enabling the corresponding chunk data
-			if (!IsAvailable(ptrChunkEnable))
-			{
-				cout << "not available" << endl;
-				result = -1;
-			}
-			else if (ptrChunkEnable->GetValue())
-			{
-				cout << "enabled" << endl;
-			}
-			else if (IsWritable(ptrChunkEnable))
-			{
-				ptrChunkEnable->SetValue(true);
-				cout << "enabled" << endl;
-			}
-			else
-			{
-				cout << "not writable" << endl;
-				result = -1;
-			}
-		}
-	}
-	catch (Spinnaker::Exception &e)
-	{
-		cout << "Error: " << e.what() << endl;
-		result = -1;
-	}
+            // Enable the boolean, thus enabling the corresponding chunk data
+            if (!IsAvailable(ptrChunkEnable))
+            {
+                cout << "not available" << endl;
+                result = -1;
+            }
+            else if (ptrChunkEnable->GetValue())
+            {
+                cout << "enabled" << endl;
+            }
+            else if (IsWritable(ptrChunkEnable))
+            {
+                ptrChunkEnable->SetValue(true);
+                cout << "enabled" << endl;
+            }
+            else
+            {
+                cout << "not writable" << endl;
+                result = -1;
+            }
+        }
+    }
+    catch (Spinnaker::Exception &e)
+    {
+        cout << "Error: " << e.what() << endl;
+        result = -1;
+    }
 
-	return result;
+    return result;
 }
 
 // This function displays a select amount of chunk data from the image. Unlike
@@ -173,156 +173,156 @@ int ConfigureChunkData(INodeMap & nodeMap)
 // available data.
 int DisplayChunkData(ImagePtr pImage)
 {
-	int result = 0;
+    int result = 0;
 
-	cout << "Printing chunk data from image..." << endl;
+    cout << "Printing chunk data from image..." << endl;
 
-	try
-	{
-		//
-		// Retrieve chunk data from image
-		//
-		// *** NOTES ***
-		// When retrieving chunk data from an image, the data is stored in a
-		// a ChunkData object and accessed with getter functions.
-		//
-		ChunkData chunkData = pImage->GetChunkData();
-	
-		//
-		// Retrieve exposure time; exposure time recorded in microseconds
-		//
-		// *** NOTES ***
-		// Floating point numbers are returned as a float64_t. This can safely
-		// and easily be statically cast to a double.
-		//
-		double exposureTime = static_cast<double>(chunkData.GetExposureTime());
-		std::cout << "\tExposure time: " << exposureTime << endl;
+    try
+    {
+        //
+        // Retrieve chunk data from image
+        //
+        // *** NOTES ***
+        // When retrieving chunk data from an image, the data is stored in a
+        // a ChunkData object and accessed with getter functions.
+        //
+        ChunkData chunkData = pImage->GetChunkData();
 
-		//
-		// Retrieve frame ID
-		//
-		// *** NOTES ***
-		// Integers are returned as an int64_t. As this is the typical integer
-		// data type used in the Spinnaker SDK, there is no need to cast it.
-		//
-		int64_t frameID = chunkData.GetFrameID();
-		cout << "\tFrame ID: " << frameID << endl;
+        //
+        // Retrieve exposure time; exposure time recorded in microseconds
+        //
+        // *** NOTES ***
+        // Floating point numbers are returned as a float64_t. This can safely
+        // and easily be statically cast to a double.
+        //
+        double exposureTime = static_cast<double>(chunkData.GetExposureTime());
+        std::cout << "\tExposure time: " << exposureTime << endl;
 
-		// Retrieve gain; gain recorded in decibels
-		double gain = chunkData.GetGain();
-		cout << "\tGain: " << gain << endl;
+        //
+        // Retrieve frame ID
+        //
+        // *** NOTES ***
+        // Integers are returned as an int64_t. As this is the typical integer
+        // data type used in the Spinnaker SDK, there is no need to cast it.
+        //
+        int64_t frameID = chunkData.GetFrameID();
+        cout << "\tFrame ID: " << frameID << endl;
 
-		// Retrieve height; height recorded in pixels
-		int64_t height = chunkData.GetHeight();
-		cout << "\tHeight: " << height << endl;
+        // Retrieve gain; gain recorded in decibels
+        double gain = chunkData.GetGain();
+        cout << "\tGain: " << gain << endl;
 
-		// Retrieve offset X; offset X recorded in pixels
-		int64_t offsetX = chunkData.GetOffsetX();
-		cout << "\tOffset X: " << offsetX << endl;
+        // Retrieve height; height recorded in pixels
+        int64_t height = chunkData.GetHeight();
+        cout << "\tHeight: " << height << endl;
 
-		// Retrieve offset Y; offset Y recorded in pixels
-		int64_t offsetY = chunkData.GetOffsetY();
-		cout << "\tOffset Y: " << offsetY << endl;
+        // Retrieve offset X; offset X recorded in pixels
+        int64_t offsetX = chunkData.GetOffsetX();
+        cout << "\tOffset X: " << offsetX << endl;
 
-		// Retrieve sequencer set active
-		int64_t sequencerSetActive = chunkData.GetSequencerSetActive();
-		cout << "\tSequencer set active: " << sequencerSetActive << endl;
+        // Retrieve offset Y; offset Y recorded in pixels
+        int64_t offsetY = chunkData.GetOffsetY();
+        cout << "\tOffset Y: " << offsetY << endl;
 
-		// Retrieve timestamp
-		int64_t timestamp = chunkData.GetTimestamp();
-		cout << "\tTimestamp: " << timestamp << endl;
+        // Retrieve sequencer set active
+        int64_t sequencerSetActive = chunkData.GetSequencerSetActive();
+        cout << "\tSequencer set active: " << sequencerSetActive << endl;
 
-		// Retrieve width; width recorded in pixels
-		int64_t width = chunkData.GetWidth();
-		cout << "\tWidth: " << width << endl;
-	}
-	catch (Spinnaker::Exception &e)
-	{
-		cout << "Error: " << e.what() << endl;
-		result = -1;
-	}
-	
-	return result;
+        // Retrieve timestamp
+        uint64_t timestamp = chunkData.GetTimestamp();
+        cout << "\tTimestamp: " << timestamp << endl;
+
+        // Retrieve width; width recorded in pixels
+        int64_t width = chunkData.GetWidth();
+        cout << "\tWidth: " << width << endl;
+    }
+    catch (Spinnaker::Exception &e)
+    {
+        cout << "Error: " << e.what() << endl;
+        result = -1;
+    }
+
+    return result;
 }
 
 // This function displays all available chunk data by looping through the chunk 
 // data category node on the nodemap.
 int DisplayChunkData(INodeMap & nodeMap)
 {
-	int result = 0;
+    int result = 0;
 
-	cout << "Printing chunk data from nodemap..." << endl;
+    cout << "Printing chunk data from nodemap..." << endl;
 
-	try
-	{
-		//
-		// Retrieve chunk data information nodes
-		//
-		// *** NOTES ***
-		// As well as being written into the payload of the image, chunk data is
-		// accessible on the GenICam nodemap. Insofar as chunk data is enabled,
-		// it is available from both sources.
-		//
-		CCategoryPtr ptrChunkDataControl = nodeMap.GetNode("ChunkDataControl");
-		if (!IsAvailable(ptrChunkDataControl) || !IsReadable(ptrChunkDataControl))
-		{
-			cout << "Unable to retrieve chunk data control. Aborting..." << endl << endl;
-			return -1;
-		}
+    try
+    {
+        //
+        // Retrieve chunk data information nodes
+        //
+        // *** NOTES ***
+        // As well as being written into the payload of the image, chunk data is
+        // accessible on the GenICam nodemap. Insofar as chunk data is enabled,
+        // it is available from both sources.
+        //
+        CCategoryPtr ptrChunkDataControl = nodeMap.GetNode("ChunkDataControl");
+        if (!IsAvailable(ptrChunkDataControl) || !IsReadable(ptrChunkDataControl))
+        {
+            cout << "Unable to retrieve chunk data control. Aborting..." << endl << endl;
+            return -1;
+        }
 
-		FeatureList_t features;
-		ptrChunkDataControl->GetFeatures(features);
+        FeatureList_t features;
+        ptrChunkDataControl->GetFeatures(features);
 
-		// Iterate through children
-		FeatureList_t::const_iterator it;
+        // Iterate through children
+        FeatureList_t::const_iterator it;
 
-		for (it = features.begin(); it != features.end(); ++it)
-		{
-			CNodePtr pFeature = (CNodePtr)*it;
+        for (it = features.begin(); it != features.end(); ++it)
+        {
+            CNodePtr pFeature = (CNodePtr)*it;
 
-			cout << "\t" << pFeature->GetDisplayName() << ": ";
+            cout << "\t" << pFeature->GetDisplayName() << ": ";
 
-			if (!IsAvailable(pFeature) || !IsReadable(pFeature))
-			{
-				cout << "node not available" << endl;
-				result = result | -1;
-				continue;
-			}
-			//
-			// Print boolean node type value
-			//
-			// *** NOTES ***
-			// Boolean information is manipulated to output the more-easily
-			// identifiable 'true' and 'false' as opposed to '1' and '0'.
-			//
-			else if (pFeature->GetPrincipalInterfaceType() == intfIBoolean)
-			{
-				CBooleanPtr pBool = (CBooleanPtr)pFeature;
-				bool value = pBool->GetValue();
-				cout << (value ? "true" : "false") << endl;
-			}
-			//
-			// Print non-boolean node type value
-			//
-			// *** NOTES ***
-			// All nodes can be cast as value nodes and have their information
-			// retrieved as a string using the ToString() method. This is much
-			// easier than dealing with each node type individually.
-			//
-			else
-			{
-				CValuePtr pValue = (CValuePtr)pFeature;
-				cout << pValue->ToString() << endl;
-			}
-		}
-	}
-	catch (Spinnaker::Exception &e)
-	{
-		cout << "Error: " << e.what() << endl;
-		result = -1;
-	}
-	
-	return result;
+            if (!IsAvailable(pFeature) || !IsReadable(pFeature))
+            {
+                cout << "node not available" << endl;
+                result = result | -1;
+                continue;
+            }
+            //
+            // Print boolean node type value
+            //
+            // *** NOTES ***
+            // Boolean information is manipulated to output the more-easily
+            // identifiable 'true' and 'false' as opposed to '1' and '0'.
+            //
+            else if (pFeature->GetPrincipalInterfaceType() == intfIBoolean)
+            {
+                CBooleanPtr pBool = (CBooleanPtr)pFeature;
+                bool value = pBool->GetValue();
+                cout << (value ? "true" : "false") << endl;
+            }
+            //
+            // Print non-boolean node type value
+            //
+            // *** NOTES ***
+            // All nodes can be cast as value nodes and have their information
+            // retrieved as a string using the ToString() method. This is much
+            // easier than dealing with each node type individually.
+            //
+            else
+            {
+                CValuePtr pValue = (CValuePtr)pFeature;
+                cout << pValue->ToString() << endl;
+            }
+        }
+    }
+    catch (Spinnaker::Exception &e)
+    {
+        cout << "Error: " << e.what() << endl;
+        result = -1;
+    }
+
+    return result;
 }
 
 // This function prints the device information of the camera from the transport
@@ -330,364 +330,372 @@ int DisplayChunkData(INodeMap & nodeMap)
 // device information from the nodemap.
 int PrintDeviceInfo(INodeMap & nodeMap)
 {
-	int result = 0;
+    int result = 0;
 
-	cout << endl << "*** DEVICE INFORMATION ***" << endl << endl;
+    cout << endl << "*** DEVICE INFORMATION ***" << endl << endl;
 
-	try
-	{
-		FeatureList_t features;
-		CCategoryPtr category = nodeMap.GetNode("DeviceInformation");
-		if (IsAvailable(category) && IsReadable(category))
-		{
-			category->GetFeatures(features);
+    try
+    {
+        FeatureList_t features;
+        CCategoryPtr category = nodeMap.GetNode("DeviceInformation");
+        if (IsAvailable(category) && IsReadable(category))
+        {
+            category->GetFeatures(features);
 
-			FeatureList_t::const_iterator it;
-			for (it = features.begin(); it != features.end(); ++it)
-			{
-				CNodePtr pfeatureNode = *it;
-				cout << pfeatureNode->GetName() << " : ";
-				CValuePtr pValue = (CValuePtr)pfeatureNode;
-				cout << (IsReadable(pValue) ? pValue->ToString() : "Node not readable");
-				cout << endl;
-			}
-		}
-		else
-		{
-			cout << "Device control information not available." << endl;
-		}
-	}
-	catch (Spinnaker::Exception &e)
-	{
-		cout << "Error: " << e.what() << endl;
-		result = -1;
-	}
+            FeatureList_t::const_iterator it;
+            for (it = features.begin(); it != features.end(); ++it)
+            {
+                CNodePtr pfeatureNode = *it;
+                cout << pfeatureNode->GetName() << " : ";
+                CValuePtr pValue = (CValuePtr)pfeatureNode;
+                cout << (IsReadable(pValue) ? pValue->ToString() : "Node not readable");
+                cout << endl;
+            }
+        }
+        else
+        {
+            cout << "Device control information not available." << endl;
+        }
+    }
+    catch (Spinnaker::Exception &e)
+    {
+        cout << "Error: " << e.what() << endl;
+        result = -1;
+    }
 
-	return result;
+    return result;
 }
 
 // This function acquires and saves 10 images from a device; please see
 // Acquisition example for more in-depth comments on acquiring images.
 int AcquireImages(CameraPtr pCam, INodeMap & nodeMap, INodeMap & nodeMapTLDevice)
 {
-	int result = 0;
+    int result = 0;
 
-	cout << endl << endl << "*** IMAGE ACQUISITION ***" << endl << endl;
+    cout << endl << endl << "*** IMAGE ACQUISITION ***" << endl << endl;
 
-	try
-	{
-		// Set acquisition mode to continuous
-		CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-		if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
-		{
-			cout << "Unable to set acquisition mode to continuous (node retrieval). Aborting..." << endl << endl;
-			return -1;
-		}
+    try
+    {
+        // Set acquisition mode to continuous
+        CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
+        if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
+        {
+            cout << "Unable to set acquisition mode to continuous (node retrieval). Aborting..." << endl << endl;
+            return -1;
+        }
 
-		CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
-		if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
-		{
-			cout << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl << endl;
-			return -1;
-		}
+        CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
+        if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
+        {
+            cout << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl << endl;
+            return -1;
+        }
 
-		int64_t acquisitionModeContinuous = ptrAcquisitionModeContinuous->GetValue();
+        int64_t acquisitionModeContinuous = ptrAcquisitionModeContinuous->GetValue();
 
-		ptrAcquisitionMode->SetIntValue(acquisitionModeContinuous);
+        ptrAcquisitionMode->SetIntValue(acquisitionModeContinuous);
 
-		cout << "Acquisition mode set to continuous..." << endl;
+        cout << "Acquisition mode set to continuous..." << endl;
 
-		// Begin acquiring images
-		pCam->BeginAcquisition();
+        // Begin acquiring images
+        pCam->BeginAcquisition();
 
-		cout << "Acquiring images..." << endl;
+        cout << "Acquiring images..." << endl;
 
-		// Retrieve device serial number for filename
-		gcstring deviceSerialNumber("");
+        // Retrieve device serial number for filename
+        gcstring deviceSerialNumber("");
 
-		CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
-		if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
-		{
-			deviceSerialNumber = ptrStringSerial->GetValue();
-			
-			cout << "Device serial number retrieved as " << deviceSerialNumber << "..." << endl;
-		}
-		cout << endl;
+        CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
+        if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
+        {
+            deviceSerialNumber = ptrStringSerial->GetValue();
 
-		// Retrieve, convert, and save images
-		const unsigned int k_numImages = 10;
+            cout << "Device serial number retrieved as " << deviceSerialNumber << "..." << endl;
+        }
+        cout << endl;
 
-		for (unsigned int imageCnt = 0; imageCnt < k_numImages; imageCnt++)
-		{
-			try
-			{
-				// Retrieve next received image and ensure image completion
-				ImagePtr pResultImage = pCam->GetNextImage();
+        // Retrieve, convert, and save images
+        const unsigned int k_numImages = 10;
 
-				if (pResultImage->IsIncomplete())
-				{
-					cout << "Image incomplete with image status " << pResultImage->GetImageStatus() << "..." << endl << endl;
-				}
-				else
-				{
-					// Print image information
-					cout << "Grabbed image " << imageCnt << ", width = " << pResultImage->GetWidth() << ", height = " << pResultImage->GetHeight() << endl;
+        for (unsigned int imageCnt = 0; imageCnt < k_numImages; imageCnt++)
+        {
+            try
+            {
+                // Retrieve next received image and ensure image completion
+                ImagePtr pResultImage = pCam->GetNextImage();
 
-					// Convert image to mono 8
-					ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
+                if (pResultImage->IsIncomplete())
+                {
+                    cout << "Image incomplete with image status " << pResultImage->GetImageStatus() << "..." << endl << endl;
+                }
+                else
+                {
+                    // Print image information
+                    cout << "Grabbed image " << imageCnt << ", width = " << pResultImage->GetWidth() << ", height = " << pResultImage->GetHeight() << endl;
 
-					// Create a unique filename
-					ostringstream filename;
+                    // Convert image to mono 8
+                    ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
 
-					filename << "ChunkData-";
-					if (deviceSerialNumber != "")
-					{
-						filename << deviceSerialNumber.c_str() << "-";
-					}
-					filename << imageCnt << ".jpg";
+                    // Create a unique filename
+                    ostringstream filename;
 
-					// Save image
-					convertedImage->Save(filename.str().c_str());
+                    filename << "ChunkData-";
+                    if (deviceSerialNumber != "")
+                    {
+                        filename << deviceSerialNumber.c_str() << "-";
+                    }
+                    filename << imageCnt << ".jpg";
 
-					cout << "Image saved at " << filename.str() << endl;
+                    // Save image
+                    convertedImage->Save(filename.str().c_str());
 
-					// Display chunk data
-					if (chosenChunkData == IMAGE)
-					{
-						result = DisplayChunkData(pResultImage);
-					}
-					else if (chosenChunkData == NODEMAP)
-					{
-						result = DisplayChunkData(nodeMap);
-					}
-				}
+                    cout << "Image saved at " << filename.str() << endl;
 
-				// Release image
-				pResultImage->Release();
+                    // Display chunk data
+                    if (chosenChunkData == IMAGE)
+                    {
+                        result = DisplayChunkData(pResultImage);
+                    }
+                    else if (chosenChunkData == NODEMAP)
+                    {
+                        result = DisplayChunkData(nodeMap);
+                    }
+                }
 
-				cout << endl;
-			}
-			catch (Spinnaker::Exception &e)
-			{
-				cout << "Error: " << e.what() << endl;
-				result = -1;
-			}
-		}
+                // Release image
+                pResultImage->Release();
 
-		// End acquisition
-		pCam->EndAcquisition();
-	}
-	catch (Spinnaker::Exception &e)
-	{
-		cout << "Error: " << e.what() << endl;
-		result = -1;
-	}
+                cout << endl;
+            }
+            catch (Spinnaker::Exception &e)
+            {
+                cout << "Error: " << e.what() << endl;
+                result = -1;
+            }
+        }
 
-	return result;
+        // End acquisition
+        pCam->EndAcquisition();
+    }
+    catch (Spinnaker::Exception &e)
+    {
+        cout << "Error: " << e.what() << endl;
+        result = -1;
+    }
+
+    return result;
 }
 
 // This function disables each type of chunk data before disabling chunk data mode. 
 int DisableChunkData(INodeMap & nodeMap)
-{	
-	int result = 0;
-	try
-	{
-		NodeList_t entries;
+{
+    int result = 0;
+    try
+    {
+        NodeList_t entries;
 
-		// Retrieve the selector node
-		CEnumerationPtr ptrChunkSelector = nodeMap.GetNode("ChunkSelector");
+        // Retrieve the selector node
+        CEnumerationPtr ptrChunkSelector = nodeMap.GetNode("ChunkSelector");
 
-		if (!IsAvailable(ptrChunkSelector) || !IsReadable(ptrChunkSelector))
-		{
-			cout << "Unable to retrieve chunk selector. Aborting..." << endl << endl;
-			return -1;
-		}
+        if (!IsAvailable(ptrChunkSelector) || !IsReadable(ptrChunkSelector))
+        {
+            cout << "Unable to retrieve chunk selector. Aborting..." << endl << endl;
+            return -1;
+        }
 
-		// Retrieve entries
-		ptrChunkSelector->GetEntries(entries);
+        // Retrieve entries
+        ptrChunkSelector->GetEntries(entries);
 
-		cout << "Disabling entries..." << endl;
+        cout << "Disabling entries..." << endl;
 
-		for (int i = 0; i < entries.size(); i++)
-		{
-			// Select entry to be disabled
-			CEnumEntryPtr ptrChunkSelectorEntry = entries.at(i);
+        for (int i = 0; i < entries.size(); i++)
+        {
+            // Select entry to be disabled
+            CEnumEntryPtr ptrChunkSelectorEntry = entries.at(i);
 
-			// Go to next node if problem occurs
-			if (!IsAvailable(ptrChunkSelectorEntry) || !IsReadable(ptrChunkSelectorEntry))
-			{
-				continue;
-			}
+            // Go to next node if problem occurs
+            if (!IsAvailable(ptrChunkSelectorEntry) || !IsReadable(ptrChunkSelectorEntry))
+            {
+                continue;
+            }
 
-			ptrChunkSelector->SetIntValue(ptrChunkSelectorEntry->GetValue());
+            ptrChunkSelector->SetIntValue(ptrChunkSelectorEntry->GetValue());
 
-			cout << "\t" << ptrChunkSelectorEntry->GetSymbolic() << ": ";
+            cout << "\t" << ptrChunkSelectorEntry->GetSymbolic() << ": ";
 
-			// Retrieve corresponding boolean
-			CBooleanPtr ptrChunkEnable = nodeMap.GetNode("ChunkEnable");
+            // Retrieve corresponding boolean
+            CBooleanPtr ptrChunkEnable = nodeMap.GetNode("ChunkEnable");
 
-			// Disable the boolean, thus disabling the corresponding chunk data
-			if (!IsAvailable(ptrChunkEnable))
-			{
-				cout << "not available" << endl;
-				result = -1;
-			}
-			else if (!ptrChunkEnable->GetValue())
-			{
-				cout << "disabled" << endl;
-			}
-			else if (IsWritable(ptrChunkEnable))
-			{
-				ptrChunkEnable->SetValue(false);
-				cout << "disabled" << endl;
-			}
-			else
-			{
-				cout << "not writable" << endl;
-			}
-		}
-		cout << endl;
+            // Disable the boolean, thus disabling the corresponding chunk data
+            if (!IsAvailable(ptrChunkEnable))
+            {
+                cout << "not available" << endl;
+                result = -1;
+            }
+            else if (!ptrChunkEnable->GetValue())
+            {
+                cout << "disabled" << endl;
+            }
+            else if (IsWritable(ptrChunkEnable))
+            {
+                ptrChunkEnable->SetValue(false);
+                cout << "disabled" << endl;
+            }
+            else
+            {
+                cout << "not writable" << endl;
+            }
+        }
+        cout << endl;
 
-		//Deactivate ChunkMode
-		CBooleanPtr ptrChunkModeActive = nodeMap.GetNode("ChunkModeActive");
+        //Deactivate ChunkMode
+        CBooleanPtr ptrChunkModeActive = nodeMap.GetNode("ChunkModeActive");
 
-		if (!IsAvailable(ptrChunkModeActive) || !IsWritable(ptrChunkModeActive))
-		{
-			cout << "Unable to deactivate chunk mode. Aborting..." << endl << endl;
-			return -1;
-		}
+        if (!IsAvailable(ptrChunkModeActive) || !IsWritable(ptrChunkModeActive))
+        {
+            cout << "Unable to deactivate chunk mode. Aborting..." << endl << endl;
+            return -1;
+        }
 
-		ptrChunkModeActive->SetValue(false);
+        ptrChunkModeActive->SetValue(false);
 
-		cout << "Chunk mode deactivated..." << endl;
-	}
-	catch (Spinnaker::Exception &e)
-	{
-		cout << "Error: " << e.what() << endl;
-		result = -1;
-	}
+        cout << "Chunk mode deactivated..." << endl;
+    }
+    catch (Spinnaker::Exception &e)
+    {
+        cout << "Error: " << e.what() << endl;
+        result = -1;
+    }
 
-	return result;
+    return result;
 }
 
 // This function acts as the body of the example; please see NodeMapInfo example 
 // for more in-depth comments on setting up cameras.
 int RunSingleCamera(CameraPtr pCam)
 {
-	int result = 0;
-	int err = 0;
+    int result = 0;
+    int err = 0;
 
-	try
-	{
-		// Retrieve TL device nodemap and print device information
-		INodeMap & nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
+    try
+    {
+        // Retrieve TL device nodemap and print device information
+        INodeMap & nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
 
-		result = PrintDeviceInfo(nodeMapTLDevice);
+        result = PrintDeviceInfo(nodeMapTLDevice);
 
-		// Initialize camera
-		pCam->Init();
+        // Initialize camera
+        pCam->Init();
 
-		// Retrieve GenICam nodemap
-		INodeMap & nodeMap = pCam->GetNodeMap();
+        // Retrieve GenICam nodemap
+        INodeMap & nodeMap = pCam->GetNodeMap();
 
-		// Configure chunk data
-		err = ConfigureChunkData(nodeMap);
-		if (err < 0)
-		{
-			return err;
-		}
+        // Configure chunk data
+        err = ConfigureChunkData(nodeMap);
+        if (err < 0)
+        {
+            return err;
+        }
 
-		// Acquire images and display chunk data
-		result = result | AcquireImages(pCam, nodeMap, nodeMapTLDevice);
-		
-		// Disable chunk data
-		err = DisableChunkData(nodeMap);
-		if (err < 0)
-		{
-			return err;
-		}
+        // Acquire images and display chunk data
+        result = result | AcquireImages(pCam, nodeMap, nodeMapTLDevice);
 
-		// Deinitialize camera
-		pCam->DeInit();
-	}
-	catch (Spinnaker::Exception &e)
-	{
-		cout << "Error: " << e.what() << endl;
-		result = -1;
-	}
+        // Disable chunk data
+        err = DisableChunkData(nodeMap);
+        if (err < 0)
+        {
+            return err;
+        }
 
-	return result;
+        // Deinitialize camera
+        pCam->DeInit();
+    }
+    catch (Spinnaker::Exception &e)
+    {
+        cout << "Error: " << e.what() << endl;
+        result = -1;
+    }
+
+    return result;
 }
 
 // Example entry point; please see Enumeration example for more in-depth 
 // comments on preparing and cleaning up the system.
 int main(int /*argc*/, char** /*argv*/)
 {
-	// Since this application saves images in the current folder
-	// we must ensure that we have permission to write to this folder.
-	// If we do not have permission, fail right away.
-	FILE *tempFile = fopen("test.txt", "w+");
-	if (tempFile == NULL)
-	{
-		cout << "Failed to create file in current folder.  Please check "
-			"permissions."
-			<< endl;
-		cout << "Press Enter to exit..." << endl;
-		getchar();
-		return -1;
-	}
-	fclose(tempFile);
-	remove("test.txt");
+    // Since this application saves images in the current folder
+    // we must ensure that we have permission to write to this folder.
+    // If we do not have permission, fail right away.
+    FILE *tempFile = fopen("test.txt", "w+");
+    if (tempFile == nullptr)
+    {
+        cout << "Failed to create file in current folder.  Please check "
+            "permissions."
+            << endl;
+        cout << "Press Enter to exit..." << endl;
+        getchar();
+        return -1;
+    }
+    fclose(tempFile);
+    remove("test.txt");
 
-	int result = 0;
+    int result = 0;
 
-	// Print application build information
-	cout << "Application build date: " << __DATE__ << " " << __TIME__ << endl << endl;
+    // Print application build information
+    cout << "Application build date: " << __DATE__ << " " << __TIME__ << endl << endl;
 
-	// Retrieve singleton reference to system object
-	SystemPtr system = System::GetInstance();
+    // Retrieve singleton reference to system object
+    SystemPtr system = System::GetInstance();
 
-	// Retrieve list of cameras from the system
-	CameraList camList = system->GetCameras();
+    // Print out current library version
+    const LibraryVersion spinnakerLibraryVersion = system->GetLibraryVersion();
+    cout << "Spinnaker library version: "
+        << spinnakerLibraryVersion.major << "."
+        << spinnakerLibraryVersion.minor << "."
+        << spinnakerLibraryVersion.type << "."
+        << spinnakerLibraryVersion.build << endl << endl;
 
-	unsigned int numCameras = camList.GetSize();
+    // Retrieve list of cameras from the system
+    CameraList camList = system->GetCameras();
 
-	cout << "Number of cameras detected: " << numCameras << endl << endl;
+    unsigned int numCameras = camList.GetSize();
 
-	// Finish if there are no cameras
-	if (numCameras == 0)
-	{
-		// Clear camera list before releasing system
-		camList.Clear();
+    cout << "Number of cameras detected: " << numCameras << endl << endl;
 
-		// Release system
-		system->ReleaseInstance();
+    // Finish if there are no cameras
+    if (numCameras == 0)
+    {
+        // Clear camera list before releasing system
+        camList.Clear();
 
-		cout << "Not enough cameras!" << endl;
-		cout << "Done! Press Enter to exit..." << endl;
-		getchar();
+        // Release system
+        system->ReleaseInstance();
 
-		return -1;
-	}
+        cout << "Not enough cameras!" << endl;
+        cout << "Done! Press Enter to exit..." << endl;
+        getchar();
 
-	// Run example on each camera
-	for (unsigned int i = 0; i < numCameras; i++)
-	{
-		cout << endl << "Running example for camera " << i << "..." << endl;
+        return -1;
+    }
 
-		result = result | RunSingleCamera(camList.GetByIndex(i));
+    // Run example on each camera
+    for (unsigned int i = 0; i < numCameras; i++)
+    {
+        cout << endl << "Running example for camera " << i << "..." << endl;
 
-		cout << "Camera " << i << " example complete..." << endl << endl;
-	}
+        result = result | RunSingleCamera(camList.GetByIndex(i));
 
-	// Clear camera list before releasing system
-	camList.Clear();
+        cout << "Camera " << i << " example complete..." << endl << endl;
+    }
 
-	// Release system
-	system->ReleaseInstance();
+    // Clear camera list before releasing system
+    camList.Clear();
 
-	cout << endl << "Done! Press Enter to exit..." << endl;
-	getchar();
+    // Release system
+    system->ReleaseInstance();
 
-	return result;
+    cout << endl << "Done! Press Enter to exit..." << endl;
+    getchar();
+
+    return result;
 }
