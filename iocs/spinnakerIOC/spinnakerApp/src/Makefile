@@ -5,7 +5,7 @@ include $(TOP)/configure/CONFIG
 
 PROD_NAME = spinnakerApp
 PROD_IOC_WIN32 += $(PROD_NAME)
-#PROD_IOC_Linux += $(PROD_NAME)
+PROD_IOC_Linux += $(PROD_NAME)
 
 # <name>.dbd will be created from <name>Include.dbd
 DBD += $(PROD_NAME).dbd
@@ -30,11 +30,6 @@ PROD_SYS_LIBS_Linux += NodeMapData_gcc540_v3_0
 PROD_SYS_LIBS_Linux += MathParser_gcc540_v3_0
 PROD_SYS_LIBS_Linux += XmlParser_gcc540_v3_0
 PROD_SYS_LIBS_Linux += Log_gcc540_v3_0
-PROD_SYS_LIBS_Linux += ptgreyvideoencoder
-PROD_SYS_LIBS_Linux += swscale-ffmpeg
-PROD_SYS_LIBS_Linux += avcodec-ffmpeg
-#PROD_SYS_LIBS_Linux += avformat
-#PROD_SYS_LIBS_Linux += avutil
 
 include $(ADCORE)/ADApp/commonDriverMakefile
 
