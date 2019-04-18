@@ -4,7 +4,7 @@
 <widget class="QMainWindow" name="MainWindow">
     <property name="geometry">
         <rect>
-            <x>2188</x>
+            <x>100</x>
             <y>96</y>
             <width>1070</width>
             <height>925</height>
