@@ -147,6 +147,7 @@ public:
     /**< These should be private but are called from C callback functions, must be public. */
     void imageGrabTask();
     void shutdown();
+    int STOP_ME = 0;
 
 protected:
     int SPVideoMode;
@@ -1024,16 +1025,13 @@ asynStatus ADSpinnaker::connectCamera(void)
     epicsSnprintf(tempString, sizeof(tempString), "%d.%d.%d", 
                   DRIVER_VERSION, DRIVER_REVISION, DRIVER_MODIFICATION);
     setStringParam(NDDriverVersion,tempString);
- 
-/*   
-    Utilities::GetLibraryVersion(&version);
+
+    system_ = System::GetInstance();
+    const LibraryVersion version = system_->GetLibraryVersion();
     epicsSnprintf(tempString, sizeof(tempString), "%d.%d.%d", version.major, version.minor, version.type);
-    asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-        "%s::%s called Utilities::GetLibraryVersion, version=%s\n",
-        driverName, functionName, tempString);
     setStringParam(ADSDKVersion, tempString);
 
-
+/*
     // Get and set the embedded image info
     asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
         "%s::%s calling CameraBase::GetEmbeddedImageInfo, &embeddedInfo=%p\n",
@@ -1130,8 +1128,9 @@ void ADSpinnaker::imageGrabTask()
         pRaw_ = NULL;
 
         // See if acquisition is done if we are in single or multiple mode
-        if ((imageMode == ADImageSingle) || ((imageMode == ADImageMultiple) && (numImagesCounter >= numImages))) {
+        if (( STOP_ME == 1) || (imageMode == ADImageSingle) || ((imageMode == ADImageMultiple) && (numImagesCounter >= numImages))) {
             setIntegerParam(ADStatus, ADStatusIdle);
+            STOP_ME = 0;
             status = stopCapture();
         }
         callParamCallbacks();
@@ -1448,8 +1447,10 @@ asynStatus ADSpinnaker::writeInt32( asynUser *pasynUser, epicsInt32 value)
     if (function == ADAcquire) {
         if (value) {
             // start acquisition
+            STOP_ME = 0;
             status = startCapture();
         } else {
+            STOP_ME = 1;
             status = stopCapture();
         }
 
@@ -1669,10 +1670,10 @@ asynStatus ADSpinnaker::readStatus()
 
     try {
         const TransportLayerStream& camInfo = pCamera_->TLStream;
-//  		  cout << "Stream ID: " << camInfo.StreamID.ToString() << endl;
-//	  	  cout << "Stream Type: " << camInfo.StreamType.ToString() << endl;
-//		    cout << "Stream Buffer Count: " << camInfo.StreamDefaultBufferCount.ToString() << endl;
-//		    cout << "Stream Buffer Handling Mode: " << camInfo.StreamBufferHandlingMode.ToString() << endl;
+//        cout << "Stream ID: " << camInfo.StreamID.ToString() << endl;
+//        cout << "Stream Type: " << camInfo.StreamType.ToString() << endl;
+//        cout << "Stream Buffer Count: " << camInfo.StreamDefaultBufferCount.ToString() << endl;
+//        cout << "Stream Buffer Handling Mode: " << camInfo.StreamBufferHandlingMode.ToString() << endl;
 //        cout << "Stream Packets Received: " << camInfo.GevTotalPacketCount.ToString() << endl;
         getSPProperty(ADTemperatureActual);
 //printf("StreamBufferUnderrunCount = %d\n", (int)camInfo.StreamBufferUnderrunCount.GetValue());
