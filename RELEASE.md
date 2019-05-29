@@ -4,10 +4,10 @@ ADSpinnaker Releases
 The latest untagged master branch can be obtained at
 https://github.com/areaDetector/ADSpinnaker.
 
-Tagged source code releases from R2-0 onward can be obtained at 
+Tagged source code releases can be obtained at
 https://github.com/areaDetector/ADSpinnaker/releases.
 
-Tagged prebuilt binaries from R2-0 onward can be obtained at
+Tagged prebuilt binaries can be obtained at
 https://cars.uchicago.edu/software/pub/ADSpinnaker.
 
 The versions of EPICS base, asyn, and other synApps modules used for each release can be obtained from 
@@ -19,6 +19,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R1-0 (XXX-February-2018)
+R1-0 (May 29, 2019)
 ----
 * Initial release
+
