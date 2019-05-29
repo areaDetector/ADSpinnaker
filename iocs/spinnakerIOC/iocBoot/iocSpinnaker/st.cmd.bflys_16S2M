@@ -1,4 +1,4 @@
-< envPaths.windows
+< envPaths
 errlogInit(20000)
 
 dbLoadDatabase("$(TOP)/dbd/spinnakerApp.dbd")
