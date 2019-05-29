@@ -1,0 +1,21 @@
+To do:
+
+- USB is dropping frames: rate is less than requested, multiple mode is coming up 10% short
+- Finish report() function
+- Logging
+- ADCBitDepth
+- Convert pixel format (problems reported to Point Grey)
+- Test black level
+- Test gamma
+- Reverse X
+- Single frame acquisition mode (triggered, free-running)
+- Reset device
+- Exposure mode (timed or trigger width)
+- Exposure compensation (Off, once, continuous)
+- Test problem with VS2015 debug mode not working with camList.GetBySerial
+- See if UniqueId and Timestamp are present even if ChunkData is disabled, write test program.
+- Timestamp latch
+- Strobe
+- Bandwidth control
+- Documentation
+
