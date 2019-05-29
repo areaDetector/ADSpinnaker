@@ -7,7 +7,8 @@ spinnakerApp_registerRecordDeviceDriver(pdbbase)
 # Prefix for all records
 epicsEnvSet("PREFIX", "13SP1:")
 # Use this line for a specific camera by serial number, in this case a BlackFlyS GigE
-epicsEnvSet("CAMERA_ID", "17165235")
+#epicsEnvSet("CAMERA_ID", "17165235")
+epicsEnvSet("CAMERA_ID", "18585624")
 
 < st.cmd.base
 
