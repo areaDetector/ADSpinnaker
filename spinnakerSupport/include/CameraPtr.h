@@ -15,8 +15,8 @@
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
 
-#ifndef PGR_SPINNAKER_CAMERA_PTR_H
-#define PGR_SPINNAKER_CAMERA_PTR_H
+#ifndef FLIR_SPINNAKER_CAMERA_PTR_H
+#define FLIR_SPINNAKER_CAMERA_PTR_H
 
 #include "SpinnakerPlatform.h"
 #include "BasePtr.h"
@@ -25,45 +25,50 @@
 
 namespace Spinnaker
 {
-	/**
-	*  @defgroup SpinnakerClasses Spinnaker Classes
-	*/
+    /**
+    *  @defgroup SpinnakerClasses Spinnaker Classes
+    */
 
-	/*@{*/
+    /*@{*/
 
-	/**
-	*  @defgroup CameraPtr_h CameraPtr Class
-	*/
+    /**
+    *  @defgroup CameraPtr_h CameraPtr Class
+    */
 
-	/*@{*/
+    /*@{*/
 
     /**
     * @brief A reference tracked pointer to a camera object. 
     */
 
-	class SPINNAKER_API CameraPtr : public BasePtr<Camera,CameraBase>
-	{
+    class SPINNAKER_API CameraPtr : public BasePtr<Camera, ICameraBase>
+    {
 
-	public:
-		//! Default constructor.
-		CameraPtr() throw()
-			: BasePtr<Camera,CameraBase>()
-		{
-		}
+    public:
+        //! Default constructor.
+        CameraPtr() throw()
+            : BasePtr<Camera, ICameraBase>()
+        {
+        }
 
-		//! Default constructor.
-		CameraPtr(const int /*nMustBeNull*/) throw()
-			: BasePtr<Camera, CameraBase>()
-		{
-		}
+        //! Default constructor.
+        CameraPtr(const int /*nMustBeNull*/) throw()
+            : BasePtr<Camera, ICameraBase>()
+        {
+        }
 
-        //! Virtual destructor.
-		virtual ~CameraPtr(void){};
+        //! Default constructor with argument.
+        CameraPtr(const long /*nMustBeNull*/) throw()
+            : BasePtr<Camera, ICameraBase>()
+        {
+        }
 
-        //! Assignment operator.
-		virtual CameraPtr& operator=(const int nMustBeNull){ return dynamic_cast<CameraPtr&>(BasePtr<Camera, CameraBase>::operator=(nMustBeNull)); };
-		
-	};
+        CameraPtr(const nullptr_t /*nullPtr*/) throw()
+            : BasePtr<Camera, ICameraBase>()
+        {
+        }
+        
+    };
 }
 
-#endif //PGR_SPINNAKER_CAMERA_PTR_H
+#endif // FLIR_SPINNAKER_CAMERA_PTR_H

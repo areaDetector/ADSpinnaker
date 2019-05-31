@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -15,49 +15,45 @@
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
 
-#ifndef FLIR_SPINNAKER_SYSTEM_PTR_H
-#define FLIR_SPINNAKER_SYSTEM_PTR_H
+#ifndef FLIR_SPINNAKER_IINTERFACELIST_H
+#define FLIR_SPINNAKER_IINTERFACELIST_H
 
-#include "SpinnakerPlatform.h"
-#include "BasePtr.h"
-#include "System.h"
+#include "InterfacePtr.h"
 
 namespace Spinnaker
 {
-    class ISystem;
-
     /**
-    *  @defgroup SpinnakerClasses Spinnaker Classes
+    * @defgroup SpinnakerClasses Spinnaker Classes
     */
+
     /*@{*/
 
     /**
-    *  @defgroup SystemPtr_h SystemPtr Class
+    * @defgroup IInterfaceList_h IInterfaceList Class
     */
+
     /*@{*/
 
     /**
-    * @brief A reference tracked pointer to a system object.
+    * @brief The interface file for InterfaceList class.
     */
 
-    class SPINNAKER_API SystemPtr : public BasePtr<ISystem>
+    class SPINNAKER_API IInterfaceList
     {
     public:
+        virtual ~IInterfaceList(void) {};
+        virtual InterfacePtr operator[](unsigned int index) = 0;
+        virtual unsigned int GetSize() const = 0;
+        virtual InterfacePtr GetByIndex(unsigned int index) const = 0;
+        virtual void Clear() = 0;
 
-        //! Default constructor 
-        SystemPtr();
+    protected:
+        struct InterfaceListData; // Forward declaration
+        InterfaceListData* m_pInterfaceListData;
 
-        //! Copy constructor 
-        SystemPtr(const int /*nMustBeNull*/);
-
-        //! Copy constructor 
-        SystemPtr(const long /*nMustBeNull*/);
-
-        //! Copy constructor
-        SystemPtr(const nullptr_t /*nullPtr*/);
-
-        //! Virtual destructor 
-        virtual ~SystemPtr(void);
+        IInterfaceList(void) {};
+        IInterfaceList(const IInterfaceList &) {};
+        IInterfaceList&	operator=(const IInterfaceList&);
     };
 
     /*@}*/
@@ -65,4 +61,4 @@ namespace Spinnaker
     /*@}*/
 }
 
-#endif //FLIR_SPINNAKER_SYSTEM_PTR_H
+#endif // FLIR_SPINNAKER_IINTERFACELIST_H
