@@ -154,4 +154,3 @@ void SPFeature::readEnumChoices(std::vector<std::string>& enumStrings, std::vect
         }
     }
 }
-
