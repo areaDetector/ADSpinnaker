@@ -322,15 +322,15 @@ asynStatus ADSpinnaker::connectCamera(void)
                   DRIVER_VERSION, DRIVER_REVISION, DRIVER_MODIFICATION);
     setStringParam(NDDriverVersion,tempString);
  
-/*   
-    Utilities::GetLibraryVersion(&version);
-    epicsSnprintf(tempString, sizeof(tempString), "%d.%d.%d", version.major, version.minor, version.type);
+    
+    LibraryVersion version = system_->GetLibraryVersion();
+    epicsSnprintf(tempString, sizeof(tempString), "%d.%d.%d.%d", version.major, version.minor, version.type, version.build);
     asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-        "%s::%s called Utilities::GetLibraryVersion, version=%s\n",
+        "%s::%s called System::GetLibraryVersion, version=%s\n",
         driverName, functionName, tempString);
     setStringParam(ADSDKVersion, tempString);
 
-
+/*
     // Get and set the embedded image info
     asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
         "%s::%s calling CameraBase::GetEmbeddedImageInfo, &embeddedInfo=%p\n",
