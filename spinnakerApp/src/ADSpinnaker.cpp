@@ -94,19 +94,18 @@ typedef enum {
 /** Configuration function to configure one camera.
  *
  * This function need to be called once for each camera to be used by the IOC. A call to this
- * function instanciates one object from the ADSpinnaker class.
+ * function instantiates one object from the ADSpinnaker class.
  * \param[in] portName asyn port name to assign to the camera.
  * \param[in] cameraId The camera index or serial number; <1000 is assumed to be index, >=1000 is assumed to be serial number.
  * \param[in] traceMask The initial value of the asynTraceMask.  
  *            If set to 0 or 1 then asynTraceMask will be set to ASYN_TRACE_ERROR.
  *            If set to 0x21 (ASYN_TRACE_WARNING | ASYN_TRACE_ERROR) then each call to the
- *            FlyCap2 library will be traced including during initialization.
+ *            Spinnaker library will be traced including during initialization.
  * \param[in] memoryChannel  The camera memory channel (non-volatile memory containing camera parameters) 
  *            to load during initialization.  If 0 no memory channel is loaded.
  *            If >=1 thenRestoreFromMemoryChannel(memoryChannel-1) is called.  
  *            Set memoryChannel to 1 to work around a bug in the Linux GigE driver in R2.0.
- * \param[in] maxMemory Maximum memory (in bytes) that this driver is allowed to allocate. So if max. size = 1024x768 (8bpp)
- *            and maxBuffers is, say 14. maxMemory = 1024x768x14 = 11010048 bytes (~11MB). 0=unlimited.
+ * \param[in] maxMemory Maximum memory (in bytes) that this driver is allowed to allocate. 0=unlimited.
  * \param[in] priority The EPICS thread priority for this driver.  0=use asyn default.
  * \param[in] stackSize The size of the stack for the EPICS port thread. 0=use asyn default.
  */
@@ -138,13 +137,12 @@ static void imageGrabTaskC(void *drvPvt)
  * \param[in] traceMask The initial value of the asynTraceMask.  
  *            If set to 0 or 1 then asynTraceMask will be set to ASYN_TRACE_ERROR.
  *            If set to 0x21 (ASYN_TRACE_WARNING | ASYN_TRACE_ERROR) then each call to the
- *            FlyCap2 library will be traced including during initialization.
+ *            Spinnaker library will be traced including during initialization.
  * \param[in] memoryChannel  The camera memory channel (non-volatile memory containing camera parameters) 
  *            to load during initialization.  If 0 no memory channel is loaded.
  *            If >=1 thenRestoreFromMemoryChannel(memoryChannel-1) is called.  
  *            Set memoryChannel to 1 to work around a bug in the Linux GigE driver in R2.0.
- * \param[in] maxMemory Maximum memory (in bytes) that this driver is allowed to allocate. So if max. size = 1024x768 (8bpp)
- *            and maxBuffers is, say 14. maxMemory = 1024x768x14 = 11010048 bytes (~11MB). 0=unlimited.
+ * \param[in] maxMemory Maximum memory (in bytes) that this driver is allowed to allocate. 0=unlimited.
  * \param[in] priority The EPICS thread priority for this driver.  0=use asyn default.
  * \param[in] stackSize The size of the stack for the EPICS port thread. 0=use asyn default.
  */
@@ -217,7 +215,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     startEventId_ = epicsEventCreate(epicsEventEmpty);
 
     // launch image read task
-    epicsThreadCreate("PointGreyImageTask", 
+    epicsThreadCreate("ADSpinnakerImageTask", 
                       epicsThreadPriorityMedium,
                       epicsThreadGetStackSize(epicsThreadStackMedium),
                       imageGrabTaskC, this);
@@ -834,7 +832,8 @@ void ADSpinnaker::report(FILE *fp, int details)
 
     try {    
         numCameras = camList_.GetSize();
-        fprintf(fp, "\nNumber of cameras detected: %d\n", numCameras);
+        fprintf(fp, "\n");
+        fprintf(fp, "Number of cameras detected: %d\n", numCameras);
         if (details <1) return;
         for (i=0; i<numCameras; i++) {
             CameraPtr pCamera;
@@ -855,6 +854,8 @@ void ADSpinnaker::report(FILE *fp, int details)
           driverName, functionName, e.what());
     }
     
+    fprintf(fp, "\n");
+    fprintf(fp, "Report for camera in use:\n");
     ADGenICam::report(fp, details);
     return;
 }
