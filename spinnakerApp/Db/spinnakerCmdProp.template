@@ -1,8 +1,0 @@
-## Command
-record(bo, "$(P)$(R)$(PROP)") {
-  field(PINI, "NO")
-  field(DTYP, "asynInt32")
-  field(ONAM, "Execute")
-  field(ZNAM, "Done")
-  field(OUT,  "@asyn($(PORT) 0)$(PN)")
-}
