@@ -543,6 +543,12 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
                 pixelSize = 1;
                 break;
     
+            case PixelFormat_BayerGB8:
+                dataType = NDUInt8;
+                colorMode = NDColorModeBayer;
+                numColors = 1;
+                pixelSize = 1;
+                break;
             case PixelFormat_RGB8:
                 dataType = NDUInt8;
                 colorMode = NDColorModeRGB1;
@@ -600,11 +606,7 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
         setIntegerParam(NDDataType,dataType);
         if (nDims == 3) {
             colorMode = NDColorModeRGB1;
-        } else {
-            // If the color mode is currently set to Bayer leave it alone
-            getIntegerParam(NDColorMode, (int *)&colorMode);
-            if (colorMode != NDColorModeBayer) colorMode = NDColorModeMono;
-        }
+        } 
         setIntegerParam(NDColorMode, colorMode);
     
         pRaw_ = pNDArrayPool->alloc(nDims, dims, dataType, 0, NULL);
@@ -766,6 +768,7 @@ asynStatus ADSpinnaker::readStatus()
             driverName, functionName, e.what());
         return asynError;
     }
+    ADGenICam::readStatus();
     callParamCallbacks();
     return asynSuccess;
 }
