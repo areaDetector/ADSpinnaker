@@ -1,7 +1,0 @@
-# Integer readback
-
-record(longin, $(P)$(R)$(PROP)) {
-  field(DTYP, "asynInt32")
-  field(INP, "@asyn($(PORT) 0)$(PN)")
-  field(SCAN, "I/O Intr")
-}
