@@ -442,6 +442,7 @@ asynStatus ADSpinnaker::grabImage()
     int timeStampMode;
     int uniqueIdMode;
     int convertPixelFormat;
+    bool imageConverted = false;
     int numColors;
     size_t dims[3];
     ImageStatus imageStatus;
@@ -521,9 +522,8 @@ asynStatus ADSpinnaker::grabImage()
     
             pixelFormat = pImage->GetPixelFormat();
             try {
-                ImagePtr pConvertedImage = pImage->Convert(convertedFormat);
-                pImage->Release();
-                pImage = pConvertedImage;
+                pImage  = pImage->Convert(convertedFormat);
+                imageConverted = true;
             }
             catch (Spinnaker::Exception &e) {
                  asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
@@ -648,7 +648,11 @@ asynStatus ADSpinnaker::grabImage()
             pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
         }
         try {
-            pImage->Release();
+            // We get a "No Stream Available" exception if pImage points to an image resulting from ConvertPixeFormat
+            // Not sure why?
+            if (!imageConverted) {
+                pImage->Release();
+            } 
         }
         catch (Spinnaker::Exception &e) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
