@@ -157,15 +157,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     if (traceMask == 0) traceMask = ASYN_TRACE_ERROR;
     pasynTrace->setTraceMask(pasynUserSelf, traceMask);
 
-
-/*
-    createParam(PGPacketSizeString,             asynParamInt32,   &PGPacketSize);
-    createParam(PGPacketSizeActualString,       asynParamInt32,   &PGPacketSizeActual);
-    createParam(PGMaxPacketSizeString,          asynParamInt32,   &PGMaxPacketSize);
-    createParam(PGPacketDelayString,            asynParamInt32,   &PGPacketDelay);
-    createParam(PGPacketDelayActualString,      asynParamInt32,   &PGPacketDelayActual);
-    createParam(PGBandwidthString,              asynParamFloat64, &PGBandwidth);
-*/
     // Retrieve singleton reference to system object
     system_ = System::GetInstance();
 
@@ -195,13 +186,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     setIntegerParam(ADMinY, 0);
     setStringParam(ADStringToServer, "<not used by driver>");
     setStringParam(ADStringFromServer, "<not used by driver>");
-//    setIntegerParam(SPTriggerSource, 0);
-//    setSPProperty(SPColorProcessEnabled, 0);
-    
-//    getSPProperty(ADMaxSizeX, &iValue);
-//    setIntegerParam(ADSizeX, iValue);
-//    getSPProperty(ADMaxSizeY, &iValue);
-//    setIntegerParam(ADSizeY, iValue);
 
     // Create the message queue to pass images from the callback class
     pCallbackMsgQ_ = new epicsMessageQueue(CALLBACK_MESSAGE_QUEUE_SIZE, sizeof(ImagePtr));
@@ -424,8 +408,13 @@ void ADSpinnaker::imageGrabTask()
         pRaw_->release();
         pRaw_ = NULL;
 
+        getIntegerParam(ADAcquire, &acquire);
         // See if acquisition is done if we are in single or multiple mode
-        if ((imageMode == ADImageSingle) || ((imageMode == ADImageMultiple) && (numImagesCounter >= numImages))) {
+        // The check for acquire=0 means this thread will call stopCapture and hence pCamera_->EndAcquisition().
+        // Failure to do this result in hang in call to pCamera_->EndAcquisition() in other thread
+        if ((acquire == 0) || 
+            (imageMode == ADImageSingle) || 
+            ((imageMode == ADImageMultiple) && (numImagesCounter >= numImages))) {
             setIntegerParam(ADStatus, ADStatusIdle);
             status = stopCapture();
         }
@@ -729,17 +718,18 @@ asynStatus ADSpinnaker::stopCapture()
     }
     try {
         pCamera_->EndAcquisition();
-        ImagePtr pImage;
-        // Need to empty the message queue it could have some images in it
-        while(pCallbackMsgQ_->tryReceive(&pImage, sizeof(pImage)) != -1) {
-        }
     }
     catch (Spinnaker::Exception &e) {
-      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-          "%s::%s exception %s\n",
-          driverName, functionName, e.what());
-      return asynError;
+        // Ignore errors that camera not started (-1002)
+        if (e.GetError() != SPINNAKER_ERR_NOT_INITIALIZED) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s::%s exception %s\n",
+                driverName, functionName, e.what());
+        }
     }
+    // Need to empty the message queue it could have some images in it
+    ImagePtr pImage;
+    while(pCallbackMsgQ_->tryReceive(&pImage, sizeof(pImage)) != -1) {}
     return asynSuccess;
 }
 
