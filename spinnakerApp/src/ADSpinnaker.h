@@ -97,7 +97,6 @@ private:
     CameraPtr pCamera_;
     ImageEventHandler *pImageEventHandler_;
 
-    bool stopAcquisition_;
     int exiting_;
     epicsEventId startEventId_;
     epicsMessageQueue *pCallbackMsgQ_;
