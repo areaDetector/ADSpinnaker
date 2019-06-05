@@ -520,7 +520,6 @@ asynStatus ADSpinnaker::grabImage()
             }
     
             pixelFormat = pImage->GetPixelFormat();
-printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, convertedFormat);
             try {
                 ImagePtr pConvertedImage = pImage->Convert(convertedFormat);
                 pImage->Release();
@@ -528,7 +527,7 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
             }
             catch (Spinnaker::Exception &e) {
                  asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-                     "%s::%s exception %s\n",
+                     "%s::%s pixel format conversion exception %s\n",
                  driverName, functionName, e.what());
             }
         }
@@ -653,7 +652,7 @@ printf("Converting image from format 0x%x to format 0x%x\n", pixelFormat, conver
         }
         catch (Spinnaker::Exception &e) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s::%s exception %s\n",
+                "%s::%s pImage->Release() exception %s\n",
                 driverName, functionName, e.what());
         }
         // Get any attributes that have been defined for this driver        
