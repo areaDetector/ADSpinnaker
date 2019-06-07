@@ -11,6 +11,14 @@ using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 
+#define SPConvertPixelFormatString  "SP_CONVERT_PIXEL_FORMAT"   // asynParamInt32, R/W
+#define SPBufferUnderrunCountString "SP_BUFFER_UNDERRUN_COUNT"  // asynParamInt32, R/O
+#define SPFailedBufferCountString   "SP_FAILED_BUFFER_COUNT"    // asynParamInt32, R/O
+#define SPFailedPacketCountString   "SP_FAILED_PACKET_COUNT"    // asynParamInt32, R/O
+#define SPTimeStampModeString       "SP_TIME_STAMP_MODE"        // asynParamInt32, R/O
+#define SPUniqueIdModeString        "SP_UNIQUE_ID_MODE"         // asynParamInt32, R/O
+#define SPFrameRateEnableString     "SP_FRAMERATE_ENABLE"       // asynParamInt32, R/W
+
 class ImageEventHandler : public ImageEvent
 {
 public:
@@ -59,23 +67,14 @@ public:
     void shutdown();
 
 private:
-    int SPVideoMode;
-#define FIRST_SP_PARAM SPVideoMode
     int SPConvertPixelFormat;
-    int SPTransmitFailureCount;
+#define FIRST_SP_PARAM SPConvertPixelFormat
     int SPBufferUnderrunCount;
     int SPFailedBufferCount;
     int SPFailedPacketCount;
     int SPTimeStampMode;
     int SPUniqueIdMode;
-    int SPColorProcessEnabled;
-
-//    int PGPacketSize;             /** Size of data packets from camera                (int32 write/read) */
-//    int PGPacketSizeActual;       /** Size of data packets from camera                (int32 write/read) */
-//    int PGMaxPacketSize;          /** Maximum size of data packets from camera        (int32 write/read) */
-//    int PGPacketDelay;            /** Packet delay in usec from camera, GigE only     (int32 write/read) */
-//    int PGPacketDelayActual;      /** Packet delay in usec from camera, GigE only     (int32 read) */
-//    int PGBandwidth;              /** Bandwidth in MB/s                               (float64 read) */
+    int SPFrameRateEnable;
 
     /* Local methods to this class */
     asynStatus grabImage();
