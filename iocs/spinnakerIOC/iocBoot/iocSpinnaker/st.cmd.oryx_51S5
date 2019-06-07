@@ -4,11 +4,11 @@ errlogInit(20000)
 dbLoadDatabase("$(TOP)/dbd/spinnakerApp.dbd")
 spinnakerApp_registerRecordDeviceDriver(pdbbase) 
 
-# Prefix for all records
-epicsEnvSet("PREFIX", "13SP1:")
 # Use this line for a specific camera by serial number, in this case a BlackFlyS GigE
-#epicsEnvSet("CAMERA_ID", "17165235")
-epicsEnvSet("CAMERA_ID", "18585624")
+epicsEnvSet("CAMERA_ID", "18011754")
+#epicsEnvSet("CAMERA_ID", "0")
+
+epicsEnvSet("GENICAM_DB_FILE", "$(ADGENICAM)/db/FLIR_ORX_10G_51S5.template")
 
 < st.cmd.base
 
