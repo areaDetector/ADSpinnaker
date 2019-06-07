@@ -87,6 +87,24 @@ record(mbbi, "$(P)$(R)ConvertPixelFormat_RBV") {
   field(INP,  "@asyn($(PORT) 0)SP_CONVERT_PIXEL_FORMAT")
 }
 
+record(bo, "$(P)$(R)FrameRateEnable")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT) 0)SP_FRAMERATE_ENABLE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)FrameRateEnable_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT) 0)SP_FRAMERATE_ENABLE")
+   field(SCAN, "I/O Intr")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
 record(longin, "$(P)$(R)FailedPacketCount")
 {
    field(DTYP, "asynInt32")
