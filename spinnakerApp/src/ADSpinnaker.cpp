@@ -15,6 +15,7 @@
 #include <string.h>
 
 #include <set>
+#include <string>
 
 #include <epicsEvent.h>
 #include <epicsTime.h>
@@ -45,18 +46,6 @@ using namespace std;
 
 static const char *driverName = "ADSpinnaker";
 
-/*
-#define PGPacketSizeString            "PG_PACKET_SIZE"
-#define PGPacketSizeActualString      "PG_PACKET_SIZE_ACTUAL"
-#define PGMaxPacketSizeString         "PG_MAX_PACKET_SIZE"
-#define PGPacketDelayString           "PG_PACKET_DELAY"
-#define PGPacketDelayActualString     "PG_PACKET_DELAY_ACTUAL"
-#define PGBandwidthString             "PG_BANDWIDTH"
-*/
-
-// Default packet delay in microseconds
-#define DEFAULT_PACKET_DELAY 400
-
 // Size of message queue for callback function
 #define CALLBACK_MESSAGE_QUEUE_SIZE 10
 
@@ -69,16 +58,6 @@ typedef enum {
     SPPixelConvertRGB16
 } SPPixelConvert_t;
 
-
-/*
-static const char *gigEPropertyTypeStrings[NUM_GIGE_PROPERTIES] = {
-    "Heartbeat",
-    "HeartbeatTimeout",
-    "PacketSize",
-    "PacketDelay"
-};
-*/
-
 typedef enum {
     TimeStampCamera,
     TimeStampEPICS
@@ -88,7 +67,6 @@ typedef enum {
     UniqueIdCamera,
     UniqueIdDriver
 } SPUniqueId_t;
-
 
 
 /** Configuration function to configure one camera.
@@ -152,6 +130,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     cameraId_(cameraId), memoryChannel_(memoryChannel), exiting_(0), pRaw_(NULL), uniqueId_(0)
 {
     static const char *functionName = "ADSpinnaker";
+    const char *featureName;
     asynStatus status;
     
     if (traceMask == 0) traceMask = ASYN_TRACE_ERROR;
@@ -170,13 +149,28 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
         return;
     }
 
-    createParam("SP_CONVERT_PIXEL_FORMAT",     asynParamInt32,   &SPConvertPixelFormat);
+    createParam(SPConvertPixelFormatString,     asynParamInt32,   &SPConvertPixelFormat);
+    createParam(SPBufferUnderrunCountString,    asynParamInt32,   &SPBufferUnderrunCount);
+    createParam(SPFailedBufferCountString,      asynParamInt32,   &SPFailedBufferCount);
+    createParam(SPFailedPacketCountString,      asynParamInt32,   &SPFailedPacketCount);
+    createParam(SPTimeStampModeString,          asynParamInt32,   &SPTimeStampMode);
+    createParam(SPUniqueIdModeString,           asynParamInt32,   &SPUniqueIdMode);
+    createParam(SPFrameRateEnableString,        asynParamInt32,   &SPFrameRateEnable);
+    
+    // Make a single parameter that maps to either AcquisitionFrameRateEnable (new cameras) or AcquisitionFrameRateEnabled (old cameras)
+    featureName = "AcquisitionFrameRateEnable";
+    if (IsImplemented((CNodePtr)pNodeMap_->GetNode(featureName))) {
+        GenICamFeature *p = createFeature(&mGCFeatureSet, SPFrameRateEnableString, asynParamInt32, SPFrameRateEnable,
+                                          featureName, GCFeatureTypeBoolean);
+        if (p) mGCFeatureSet.insert(p, featureName);
+    }
 
-    createParam("SP_BUFFER_UNDERRUN_COUNT",    asynParamInt32,   &SPBufferUnderrunCount);
-    createParam("SP_FAILED_BUFFER_COUNT",      asynParamInt32,   &SPFailedBufferCount);
-    createParam("SP_FAILED_PACKET_COUNT",      asynParamInt32,   &SPFailedPacketCount);
-    createParam("SP_TIME_STAMP_MODE",          asynParamInt32,   &SPTimeStampMode);
-    createParam("SP_UNIQUE_ID_MODE",           asynParamInt32,   &SPUniqueIdMode);
+    featureName = "AcquisitionFrameRateEnabled";
+    if (IsImplemented((CNodePtr)pNodeMap_->GetNode(featureName))) {
+        GenICamFeature *p = createFeature(&mGCFeatureSet, SPFrameRateEnableString, asynParamInt32, SPFrameRateEnable,
+                                          featureName, GCFeatureTypeBoolean);
+        if (p) mGCFeatureSet.insert(p, featureName);
+    }
 
     /* Set initial values of some parameters */
     setIntegerParam(NDDataType, NDUInt8);
