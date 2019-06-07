@@ -1,9 +1,8 @@
 file "ADBase_settings.req", P=$(P), R=$(R)
 $(P)$(R)ConvertPixelFormat
+$(P)$(R)FrameRateEnable
+$(P)$(R)GC_AcqFrameRate
 $(P)$(R)GC_VideoMode
-$(P)$(R)GC_AcquisitionFrameR
-$(P)$(R)GC_AcquisitionFrame0
-$(P)$(R)GC_AcquisitionFrame1
 $(P)$(R)GC_ExposureAuto
 $(P)$(R)GC_PixelFormat
 $(P)$(R)GC_GainAuto
@@ -11,7 +10,7 @@ $(P)$(R)GC_BlackLevel
 $(P)$(R)GC_BlackLevelAuto
 $(P)$(R)GC_BlackLevelAuto
 $(P)$(R)GC_BalanceRatio
-$(P)$(R)GC_BalanceRatioSelec
+$(P)$(R)GC_BalRatioSelector
 $(P)$(R)GC_BalanceWhiteAuto
 $(P)$(R)GC_Saturation
 $(P)$(R)GC_SaturationEnabled
@@ -23,6 +22,6 @@ $(P)$(R)GC_SharpnessEnabled
 $(P)$(R)GC_TriggerSource
 $(P)$(R)GC_TriggerActivation
 $(P)$(R)GC_TriggerDelay
-$(P)$(R)GC_TriggerDelayEnabl
+$(P)$(R)GC_TriDelayEnabled
 $(P)$(R)GC_TriggerOverlap
 $(P)$(R)GC_ExposureMode
