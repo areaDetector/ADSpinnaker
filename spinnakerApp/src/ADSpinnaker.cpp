@@ -130,7 +130,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     cameraId_(cameraId), memoryChannel_(memoryChannel), exiting_(0), pRaw_(NULL), uniqueId_(0)
 {
     static const char *functionName = "ADSpinnaker";
-    const char *featureName;
     asynStatus status;
     
     if (traceMask == 0) traceMask = ASYN_TRACE_ERROR;
@@ -155,22 +154,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int 
     createParam(SPFailedPacketCountString,      asynParamInt32,   &SPFailedPacketCount);
     createParam(SPTimeStampModeString,          asynParamInt32,   &SPTimeStampMode);
     createParam(SPUniqueIdModeString,           asynParamInt32,   &SPUniqueIdMode);
-    createParam(SPFrameRateEnableString,        asynParamInt32,   &SPFrameRateEnable);
-    
-    // Make a single parameter that maps to either AcquisitionFrameRateEnable (new cameras) or AcquisitionFrameRateEnabled (old cameras)
-    featureName = "AcquisitionFrameRateEnable";
-    if (IsImplemented((CNodePtr)pNodeMap_->GetNode(featureName))) {
-        GenICamFeature *p = createFeature(&mGCFeatureSet, SPFrameRateEnableString, asynParamInt32, SPFrameRateEnable,
-                                          featureName, GCFeatureTypeBoolean);
-        if (p) mGCFeatureSet.insert(p, featureName);
-    }
-
-    featureName = "AcquisitionFrameRateEnabled";
-    if (IsImplemented((CNodePtr)pNodeMap_->GetNode(featureName))) {
-        GenICamFeature *p = createFeature(&mGCFeatureSet, SPFrameRateEnableString, asynParamInt32, SPFrameRateEnable,
-                                          featureName, GCFeatureTypeBoolean);
-        if (p) mGCFeatureSet.insert(p, featureName);
-    }
 
     /* Set initial values of some parameters */
     setIntegerParam(NDDataType, NDUInt8);

@@ -17,7 +17,6 @@ using namespace Spinnaker::GenICam;
 #define SPFailedPacketCountString   "SP_FAILED_PACKET_COUNT"    // asynParamInt32, R/O
 #define SPTimeStampModeString       "SP_TIME_STAMP_MODE"        // asynParamInt32, R/O
 #define SPUniqueIdModeString        "SP_UNIQUE_ID_MODE"         // asynParamInt32, R/O
-#define SPFrameRateEnableString     "SP_FRAMERATE_ENABLE"       // asynParamInt32, R/W
 
 class ImageEventHandler : public ImageEvent
 {
