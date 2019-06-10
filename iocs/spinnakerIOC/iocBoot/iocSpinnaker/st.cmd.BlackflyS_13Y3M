@@ -1,0 +1,13 @@
+< envPaths
+errlogInit(20000)
+
+dbLoadDatabase("$(TOP)/dbd/spinnakerApp.dbd")
+spinnakerApp_registerRecordDeviceDriver(pdbbase) 
+
+# Use this line for a specific camera by serial number, in this case a BlackFlyS GigE
+epicsEnvSet("CAMERA_ID", "17165235")
+
+epicsEnvSet("GENICAM_DB_FILE", "$(ADGENICAM)/db/PGR_BlackflyS_13Y3M.template")
+
+< st.cmd.base
+
