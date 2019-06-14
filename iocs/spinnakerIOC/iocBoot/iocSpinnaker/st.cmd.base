@@ -16,7 +16,7 @@ epicsEnvSet("NCHANS", "2048")
 epicsEnvSet("CBUFFS", "500")
 # The search path for database files
 # This is for Windows
-#epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db;$(ADGENICAM/db;$(ADSPINNAKER)/db")
+#epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db;$(ADGENICAM)/db;$(ADSPINNAKER)/db")
 # This is for Linux
 epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db:$(ADGENICAM)/db:$(ADSPINNAKER)/db")
 # Define NELEMENTS to be enough for a 2048x2048x3 (color) image
