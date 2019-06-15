@@ -475,7 +475,6 @@ text {
 		clr=54
 		bclr=4
 	}
-	align="horiz. centered"
 	format="string"
 	limits {
 	}
@@ -961,7 +960,6 @@ text {
 		clr=54
 		bclr=4
 	}
-	align="horiz. centered"
 	format="string"
 	limits {
 	}
