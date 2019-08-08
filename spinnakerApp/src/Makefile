@@ -15,6 +15,8 @@ else
   LIB_LIBS_WIN32 += Spinnaker_v140
 endif
 
+LIB_LIBS += ADGenICam
+
 LIB_LIBS_Linux  += Spinnaker
 
 DBD += ADSpinnakerSupport.dbd
