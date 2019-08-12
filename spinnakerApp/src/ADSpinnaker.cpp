@@ -455,6 +455,13 @@ asynStatus ADSpinnaker::grabImage()
             pImage->Release();
             return asynError;
         } 
+        if (pImage->IsIncomplete()) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s error image is incomplete\n",
+                driverName, functionName);
+            pImage->Release();
+            return asynError;
+        }
         nCols = pImage->GetWidth();
         nRows = pImage->GetHeight();
      
@@ -609,6 +616,11 @@ asynStatus ADSpinnaker::grabImage()
         // Set the timestamps in the buffer
         if (timeStampMode == TimeStampCamera) {
             long long timeStamp = pImage->GetTimeStamp();
+            if (timeStamp == 0) {
+                asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
+                    "%s::%s pImage->GetTimeStamp() returned 0\n",
+                    driverName, functionName);
+            }
             pRaw_->timeStamp = timeStamp / 1e9;
         } else {
             pRaw_->timeStamp = pRaw_->epicsTS.secPastEpoch + pRaw_->epicsTS.nsec/1e9;
