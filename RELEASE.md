@@ -19,11 +19,11 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R1-0 (May 29, 2019)
-----
-* Initial release.  This version inherits directly from ADDriver, not from ADGenICam.
-
 R2-0 (August 12, 2019)
 * This version inherits from ADGenICam.  It is considerably simpler than R1-0 because the ADGenICam base class
   handles many things.  It also supports all camera features, while R1-0 only supported a subset of the features.
+
+R1-0 (May 29, 2019)
+----
+* Initial release.  This version inherits directly from ADDriver, not from ADGenICam.
 
