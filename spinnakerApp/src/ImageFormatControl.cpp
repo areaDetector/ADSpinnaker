@@ -16,7 +16,7 @@
 //=============================================================================
 
 /**
- *  @example ImageFormatControl.cpp
+ *  example ImageFormatControl.cpp
  *
  *  @brief ImageFormatControl.cpp shows how to apply custom image settings to
  *	the camera. It relies on information provided in the Enumeration,

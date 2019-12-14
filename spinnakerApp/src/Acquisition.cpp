@@ -16,7 +16,7 @@
 //=============================================================================
 
 /**
- *  @example Acquisition.cpp
+ *  example Acquisition.cpp
  *
  *  @brief Acquisition.cpp shows how to acquire images. It relies on
  *  information provided in the Enumeration example. Also, check out the

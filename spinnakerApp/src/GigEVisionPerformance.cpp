@@ -16,7 +16,7 @@
 //=============================================================================
 
 /**
-*	@example GigEVisionPerformance.cpp
+*	example GigEVisionPerformance.cpp
 *
 *	@brief GigEVisionPerformance.cpp measures GigE Vision performance. It is built
 *	on top of Acquisition example.
