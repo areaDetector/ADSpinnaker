@@ -19,9 +19,10 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-1 (December XXX, 2019)
+R2-1 (January 5, 2020)
 * Changed SPFeature to use epicsInt64 rather than int for GenICam integer feature functions.
   This allows access to the full 64 bit range of feature values, while previously it was limited to 32 bits.
+* Added vendor SFNC_GenTL*.xml files which are required to be present in the lib directory on Linux.
 
 R2-0 (August 12, 2019)
 * This version inherits from ADGenICam.  It is considerably simpler than R1-0 because the ADGenICam base class
