@@ -20,6 +20,9 @@ Release Notes
 =============
 
 R2-1 (January 5, 2020)
+* NOTE: ADSpinnaker is currently built with V1.20 of the Spinnaker SDK.  This is the version that must be
+  installed on Windows machines for ADSpinnaker to work.  
+  It will NOT work with later versions of the Spinnaker SDK.
 * Changed SPFeature to use epicsInt64 rather than int for GenICam integer feature functions.
   This allows access to the full 64 bit range of feature values, while previously it was limited to 32 bits.
 * Added vendor SFNC_GenTL*.xml files which are required to be present in the lib directory on Linux.
