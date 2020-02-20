@@ -2,7 +2,7 @@ ADSpinnaker
 ===========
 An 
 [EPICS](http://www.aps.anl.gov/epics)
-[areaDetector](https://cars.uchicago.edu/software/epics/areaDetector.html)
+[areaDetector](https://github.com/areaDetector/areaDetector/blob/master/README.md)
 driver for cameras from 
 [FLIR](http://www.flir.com) using their Spinnaker SDK.
 These include GigE, 10GigE, and USB 3.0 cameras.
