@@ -422,27 +422,18 @@ asynStatus ADSpinnaker::grabImage()
     static const char *functionName = "grabImage";
 
     try {
-        while(1) {
-            unlock();
-            int recvSize = pCallbackMsgQ_->receive(&imagePtrAddr, sizeof(imagePtrAddr), 0.1);
-            lock();
-            if (recvSize == sizeof(imagePtrAddr)) {
-                break;
-            } else if (recvSize == -1) {
-                // Timeout
-                int acquire;
-                getIntegerParam(ADAcquire, &acquire);
-                if (acquire == 0) {
-                    return asynError;
-                } else {
-                    continue;
-                }
-            } else {
-                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                        "%s::%s error receiving from message queue\n",
-                        driverName, functionName);
-                return asynError;
-            }
+        unlock();
+        int recvSize = pCallbackMsgQ_->receive(&imagePtrAddr, sizeof(imagePtrAddr));
+        lock();
+        if (recvSize != sizeof(imagePtrAddr)) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s::%s error receiving from message queue\n",
+                    driverName, functionName);
+            return asynError;
+        }
+         // We are sent a null pointer to flag acquisition complete so return
+        if (imagePtrAddr == NULL)  {
+            return asynError;
         }
         pImage = *imagePtrAddr;
         // Delete the ImagePtr that was passed to us
@@ -694,9 +685,17 @@ asynStatus ADSpinnaker::stopCapture()
 {
     int status;
     static const char *functionName = "stopCapture";
+    ImagePtr *dummy = NULL;
 
     setIntegerParam(ADAcquire, 0);
     setShutter(0);
+
+    // Send a null image to grabImage to make it exit if it is waiting for image
+    if (pCallbackMsgQ_->send(&dummy, sizeof(dummy)) != 0) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s error calling pCallbackMsgQ_->send()\n",
+            driverName, functionName);
+    }
     // Need to wait for the task to set the status to idle
     while (1) {
         getIntegerParam(ADStatus, &status);
