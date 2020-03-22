@@ -431,7 +431,7 @@ asynStatus ADSpinnaker::grabImage()
                     driverName, functionName);
             return asynError;
         }
-         // We are sent a null pointer to flag acquisition complete so return
+        // We are sent a null pointer to flag acquisition complete so return
         if (imagePtrAddr == NULL)  {
             return asynError;
         }
@@ -687,23 +687,6 @@ asynStatus ADSpinnaker::stopCapture()
     static const char *functionName = "stopCapture";
     ImagePtr *dummy = NULL;
 
-    setIntegerParam(ADAcquire, 0);
-    setShutter(0);
-
-    // Send a null image to grabImage to make it exit if it is waiting for image
-    if (pCallbackMsgQ_->send(&dummy, sizeof(dummy)) != 0) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s error calling pCallbackMsgQ_->send()\n",
-            driverName, functionName);
-    }
-    // Need to wait for the task to set the status to idle
-    while (1) {
-        getIntegerParam(ADStatus, &status);
-        if (status == ADStatusIdle) break;
-        unlock();
-        epicsThreadSleep(.1);
-        lock();
-    }
     try {
         pCamera_->EndAcquisition();
     }
@@ -715,9 +698,29 @@ asynStatus ADSpinnaker::stopCapture()
                 driverName, functionName, e.what());
         }
     }
+
+    // Set ADAcquire=0 which will tell the imageGrabTask to stop
+    setIntegerParam(ADAcquire, 0);
+    setShutter(0);
+
+    // Send a null image poiner to grabImage to make it exit if it is waiting for an image
+    if (pCallbackMsgQ_->send(&dummy, sizeof(dummy)) != 0) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s error calling pCallbackMsgQ_->send()\n",
+            driverName, functionName);
+    }
+
+    // Need to wait for the imageGrabTask to set the status to idle
+    while (1) {
+        getIntegerParam(ADStatus, &status);
+        if (status == ADStatusIdle) break;
+        unlock();
+        epicsThreadSleep(.1);
+        lock();
+    }
+
     // Need to empty the message queue it could have some images in it
-    ImagePtr pImage;
-    while(pCallbackMsgQ_->tryReceive(&pImage, sizeof(pImage)) != -1) {}
+    while(pCallbackMsgQ_->tryReceive(&dummy, sizeof(dummy)) != -1) {}
     return asynSuccess;
 }
 
