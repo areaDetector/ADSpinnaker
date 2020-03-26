@@ -79,18 +79,14 @@ typedef enum {
  *            If set to 0 or 1 then asynTraceMask will be set to ASYN_TRACE_ERROR.
  *            If set to 0x21 (ASYN_TRACE_WARNING | ASYN_TRACE_ERROR) then each call to the
  *            Spinnaker library will be traced including during initialization.
- * \param[in] memoryChannel  The camera memory channel (non-volatile memory containing camera parameters) 
- *            to load during initialization.  If 0 no memory channel is loaded.
- *            If >=1 thenRestoreFromMemoryChannel(memoryChannel-1) is called.  
- *            Set memoryChannel to 1 to work around a bug in the Linux GigE driver in R2.0.
  * \param[in] maxMemory Maximum memory (in bytes) that this driver is allowed to allocate. 0=unlimited.
  * \param[in] priority The EPICS thread priority for this driver.  0=use asyn default.
  * \param[in] stackSize The size of the stack for the EPICS port thread. 0=use asyn default.
  */
-extern "C" int ADSpinnakerConfig(const char *portName, int cameraId, int traceMask, int memoryChannel, 
+extern "C" int ADSpinnakerConfig(const char *portName, int cameraId, int traceMask,
                                  size_t maxMemory, int priority, int stackSize)
 {
-    new ADSpinnaker( portName, cameraId, traceMask, memoryChannel, maxMemory, priority, stackSize);
+    new ADSpinnaker( portName, cameraId, traceMask, maxMemory, priority, stackSize);
     return asynSuccess;
 }
 
@@ -116,18 +112,14 @@ static void imageGrabTaskC(void *drvPvt)
  *            If set to 0 or 1 then asynTraceMask will be set to ASYN_TRACE_ERROR.
  *            If set to 0x21 (ASYN_TRACE_WARNING | ASYN_TRACE_ERROR) then each call to the
  *            Spinnaker library will be traced including during initialization.
- * \param[in] memoryChannel  The camera memory channel (non-volatile memory containing camera parameters) 
- *            to load during initialization.  If 0 no memory channel is loaded.
- *            If >=1 thenRestoreFromMemoryChannel(memoryChannel-1) is called.  
- *            Set memoryChannel to 1 to work around a bug in the Linux GigE driver in R2.0.
  * \param[in] maxMemory Maximum memory (in bytes) that this driver is allowed to allocate. 0=unlimited.
  * \param[in] priority The EPICS thread priority for this driver.  0=use asyn default.
  * \param[in] stackSize The size of the stack for the EPICS port thread. 0=use asyn default.
  */
-ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask, int memoryChannel,
+ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask,
                          size_t maxMemory, int priority, int stackSize )
     : ADGenICam(portName, maxMemory, priority, stackSize),
-    cameraId_(cameraId), memoryChannel_(memoryChannel), exiting_(0), pRaw_(NULL), uniqueId_(0)
+    cameraId_(cameraId), exiting_(0), pRaw_(NULL), uniqueId_(0)
 {
     static const char *functionName = "ADSpinnaker";
     asynStatus status;
@@ -850,23 +842,20 @@ void ADSpinnaker::report(FILE *fp, int details)
 static const iocshArg configArg0 = {"Port name", iocshArgString};
 static const iocshArg configArg1 = {"cameraId", iocshArgInt};
 static const iocshArg configArg2 = {"traceMask", iocshArgInt};
-static const iocshArg configArg3 = {"memoryChannel", iocshArgInt};
-static const iocshArg configArg4 = {"maxMemory", iocshArgInt};
-static const iocshArg configArg5 = {"priority", iocshArgInt};
-static const iocshArg configArg6 = {"stackSize", iocshArgInt};
+static const iocshArg configArg3 = {"maxMemory", iocshArgInt};
+static const iocshArg configArg4 = {"priority", iocshArgInt};
+static const iocshArg configArg5 = {"stackSize", iocshArgInt};
 static const iocshArg * const configArgs[] = {&configArg0,
                                               &configArg1,
                                               &configArg2,
                                               &configArg3,
                                               &configArg4,
-                                              &configArg5,
-                                              &configArg6};
-static const iocshFuncDef configADSpinnaker = {"ADSpinnakerConfig", 7, configArgs};
+                                              &configArg5};
+static const iocshFuncDef configADSpinnaker = {"ADSpinnakerConfig", 6, configArgs};
 static void configCallFunc(const iocshArgBuf *args)
 {
     ADSpinnakerConfig(args[0].sval, args[1].ival, args[2].ival, 
-                      args[3].ival, args[4].ival, args[5].ival,
-                      args[6].ival);
+                      args[3].ival, args[4].ival, args[5].ival);
 }
 
 
