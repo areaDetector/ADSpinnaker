@@ -89,7 +89,7 @@ IOC startup script
 ------------------
 The command to configure an ADSpinnaker camera in the startup script is::
 
-  ADSpinnakerConfig(const char *portName, const char *cameraId, int traceMask, int memoryChannel,
+  ADSpinnakerConfig(const char *portName, const char *cameraId, int traceMask,
                     size_t maxMemory, int priority, int stackSize)
 
 ``portName`` is the name for the ADSpinnaker port driver
@@ -100,8 +100,6 @@ on the camera, and it is also the last part of the camera name returned by arv-t
 If cameraId is less than 1000 it is assumed to be the system index number, if 1000 or greater it is assumed to be a serial number.
 
 ``traceMask`` is the initial value of asynTraceMask to be used for debugging problems in the constructor.
-
-``memoryChannel`` is the internal channel number in the camera to be used for saved cameras settings.
 
 ``maxMemory`` is the maximum amount of memory the NDArrayPool is allowed to allocate.  0 means unlimited.
 
