@@ -18,17 +18,18 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R2-2 (April XXX, 2020)
+R2-2 (April 8, 2020)
 ------------------------
 * Worked around a bug that is present in all versions of EPICS base.
-  If a wait time is specified in the call to epicsMessageQueue::receive it can fail to receive a message
+  If a wait time is specified in the call to epicsMessageQueue::receive() it can fail to receive a message
   correctly if the wait time is almost exactly the same as the time between messages.
   This was causing ADSpinnaker to miss frames when the frame rate was close to 8.7 frames/s.
   Changed the logic to avoid specifying a timeout in epicsMessageQueue::receive(), sending a NULL message instead.
-* Removed memoryChannel argument to constructor, it was not used
+* Removed the memoryChannel argument to the constructor, it was not used.
 * Change the order of calling Spinnaker's EndAcquisition() relative to stopping imageGrabTask.
   With the new logic described above EndAcquisition() was never returning when trying to stop acquisition at > 100 frames/s.
 * Added .bob files for Phoebus Display Manager
+* Removed ADSpinnakerMore OPI files, these were not used.
 
 R2-1 (January 5, 2020)
 ----------------------
