@@ -18,7 +18,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R2-2 (April 8, 2020)
+R2-2 (April 9, 2020)
 ------------------------
 * Worked around a bug that is present in all versions of EPICS base.
   If a wait time is specified in the call to epicsMessageQueue::receive() it can fail to receive a message
