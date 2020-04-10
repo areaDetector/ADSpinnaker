@@ -28,6 +28,8 @@ R2-2 (April 9, 2020)
 * Removed the memoryChannel argument to the constructor, it was not used.
 * Change the order of calling Spinnaker's EndAcquisition() relative to stopping imageGrabTask.
   With the new logic described above EndAcquisition() was never returning when trying to stop acquisition at > 100 frames/s.
+* Tested that ADSpinnaker runs on Centos 8. 
+  It should also work on other Linux versions with gcc 7.5 and up, e.g. RHEL 8 and Debian 10.
 * Added .bob files for Phoebus Display Manager
 * Removed ADSpinnakerMore OPI files, these were not used.
 
