@@ -25,10 +25,9 @@ ADSpinnaker is derived from the base class ADGenICam_, which handles many of the
 mapping GenICam_ features to EPICS records. 
 
 As it name implies, ADSpinnaker_ uses the FLIR/Point Grey Spinnaker_ library.
-It runs on Windows, and on Linux with Ubuntu 18 and higher.  
-It does not run on other most older Linux versions (e.g. Centos 7/RHEL 7) because
-the FLIR Spinnaker SDK is compiled with a very recent gcc version and thus requires
-new versions of GLIBC and GLIBCXX.
+It runs on Windows, and on Linux versions with gcc 7.5 and higher (e.g. Ubuntu 18, RHEL 8, Centos 8, Debian 10)
+It does not run on older Linux versions (e.g. Centos 7/RHEL 7) because
+the FLIR Spinnaker SDK is compiled on Ubuntu 18 and thus requires newer versions of GLIBC and GLIBCXX.
 
 Prior to using ADSpinnaker with a specific camera model, the XML file must be read from the camera using the arv-tool utility,
 as described in the
