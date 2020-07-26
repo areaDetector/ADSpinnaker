@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -25,8 +25,8 @@
 #include "IValue.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(push)
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
 #endif
 
 namespace Spinnaker
@@ -34,13 +34,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
-        */
+         *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
+         */
         /*@{*/
 
         /**
-        *  @defgroup IEnumeration_h IEnumeration Interface
-        */
+         *  @defgroup IEnumeration_h IEnumeration Interface
+         */
         /*@{*/
 
         //*************************************************************
@@ -48,70 +48,70 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * @brief Interface for enumeration properties
-        */
+         * @brief Interface for enumeration properties
+         */
         interface SPINNAKER_API_ABSTRACT IEnumeration : virtual public IValue
         {
             /**
-            * Get list of symbolic Values
-            */
+             * Get list of symbolic Values
+             */
             virtual void GetSymbolics(StringList_t & Symbolics) = 0;
 
             /**
-            * Get list of entry nodes
-            */
+             * Get list of entry nodes
+             */
             virtual void GetEntries(NodeList_t & Entries) = 0;
 
             /**
-            * Set string node value
-            */
+             * Set string node value
+             */
             virtual IEnumeration& operator=(const GenICam::gcstring& ValueStr) = 0;
 
             /**
-            * Set integer node value
-            *
-            * @param Value The value to set
-            * @param Verify Enables AccessMode and Range verification (default = true)
-            */
+             * Set integer node value
+             *
+             * @param Value The value to set
+             * @param Verify Enables AccessMode and Range verification (default = true)
+             */
             virtual void SetIntValue(int64_t Value, bool Verify = true) = 0;
 
             /**
-            * Get string node value
-            */
+             * Get string node value
+             */
             virtual GenICam::gcstring operator*() = 0;
 
             /**
-            * Get integer node value
-            *
-            * @param Verify Enables Range verification (default = false). The AccessMode is always checked
-            * @param IgnoreCache If true the value is read ignoring any caches (default = false)
-            * @return The value read
-            */
+             * Get integer node value
+             *
+             * @param Verify Enables Range verification (default = false). The AccessMode is always checked
+             * @param IgnoreCache If true the value is read ignoring any caches (default = false)
+             * @return The value read
+             */
             virtual int64_t GetIntValue(bool Verify = false, bool IgnoreCache = false) = 0;
 
             /**
-            * Get an entry node by name
-            */
+             * Get an entry node by name
+             */
             virtual IEnumEntry* GetEntryByName(const GenICam::gcstring& Symbolic) = 0;
 
             /**
-            * Get an entry node by its IntValue
-            */
+             * Get an entry node by its IntValue
+             */
             virtual IEnumEntry* GetEntry(const int64_t IntValue) = 0;
 
             /**
-            * Get the current entry
-            */
+             * Get the current entry
+             */
             virtual IEnumEntry* GetCurrentEntry(bool Verify = false, bool IgnoreCache = false) = 0;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // ifndef SPINNAKER_GENAPI_IENUMERATION_H

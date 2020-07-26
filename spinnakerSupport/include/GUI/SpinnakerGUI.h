@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -18,9 +18,9 @@
 #pragma once
 
 #ifdef GUIFrame_GTK
-	#include "GUI/SpinnakerGUI_GTKmm.h"
+#include "GUI/SpinnakerGUI_GTKmm.h"
 #else
-	#include "GUI/SpinnakerGUI_WPF.h"
+#include "GUI/SpinnakerGUI_WPF.h"
 #endif
 
 #include "ViewerDlg.h"
@@ -29,164 +29,152 @@
 
 namespace Spinnaker
 {
-	namespace GUI
-	{
-		/**
-		 * @defgroup SpinnakerGUI Spinnaker GUI Classes
-		 */
+    namespace GUI
+    {
+        /**
+         * @defgroup SpinnakerGUI Spinnaker GUI Classes
+         */
 
-		/*@{*/
+        /*@{*/
 
-		/**
-		 * @defgroup SpinnakerGUIFactory Spinnaker GUI Factory Class
-		 */
+        /**
+         * @defgroup SpinnakerGUIFactory Spinnaker GUI Factory Class
+         */
 
-		/*@{*/
+        /*@{*/
 
-		class SPINNAKER_API GUIFactory
-		{
-			public:
+        class SPINNAKER_API GUIFactory
+        {
+          public:
+            /**
+             * Default constructor.
+             */
+            GUIFactory(void);
 
-				/**
-				 * Default constructor.
-				 */
-				GUIFactory(void);
+            /**
+             * Default destructor.
+             */
+            ~GUIFactory(void);
 
+            /**
+             * Statically Get Camera Selection Window from GUI Factory
+             *
+             * @return A pointer to CameraSelectionWindow. User has ownership of this pointer.
+             */
+            static CameraSelectionDlg* GetCameraSelectionDlg();
 
-				/**
-				 * Default destructor.
-				 */
-				~GUIFactory(void);
+            /**
+             * Statically Get PropertyGridWindow from GUI Factory.
+             *
+             * @return A pointer to PropertyGridWindow. User has ownership of this pointer.
+             */
+            static PropertyGridDlg* GetPropertyGridDlg();
 
+            /**
+             * Statically Get Image Drawing Window
+             *
+             * @return A pointer to ImageDrawingWindow. User has ownership of this pointer.
+             */
+            static ViewerDlg* GetViewer();
 
-				/**
-				 * Statically Get Camera Selection Window from GUI Factory
-				 *
-				 * @return A pointer to CameraSelectionWindow. User has ownership of this pointer.
-				 */
-				static CameraSelectionDlg* GetCameraSelectionDlg();
+            /**
+             * Connect GUI Factory to camera object
+             *
+             * @param pointer to a camera object
+             * @return boolean indicating whether operation was successful
+             */
+            bool ConnectGUILib(Spinnaker::CameraPtr camera);
 
+            /**
+             * Disconnect GUI Factory from camera object.
+             *
+             */
+            void DisconnectGUILib();
 
-				/**
-				 * Statically Get PropertyGridWindow from GUI Factory.
-				 *
-				 * @return A pointer to PropertyGridWindow. User has ownership of this pointer.
-				 */
-				static PropertyGridDlg* GetPropertyGridDlg();
+            /**
+             * Get a boolean indicating whether GUI Factory is connected to a camera object.
+             *
+             * @return boolean indicating connection status.
+             */
+            bool IsConnected()
+            {
+                return m_bisConnected;
+            }
 
+            /**
+             * Get a list of dialog names
+             *
+             * @return string list of dialog names
+             */
+            std::list<std::string> GetDialogNameList();
 
-				/**
-				 * Statically Get Image Drawing Window
-				 *
-				 * @return A pointer to ImageDrawingWindow. User has ownership of this pointer.
-				 */
-				static ViewerDlg* GetViewer();
+            /**
+             * Get dialog with specific name
+             *
+             * @param string holding dialog name
+             */
+            std::list<std::string> GetControlNameList();
 
+            /**
+             * Get number of dialogs contained in GUI Factory
+             *
+             * @return number of dialogs
+             */
+            int GetNumDlgs();
 
-				/**
-				 * Connect GUI Factory to camera object
-				 *
-				 * @param pointer to a camera object
-				 * @return boolean indicating whether operation was successful
-				 */
-				bool ConnectGUILib(Spinnaker::CameraPtr camera);
+            /**
+             * Display dialog at specific name list index
+             *
+             * @param name index of dialog to be shown
+             */
+            void ShowDlgByIndex(unsigned int index);
 
+            /**
+             * Display dialog with specific name
+             *
+             * @param string holding dialog name
+             */
+            void ShowDlgByName(std::string dialogName);
 
-				/**
-				 * Disconnect GUI Factory from camera object.
-				 *
-				 */
-				void DisconnectGUILib();
+            /**
+             * Hide dialog at specific name list index
+             *
+             * @param name index of dialog to be shown
+             */
+            void HideDlgByIndex(unsigned int index);
 
+            /**
+             * Hide dialog with specific name
+             *
+             * @param string holding dialog name
+             */
+            void HideDlgByName(std::string dialogName);
 
-				/**
-				 * Get a boolean indicating whether GUI Factory is connected to a camera object.
-				 *
-				 * @return boolean indicating connection status.
-				 */
-				bool IsConnected(){return m_bisConnected;}
+            /**
+             * Return number of controls contained in GUI Factory
+             *
+             * @return number of controls
+             */
+            int GetNumCtrls();
 
+          protected:
+            static CameraSelectionDlg* m_pCameraSelectionDialog;
+            static ViewerDlg* m_pViewer;
+            static PropertyGridDlg* m_pPropertyGridDialog;
 
-				/**
-				 * Get a list of dialog names
-				 *
-				 * @return string list of dialog names
-				 */
-				std::list<std::string> GetDialogNameList();
+#ifdef GUIFrame_GTK
+            // GTK GUI API
+            Spinnaker::GUI_GTKmm::GUIFactory* m_pGTKGUIAPI;
+#else
+            // WPF GUI API
+            Spinnaker::GUI_WPF::GUIFactory* m_pWPFGUIFactory;
+#endif
+            bool m_bisConnected;
+            //		CameraControlProxy* m_pCameraControlProxy;
+        };
 
+        /*@}*/
 
-				/**
-				 * Get dialog with specific name
-				 *
-				 * @param string holding dialog name
-				 */
-				std::list<std::string> GetControlNameList();
-
-
-				/**
-				 * Get number of dialogs contained in GUI Factory
-				 *
-				 * @return number of dialogs
-				 */
-				int GetNumDlgs();
-
-
-				/**
-				 * Display dialog at specific name list index
-				 *
-				 * @param name index of dialog to be shown
-				 */
-				void ShowDlgByIndex(unsigned int index);
-
-
-				/**
-				 * Display dialog with specific name
-				 *
-				 * @param string holding dialog name
-				 */
-				void ShowDlgByName(std::string dialogName);
-
-				/**
-				 * Hide dialog at specific name list index
-				 *
-				 * @param name index of dialog to be shown
-				 */
-				void HideDlgByIndex(unsigned int index);
-
-
-				/**
-				 * Hide dialog with specific name
-				 *
-				 * @param string holding dialog name
-				 */
-				void HideDlgByName(std::string dialogName);
-
-
-				/**
-				 * Return number of controls contained in GUI Factory
-				 *
-				 * @return number of controls
-				 */
-				int GetNumCtrls();
-
-			protected:
-			static CameraSelectionDlg* m_pCameraSelectionDialog;
-			static ViewerDlg* m_pViewer;
-			static PropertyGridDlg* m_pPropertyGridDialog;
-
-	#ifdef GUIFrame_GTK
-			//GTK GUI API
-			Spinnaker::GUI_GTKmm::GUIFactory* m_pGTKGUIAPI;
-	#else
-			//WPF GUI API
-			Spinnaker::GUI_WPF::GUIFactory* m_pWPFGUIFactory;
-	#endif
-			bool m_bisConnected;
-	//		CameraControlProxy* m_pCameraControlProxy;
-		};
-
-		/*@}*/
-
-		/*@}*/
-	}
-}
+        /*@}*/
+    } // namespace GUI
+} // namespace Spinnaker

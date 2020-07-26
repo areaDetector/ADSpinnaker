@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -100,7 +100,7 @@ namespace Spinnaker
 
 		/**
 		 * Description: Version of the device.
-		 * Visibility: Expert
+		 * Visibility: Beginner
 		 */
 		GenApi::IString &DeviceVersion;
 
@@ -240,7 +240,31 @@ namespace Spinnaker
 		 * Description: Forces the camera to be on the same subnet as its corresponding interface.
 		 * Visibility: Expert
 		 */
+		GenApi::ICommand &GevDeviceAutoForceIP;
+
+		/**
+		 * Description: Apply the force IP settings (GevDeviceForceIPAddress, GevDeviceForceSubnetMask and GevDeviceForceGateway) in the Device using ForceIP command.
+		 * Visibility: Expert
+		 */
 		GenApi::ICommand &GevDeviceForceIP;
+
+		/**
+		 * Description: Static IP address to set for the GVCP interface of the remote device.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevDeviceForceIPAddress;
+
+		/**
+		 * Description: Static subnet mask to set for GVCP interface of the remote device.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevDeviceForceSubnetMask;
+
+		/**
+		 * Description: Static gateway IP address to set for the GVCP interface of the remote device.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevDeviceForceGateway;
 
 		/**
 		 * Description: Controls and indicates if the device is operating in as a Multicast Monitor.
@@ -259,6 +283,12 @@ namespace Spinnaker
 		 * Visibility: Invisible
 		 */
 		GenApi::IString &DeviceInstanceId;
+
+		/**
+		 * Description: Device Location.
+		 * Visibility: Expert
+		 */
+		GenApi::IString &DeviceLocation;
 
 		/**
 		 * Description: The USB Speed that the device is currently operating at.

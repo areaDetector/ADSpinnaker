@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -17,8 +17,8 @@
    
 /* Auto-generated file. Do not modify. */
 
-#ifndef PGR_SPINNAKER_CAMERA_DEFS_H
-#define PGR_SPINNAKER_CAMERA_DEFS_H
+#ifndef FLIR_SPINNAKER_CAMERA_DEFS_H
+#define FLIR_SPINNAKER_CAMERA_DEFS_H
 
 namespace Spinnaker
 {
@@ -983,6 +983,8 @@ namespace Spinnaker
         PixelFormat_Mono10,    /*!< Monochrome 10-bit unpacked*/
         PixelFormat_Mono12,    /*!< Monochrome 12-bit unpacked*/
         PixelFormat_Mono14,    /*!< Monochrome 14-bit unpacked*/
+        PixelFormat_Mono16s,    /*!< Monochrome 16-bit signed*/
+        PixelFormat_Mono32f,    /*!< Monochrome 32-bit float*/
         PixelFormat_BayerBG10,    /*!< Bayer Blue-Green 10-bit unpacked*/
         PixelFormat_BayerBG12,    /*!< Bayer Blue-Green 12-bit unpacked*/
         PixelFormat_BayerGB10,    /*!< Bayer Green-Blue 10-bit unpacked*/
@@ -1009,6 +1011,8 @@ namespace Spinnaker
         PixelFormat_RGB12p,    /*!< Red-Green-Blue 12-bit packed  */
         PixelFormat_RGB14,    /*!< Red-Green-Blue 14-bit unpacked*/
         PixelFormat_RGB16,    /*!< Red-Green-Blue 16-bit  */
+        PixelFormat_RGB16s,    /*!< Red-Green-Blue 16-bit signed*/
+        PixelFormat_RGB32f,    /*!< Red-Green-Blue 32-bit float*/
         PixelFormat_RGB16_Planar,    /*!< Red-Green-Blue 16-bit planar*/
         PixelFormat_RGB565p,    /*!< Red-Green-Blue 5/6/5-bit packed*/
         PixelFormat_BGRa10,    /*!< Blue-Green-Red-alpha 10-bit unpacked*/
@@ -1017,6 +1021,7 @@ namespace Spinnaker
         PixelFormat_BGRa12p,    /*!< Blue-Green-Red-alpha 12-bit packed*/
         PixelFormat_BGRa14,    /*!< Blue-Green-Red-alpha 14-bit unpacked*/
         PixelFormat_BGRa16,    /*!< Blue-Green-Red-alpha 16-bit*/
+        PixelFormat_RGBa32f,    /*!< Red-Green-Blue-alpha 32-bit float*/
         PixelFormat_BGR10,    /*!< Blue-Green-Red 10-bit unpacked*/
         PixelFormat_BGR10p,    /*!< Blue-Green-Red 10-bit packed*/
         PixelFormat_BGR12,    /*!< Blue-Green-Red 12-bit unpacked*/
@@ -1173,6 +1178,10 @@ namespace Spinnaker
         PixelFormat_BayerRGPolarized10p,    /*!< Polarized Bayer Red Green filter 10-bit packed*/
         PixelFormat_BayerRGPolarized12p,    /*!< Polarized Bayer Red Green filter 12-bit packed*/
         PixelFormat_BayerRGPolarized16,    /*!< Polarized Bayer Red Green filter 16-bit*/
+        PixelFormat_LLCMono8,    /*!< Lossless Compression Monochrome 8-bit*/
+        PixelFormat_LLCBayerRG8,    /*!< Lossless Compression Bayer Red Green filter 8-bit*/
+        PixelFormat_JPEGMono8,    /*!< JPEG Monochrome 8-bit*/
+        PixelFormat_JPEGColor8,    /*!< JPEG Color 8-bit*/
         PixelFormat_Raw16,    /*!< Raw 16 bit.*/
         PixelFormat_Raw8,    /*!< Raw bit.*/
         PixelFormat_R12_Jpeg,    /*!< Red 12-bit JPEG.*/
@@ -1528,6 +1537,8 @@ namespace Spinnaker
         PixelFormatInfoSelector_Mono12p,    /*!< Monochrome 12-bit packed*/
         PixelFormatInfoSelector_Mono14,    /*!< Monochrome 14-bit unpacked*/
         PixelFormatInfoSelector_Mono16,    /*!< Monochrome 16-bit*/
+        PixelFormatInfoSelector_Mono16s,    /*!< Monochrome 16-bit signed*/
+        PixelFormatInfoSelector_Mono32f,    /*!< Monochrome 32-bit float*/
         PixelFormatInfoSelector_BayerBG8,    /*!< Bayer Blue-Green 8-bit*/
         PixelFormatInfoSelector_BayerBG10,    /*!< Bayer Blue-Green 10-bit unpacked*/
         PixelFormatInfoSelector_BayerBG10p,    /*!< Bayer Blue-Green 10-bit packed*/
@@ -1570,6 +1581,8 @@ namespace Spinnaker
         PixelFormatInfoSelector_RGB12p,    /*!< Red-Green-Blue 12-bit packed  */
         PixelFormatInfoSelector_RGB14,    /*!< Red-Green-Blue 14-bit unpacked*/
         PixelFormatInfoSelector_RGB16,    /*!< Red-Green-Blue 16-bit  */
+        PixelFormatInfoSelector_RGB16s,    /*!< Red-Green-Blue 16-bit signed*/
+        PixelFormatInfoSelector_RGB32f,    /*!< Red-Green-Blue 32-bit float*/
         PixelFormatInfoSelector_RGB16_Planar,    /*!< Red-Green-Blue 16-bit planar*/
         PixelFormatInfoSelector_RGB565p,    /*!< Red-Green-Blue 5/6/5-bit packed*/
         PixelFormatInfoSelector_BGRa8,    /*!< Blue-Green-Red-alpha 8-bit*/
@@ -1579,6 +1592,7 @@ namespace Spinnaker
         PixelFormatInfoSelector_BGRa12p,    /*!< Blue-Green-Red-alpha 12-bit packed*/
         PixelFormatInfoSelector_BGRa14,    /*!< Blue-Green-Red-alpha 14-bit unpacked*/
         PixelFormatInfoSelector_BGRa16,    /*!< Blue-Green-Red-alpha 16-bit*/
+        PixelFormatInfoSelector_RGBa32f,    /*!< Red-Green-Blue-alpha 32-bit float*/
         PixelFormatInfoSelector_BGR8,    /*!< Blue-Green-Red 8-bit*/
         PixelFormatInfoSelector_BGR10,    /*!< Blue-Green-Red 10-bit unpacked*/
         PixelFormatInfoSelector_BGR10p,    /*!< Blue-Green-Red 10-bit packed*/
@@ -1739,6 +1753,10 @@ namespace Spinnaker
         PixelFormatInfoSelector_BayerRGPolarized10p,    /*!< Polarized Bayer Red Green filter 10-bit packed*/
         PixelFormatInfoSelector_BayerRGPolarized12p,    /*!< Polarized Bayer Red Green filter 12-bit packed*/
         PixelFormatInfoSelector_BayerRGPolarized16,    /*!< Polarized Bayer Red Green filter 16-bit*/
+        PixelFormatInfoSelector_LLCMono8,    /*!< Lossless Compression Monochrome 8-bit*/
+        PixelFormatInfoSelector_LLCBayerRG8,    /*!< Lossless Compression Bayer Red Green filter 8-bit*/
+        PixelFormatInfoSelector_JPEGMono8,    /*!< JPEG Monochrome 8-bit*/
+        PixelFormatInfoSelector_JPEGColor8,    /*!< JPEG Color 8-bit*/
         NUM_PIXELFORMATINFOSELECTOR
     };
 
@@ -2587,4 +2605,4 @@ namespace Spinnaker
     /*@}*/
 
 }
-#endif // PGR_SPINNAKER_CAMERA_DEFS_H
+#endif // FLIR_SPINNAKER_CAMERA_DEFS_H

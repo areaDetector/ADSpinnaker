@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -17,8 +17,8 @@
    
 /* Auto-generated file. Do not modify. */
 
-#ifndef PGR_SPINNAKER_CHUNKDATADEF_C_H
-#define PGR_SPINNAKER_CHUNKDATADEF_C_H
+#ifndef FLIR_SPINNAKER_CHUNKDATADEF_C_H
+#define FLIR_SPINNAKER_CHUNKDATADEF_C_H
 
 #include "SpinnakerPlatformC.h"
 
@@ -75,6 +75,7 @@ typedef struct _spinChunkData
     double m_scan3dAxisMax;
     double m_scan3dTransformValue;
     double m_scan3dCoordinateReferenceValue;
+    int64_t m_inferenceFrameId;
     int64_t m_inferenceResult;
     double m_inferenceConfidence;
 } spinChunkData;
@@ -83,4 +84,4 @@ typedef struct _spinChunkData
 
 /*@}*/
 
-#endif // PGR_SPINNAKER_CHUNKDATADEF_C_H
+#endif // FLIR_SPINNAKER_CHUNKDATADEF_C_H

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -30,10 +30,10 @@
 #include "IEnumeration.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning( disable : 4250 ) // C4250 - 'class1' : inherits 'class2::member' via dominance
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
-#pragma warning( disable: 4275 ) // non dll-interface structXXX used as base
+#pragma warning(push)
+#pragma warning(disable : 4250) // C4250 - 'class1' : inherits 'class2::member' via dominance
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(disable : 4275) // non dll-interface structXXX used as base
 #endif
 
 namespace Spinnaker
@@ -41,22 +41,21 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup FloatNode_h FloatNode Class
-        */
+         *  @defgroup FloatNode_h FloatNode Class
+         */
         /*@{*/
 
         /**
-        * @brief Interface for string properties
-        */
+         * @brief Interface for string properties
+         */
         class SPINNAKER_API FloatNode : virtual public IFloat, virtual public ValueNode
         {
-        public:
-
+          public:
             struct NodeImpl;
             FloatNode();
 
@@ -65,128 +64,125 @@ namespace Spinnaker
             virtual ~FloatNode();
 
             /**
-            * Set node value
-            *
-            * @param Value The value to set
-            * @param Verify Enables AccessMode and Range verification (default = true)
-            */
+             * Set node value
+             *
+             * @param Value The value to set
+             * @param Verify Enables AccessMode and Range verification (default = true)
+             */
             virtual void SetValue(double Value, bool Verify = true);
 
             /**
-            * Set node value
-            */
+             * Set node value
+             */
             virtual IFloat& operator=(double Value);
 
             /**
-            * Get node value
-            *
-            * @param Verify Enables Range verification (default = false). The AccessMode is always checked
-            * @param IgnoreCache If true the value is read ignoring any caches (default = false)
-            * @return The value read
-            */
+             * Get node value
+             *
+             * @param Verify Enables Range verification (default = false). The AccessMode is always checked
+             * @param IgnoreCache If true the value is read ignoring any caches (default = false)
+             * @return The value read
+             */
             virtual double GetValue(bool Verify = false, bool IgnoreCache = false);
 
             /**
-            * Get node value
-            */
+             * Get node value
+             */
             virtual double operator()();
 
             /**
-            * Get node value
-            */
+             * Get node value
+             */
             virtual double operator*();
 
             /**
-            * Get minimum value allowed
-            */
+             * Get minimum value allowed
+             */
             virtual double GetMin();
 
             /**
-            * Get maximum value allowed
-            */
+             * Get maximum value allowed
+             */
             virtual double GetMax();
 
             /**
-            * True if the float has a constant increment
-            */
+             * True if the float has a constant increment
+             */
             virtual bool HasInc();
 
             /**
-            * Get increment mode
-            */
+             * Get increment mode
+             */
             virtual EIncMode GetIncMode();
 
             /**
-            * Get the constant increment if there is any
-            */
+             * Get the constant increment if there is any
+             */
             virtual double GetInc();
 
             /**
-            * Get list of valid value
-            */
+             * Get list of valid value
+             */
             virtual double_autovector_t GetListOfValidValues(bool bounded = true);
 
             /**
-            * Get recommended representation
-            */
-            virtual  ERepresentation GetRepresentation();
+             * Get recommended representation
+             */
+            virtual ERepresentation GetRepresentation();
 
             /**
-            * Get the physical unit name
-            */
+             * Get the physical unit name
+             */
             virtual GenICam::gcstring GetUnit() const;
 
             /**
-            * Get the way the float should be converted to a string
-            */
+             * Get the way the float should be converted to a string
+             */
             virtual EDisplayNotation GetDisplayNotation() const;
 
             /**
-            * Get the precision to be used when converting the float to a string
-            */
+             * Get the precision to be used when converting the float to a string
+             */
             virtual int64_t GetDisplayPrecision() const;
 
             /**
-            * gets the interface of an alias node.
-            */
-            IInteger *GetIntAlias();
+             * gets the interface of an alias node.
+             */
+            IInteger* GetIntAlias();
 
             /**
-            * gets the interface of an alias node.
-            */
-            IEnumeration *GetEnumAlias();
+             * gets the interface of an alias node.
+             */
+            IEnumeration* GetEnumAlias();
 
             /**
-            * Restrict minimum value
-            */
+             * Restrict minimum value
+             */
             virtual void ImposeMin(double Value);
 
             /**
-            * Restrict maximum value
-            */
+             * Restrict maximum value
+             */
             virtual void ImposeMax(double Value);
 
             /**
-            * overload SetReference for Float
-            */
+             * overload SetReference for Float
+             */
             virtual void SetReference(INode* pBase);
 
-
-        private:
-
+          private:
             std::shared_ptr<Node::NodeImpl> m_pFloat;
-
         };
 
-    typedef FloatNode CFloatRef;
+        typedef FloatNode CFloatRef;
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // SPINNAKER_GENAPI_FLOATNODE_H

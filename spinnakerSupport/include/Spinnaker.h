@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -15,12 +15,12 @@
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
 
-#ifndef PGR_SPINNAKER_H
-#define PGR_SPINNAKER_H
+#ifndef FLIR_SPINNAKER_H
+#define FLIR_SPINNAKER_H
 
 /**
-*  @defgroup SpinnakerHeaders Spinnaker Headers
-*/
+ *  @defgroup SpinnakerHeaders Spinnaker Headers
+ */
 
 /*@{*/
 
@@ -34,7 +34,7 @@
  *  be used instead of manually including individual header files.
  *
  *  We welcome your bug reports, suggestions, and comments:
- *  http://www.ptgrey.com/support/contact-us
+ *  https://www.flir.com/support-center/rma/iis-support-request
  */
 
 /*@{*/
@@ -49,9 +49,9 @@
  */
 #include "SpinnakerDefs.h"
 
-/** 
-*  Spinnaker GenICam Wrapper Includes
-*/
+/**
+ *  Spinnaker GenICam Wrapper Includes
+ */
 #include "SpinGenApi/GCBase.h"
 
 #include "SpinGenApi/SpinnakerGenApi.h"
@@ -74,19 +74,22 @@
 #include "ImageStatistics.h"
 
 /**
- * Spinnaker Event Class Includes
+ * Spinnaker EventHandler Class Includes
  */
-#include "Event.h"
-#include "InterfaceEvent.h"
-#include "ArrivalEvent.h"
-#include "RemovalEvent.h"
-#include "DeviceEvent.h"
-#include "ImageEvent.h"
-#include "LoggingEvent.h"
+#include "EventHandler.h"
+#include "InterfaceEventHandler.h"
+#include "DeviceArrivalEventHandler.h"
+#include "DeviceRemovalEventHandler.h"
+#include "DeviceEventHandler.h"
+#include "ImageEventHandler.h"
+#include "InterfaceArrivalEventHandler.h"
+#include "InterfaceRemovalEventHandler.h"
+#include "SystemEventHandler.h"
+#include "LoggingEventHandler.h"
 #include "LoggingEventDataPtr.h"
 
 /*@}*/
 
 /*@}*/
 
-#endif // PGR_SPINNAKER_H
+#endif // FLIR_SPINNAKER_H

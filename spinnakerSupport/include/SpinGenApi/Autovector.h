@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -22,12 +22,12 @@
 #include "GCTypes.h"
 #include "SpinnakerPlatform.h"
 
-#if defined (WIN32)
-    typedef long ATOMIC_VARIABLE;
-#elif defined (__GNUC__) && (defined (__linux__) || defined (__APPLE__))
-    typedef uint32_t ATOMIC_VARIABLE;
+#if defined(WIN32)
+typedef long ATOMIC_VARIABLE;
+#elif defined(__GNUC__) && (defined(__linux__) || defined(__APPLE__))
+typedef uint32_t ATOMIC_VARIABLE;
 #else
-#   error Unsupported platform
+#error Unsupported platform
 #endif
 
 namespace Spinnaker
@@ -35,81 +35,79 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup AutoVector_h AutoVector Class
-        */
+         *  @defgroup AutoVector_h AutoVector Class
+         */
         /*@{*/
 
         /**
-        * @brief Vector of integers with reference counting.
-        */
+         * @brief Vector of integers with reference counting.
+         */
         class SPINNAKER_API int64_autovector_t
         {
-        public:
+          public:
             int64_autovector_t();
-            int64_autovector_t(const int64_autovector_t &obj);
-            explicit           int64_autovector_t(size_t n);
-            virtual            ~int64_autovector_t(void);
+            int64_autovector_t(const int64_autovector_t& obj);
+            explicit int64_autovector_t(size_t n);
+            virtual ~int64_autovector_t(void);
 
-            int64_autovector_t    &  operator =        (const int64_autovector_t &obj);
+            int64_autovector_t& operator=(const int64_autovector_t& obj);
 
+            void operator delete(void* pWhere);
+            void* operator new(size_t uiSize);
+            int64_t& operator[](size_t uiIndex);
+            const int64_t& operator[](size_t uiIndex) const;
+            size_t size() const;
 
-            void               operator delete   (void *pWhere);
-            void *             operator new      (size_t uiSize);
-            int64_t &          operator []       (size_t uiIndex);
-            const int64_t &    operator []       (size_t uiIndex) const;
-            size_t             size() const;
-        protected:
-            std::vector<int64_t> * _pv;
-            ATOMIC_VARIABLE *_pCount;
-
+          protected:
+            std::vector<int64_t>* _pv;
+            ATOMIC_VARIABLE* _pCount;
         };
 
         /*@}*/
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup AutoVector_h AutoVector Class
-        */
+         *  @addtogroup AutoVector_h AutoVector Class
+         */
         /*@{*/
 
         /**
-        * @brief Vector of doubles with reference counting.
-        */
+         * @brief Vector of doubles with reference counting.
+         */
         class SPINNAKER_API double_autovector_t
         {
-        public:
+          public:
             double_autovector_t();
-            double_autovector_t(const double_autovector_t &obj);
-            explicit           double_autovector_t(size_t n);
-            virtual            ~double_autovector_t(void);
+            double_autovector_t(const double_autovector_t& obj);
+            explicit double_autovector_t(size_t n);
+            virtual ~double_autovector_t(void);
 
-            double_autovector_t    &  operator =        (const double_autovector_t &obj);
+            double_autovector_t& operator=(const double_autovector_t& obj);
 
+            void operator delete(void* pWhere);
+            void* operator new(size_t uiSize);
+            double& operator[](size_t uiIndex);
+            const double& operator[](size_t uiIndex) const;
+            size_t size() const;
 
-            void               operator delete   (void *pWhere);
-            void *             operator new      (size_t uiSize);
-            double &           operator []       (size_t uiIndex);
-            const double &     operator []       (size_t uiIndex) const;
-            size_t             size() const;
-        protected:
-            std::vector<double> * _pv;
-            ATOMIC_VARIABLE *_pCount;
-
+          protected:
+            std::vector<double>* _pv;
+            ATOMIC_VARIABLE* _pCount;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #endif // SPINNAKER_GENAPI_AUTOVECTOR_H

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -50,46 +50,57 @@ namespace Spinnaker
 #pragma pack(pop)
 
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup ChunkAdapterGeneric_h ChunkAdapterGeneric Class
-        */
+         *  @defgroup ChunkAdapterGeneric_h ChunkAdapterGeneric Class
+         */
         /*@{*/
 
         /*
-        * @brief Connects a generic chunked buffer to a node map
-        */
+         * @brief Connects a generic chunked buffer to a node map
+         */
         class SPINNAKER_API CChunkAdapterGeneric : public CChunkAdapter
         {
 
-        public:
+          public:
             /*
-            * Constructor.
-            */
+             * Constructor.
+             */
             CChunkAdapterGeneric(INodeMap* pNodeMap = NULL, int64_t MaxChunkCacheSize = -1);
 
             /*
-            * Destructor.
-            */
+             * Destructor.
+             */
             virtual ~CChunkAdapterGeneric();
 
             // Does not have implementation, use the version with EventID
-            virtual bool CheckBufferLayout(uint8_t *pBuffer, int64_t BufferLength);
+            virtual bool CheckBufferLayout(uint8_t* pBuffer, int64_t BufferLength);
 
-            //Does not have implementation, use the generic version
-            virtual void AttachBuffer(uint8_t *pBuffer, int64_t BufferLength, AttachStatistics_t *pAttachStatistics = NULL);
+            // Does not have implementation, use the generic version
+            virtual void AttachBuffer(
+                uint8_t* pBuffer,
+                int64_t BufferLength,
+                AttachStatistics_t* pAttachStatistics = NULL);
 
-            virtual void AttachBuffer(uint8_t *pBuffer, SingleChunkData_t *ChunkData, int64_t NumChunks, AttachStatistics_t *pAttachStatistics = NULL);
+            virtual void AttachBuffer(
+                uint8_t* pBuffer,
+                SingleChunkData_t* ChunkData,
+                int64_t NumChunks,
+                AttachStatistics_t* pAttachStatistics = NULL);
 
-            virtual void AttachBuffer(uint8_t *pBuffer, SingleChunkDataStr_t *ChunkData, int64_t NumChunks, AttachStatistics_t *pAttachStatistics = NULL);
+            virtual void AttachBuffer(
+                uint8_t* pBuffer,
+                SingleChunkDataStr_t* ChunkData,
+                int64_t NumChunks,
+                AttachStatistics_t* pAttachStatistics = NULL);
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #endif // SPINNAKER_GENAPI_CHUNKADAPTERGENERIC_H

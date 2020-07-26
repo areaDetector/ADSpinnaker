@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -25,29 +25,29 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup EventAdapterGeneric_h EventAdapterGeneric Class
-        */
+         *  @defgroup EventAdapterGeneric_h EventAdapterGeneric Class
+         */
         /*@{*/
 
         /**
-        * @brief Connects a generic event to a node map
-        */
-        class SPINNAKER_API CEventAdapterGeneric : public  CEventAdapter
+         * @brief Connects a generic event to a node map
+         */
+        class SPINNAKER_API CEventAdapterGeneric : public CEventAdapter
         {
-        public:
+          public:
             /**
-            * Constructor
-            */
+             * Constructor
+             */
             CEventAdapterGeneric(INodeMap* pNodeMap = NULL);
 
             /**
-            * Destructor
-            */
+             * Destructor
+             */
             virtual ~CEventAdapterGeneric();
 
             // Does not have implementation, use the version with EventID
@@ -60,7 +60,7 @@ namespace Spinnaker
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #endif // SPINNAKER_GENAPI_EVENTADAPTERGENERIC_H

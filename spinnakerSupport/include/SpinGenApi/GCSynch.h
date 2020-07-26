@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -21,19 +21,19 @@
 #include "GCTypes.h"
 #include "GCString.h"
 
-#if defined (_WIN32)
-#   include <windows.h>
-#   include <winbase.h>
-#elif defined (__GNUC__) && (defined (__linux__) || defined (__APPLE__))
-#   include <semaphore.h>
-#   include <pthread.h>
-#   include <errno.h>
-#   include <list>
+#if defined(_WIN32)
+#include <windows.h>
+#include <winbase.h>
+#elif defined(__GNUC__) && (defined(__linux__) || defined(__APPLE__))
+#include <semaphore.h>
+#include <pthread.h>
+#include <errno.h>
+#include <list>
 #elif defined(VXWORKS)
-   #include <vxworks.h>
-   #include <taskLib.h>
+#include <vxworks.h>
+#include <taskLib.h>
 #else
-#   error No/unknown platform thread support
+#error No/unknown platform thread support
 #endif
 
 namespace Spinnaker
@@ -41,13 +41,13 @@ namespace Spinnaker
     namespace GenICam
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup GCSynch_h GCSynch Class
-        */
+         *  @defgroup GCSynch_h GCSynch Class
+         */
         /*@{*/
 
         //-----------------------------------------------------------------
@@ -55,130 +55,126 @@ namespace Spinnaker
         //-----------------------------------------------------------------
 
         /**
-        * @brief A lock class
-        */
+         * @brief A lock class
+         */
         class SPINNAKER_API CLock
         {
-        public:
+          public:
             /**
-            * Constructor
-            */
+             * Constructor
+             */
             CLock();
 
             /**
-            * Destructor
-            */
+             * Destructor
+             */
             ~CLock();
 
             /**
-            * tries to enter the critical section; returns true if successful
-            */
+             * tries to enter the critical section; returns true if successful
+             */
             bool TryLock();
 
             /**
-            * enters the critical section (may block)
-            */
+             * enters the critical section (may block)
+             */
             void Lock();
 
             /**
-            * leaves the critical section
-            */
+             * leaves the critical section
+             */
             void Unlock();
 
-        private:
+          private:
             /**
-            * no copy constructor
-            */
-            CLock( const CLock& );
+             * no copy constructor
+             */
+            CLock(const CLock&);
 
             /**
-            * no assignment operator
-            */
-            CLock& operator=( const CLock& );
+             * no assignment operator
+             */
+            CLock& operator=(const CLock&);
 
-        protected:
-
-    #if defined (_WIN32)
+          protected:
+#if defined(_WIN32)
             /**
-            * The critical section object
-            */
+             * The critical section object
+             */
             CRITICAL_SECTION m_csObject;
-    #elif defined (__GNUC__) && (defined (__linux__) || defined (__APPLE__))
+#elif defined(__GNUC__) && (defined(__linux__) || defined(__APPLE__))
             /**
-            * the mutex object
-            */
+             * the mutex object
+             */
             pthread_mutex_t m_mtxObject;
-    #elif defined(VXWORKS)
+#elif defined(VXWORKS)
             SEM_ID m_sem;
-    #else
-    #       error No/unknown platform thread support
-    #endif
-
+#else
+#error No/unknown platform thread support
+#endif
         };
 
         /*@}*/
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup GCSynch_h GCSynch Class
-        */
+         *  @addtogroup GCSynch_h GCSynch Class
+         */
         /*@{*/
 
         /**
-        * This class is for testing purposes only. It should not be used for
-        * client code because it exists only for Windows but not for Linux
-        * since it uses internal data structures of a Win32 object
-        */
+         * This class is for testing purposes only. It should not be used for
+         * client code because it exists only for Windows but not for Linux
+         * since it uses internal data structures of a Win32 object
+         */
         class SPINNAKER_API CLockEx : public CLock
         {
-        public:
-
-    #       if defined (_WIN32)
-                /**
-                * Gives access to internal data member for test and purposes
-                */
-                int64_t GetLockCount();
-
-                /**
-                * Gives access to internal data member for test and purposes
-                */
-                int64_t GetRecursionCount();
-
-    #       elif defined (__GNUC__) && (defined (__linux__) || defined (__APPLE__) || defined(VXWORKS))
-                // nothing implemented for Unix
-    #       else
-    #           error No/unknown platform support
-    #       endif
-
-        private:
+          public:
+#if defined(_WIN32)
             /**
-            * no copy constructor
-            */
-            CLockEx( const CLockEx& );
+             * Gives access to internal data member for test and purposes
+             */
+            int64_t GetLockCount();
 
             /**
-            * no assignment operator
-            */
-            CLockEx& operator=( const CLockEx& );
+             * Gives access to internal data member for test and purposes
+             */
+            int64_t GetRecursionCount();
 
+#elif defined(__GNUC__) && (defined(__linux__) || defined(__APPLE__) || defined(VXWORKS))
+            // nothing implemented for Unix
+#else
+#error No/unknown platform support
+#endif
+
+          private:
+            /**
+             * no copy constructor
+             */
+            CLockEx(const CLockEx&);
+
+            /**
+             * no assignment operator
+             */
+            CLockEx& operator=(const CLockEx&);
         };
 
         /*@}*/
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup GCSynch_h GCSynch Class
-        */
+         *  @addtogroup GCSynch_h GCSynch Class
+         */
         /*@{*/
 
         //-----------------------------------------------------------------
@@ -187,9 +183,9 @@ namespace Spinnaker
         class AutoLock
         {
             CLock& m_Lock;
-        public:
-            AutoLock(CLock& lock)
-                : m_Lock(lock)
+
+          public:
+            AutoLock(CLock& lock) : m_Lock(lock)
             {
                 m_Lock.Lock();
             }
@@ -199,7 +195,7 @@ namespace Spinnaker
                 m_Lock.Unlock();
             }
 
-        private:
+          private:
             AutoLock& operator=(const AutoLock&);
             AutoLock(const AutoLock&);
         };
@@ -208,13 +204,13 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup GCSynch_h GCSynch Class
-        */
+         *  @addtogroup GCSynch_h GCSynch Class
+         */
         /*@{*/
 
         //-----------------------------------------------------------------
@@ -222,41 +218,44 @@ namespace Spinnaker
         //-----------------------------------------------------------------
 
         /**
-        * @brief Instance-Lock for an object
-        */
-        template< class Object>
-        class LockableObject
+         * @brief Instance-Lock for an object
+         */
+        template <class Object> class LockableObject
         {
-        public:
+          public:
             mutable CLock m_Lock;
 
             class Lock;
             friend class Lock;
 
             /** A scopelevel Lock class.
-            * Automatically acquires the lock when created and releases
-            * it when destroyed.
-            */
+             * Automatically acquires the lock when created and releases
+             * it when destroyed.
+             */
             class Lock
             {
                 /// Reference to outer object
-                const LockableObject<Object> &m_Object;
-            public:
-                Lock( const LockableObject<Object>& obj) : m_Object(obj) {
+                const LockableObject<Object>& m_Object;
+
+              public:
+                Lock(const LockableObject<Object>& obj) : m_Object(obj)
+                {
                     m_Object.m_Lock.Lock();
                 }
 
-                ~Lock(){
+                ~Lock()
+                {
                     m_Object.m_Lock.Unlock();
                 }
-            private:
-                Lock& operator=( const Lock& );
+
+              private:
+                Lock& operator=(const Lock&);
             };
 
             /// Get a new lock
             Lock GetLock() const
             {
-                return Lock( *this );
+                return Lock(*this);
             }
         };
 
@@ -264,84 +263,84 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup GCSynch_h GCSynch Class
-        */
+         *  @addtogroup GCSynch_h GCSynch Class
+         */
         /*@{*/
 
         /**
-        * @brief Named global lock which can be used over process boundaries
-        */
+         * @brief Named global lock which can be used over process boundaries
+         */
         class SPINNAKER_API CGlobalLock
         {
-        public:
+          public:
             /**
-            * Creates a global lock object name pszName.
-            * In case an object with the same name already exists
-            * a reference to the existing object will be created.
-            * If pszName is NULL an unnamed object will be created.
-      */
+             * Creates a global lock object name pszName.
+             * In case an object with the same name already exists
+             * a reference to the existing object will be created.
+             * If pszName is NULL an unnamed object will be created.
+             */
             explicit CGlobalLock(const char* pszName);
-    #if     defined(_WIN32) && ! defined(PHARLAP_WIN32)
+#if defined(_WIN32) && !defined(PHARLAP_WIN32)
             /**
-            * Creates a global lock object name pszName.
-            * In case an object with the same name already exists
-            * a reference to the existing object will be created.
-            * If pszName is NULL an unnamed object will be created.
-      */
+             * Creates a global lock object name pszName.
+             * In case an object with the same name already exists
+             * a reference to the existing object will be created.
+             * If pszName is NULL an unnamed object will be created.
+             */
             explicit CGlobalLock(const wchar_t* pszName);
-    #endif
-        /**
-            * Creates a global lock object name strName.
-            * In case an object with the same name already exists
-            * a reference to the existing object will be created.
-            * If strName is empty an unnamed object will be created.
-      */
+#endif
+            /**
+             * Creates a global lock object name strName.
+             * In case an object with the same name already exists
+             * a reference to the existing object will be created.
+             * If strName is empty an unnamed object will be created.
+             */
             explicit CGlobalLock(const gcstring& strName);
 
             ~CGlobalLock();
 
-        public:
+          public:
             /**
-            * tests whether the lock is valid
-            */
+             * tests whether the lock is valid
+             */
             bool IsValid(void) const;
 
             /**
-            * enters the lock (may block)
-            */
+             * enters the lock (may block)
+             */
             bool Lock(unsigned int timeout_ms);
 
             /**
-            * tries to enter the lock and returns immediately when not possible
-            */
+             * tries to enter the lock and returns immediately when not possible
+             */
             bool TryLock(void);
 
             /**
-            * leaves the lock
-            */
+             * leaves the lock
+             */
             void Unlock(void);
 
-#if defined (__GNUC__) && (defined (__linux__) || defined (__APPLE__))
-        // creates a hashed name instead of the real name
-        void HashSemName(const gcstring& strName);
+#if defined(__GNUC__) && (defined(__linux__) || defined(__APPLE__))
+            // creates a hashed name instead of the real name
+            void HashSemName(const gcstring& strName);
 #endif
 
-    protected:
+          protected:
 #if defined(_WIN32)
-        HANDLE m_handle;
-#elif defined (__GNUC__) && (defined (__linux__) || defined (__APPLE__))
-        gcstring m_semName;
-        sem_t* m_handle;
+            HANDLE m_handle;
+#elif defined(__GNUC__) && (defined(__linux__) || defined(__APPLE__))
+            gcstring m_semName;
+            sem_t* m_handle;
 #elif VXWORKS
-        // There are no named locks on VxWorks. While we could use a single global lock, we
-        // will just rely on the caller to add their own locking in
+            // There are no named locks on VxWorks. While we could use a single global lock, we
+            // will just rely on the caller to add their own locking in
 #else
-#       error No/unknown platform thread support
+#error No/unknown platform thread support
 #endif
 
             // This is for debugging/assertions only
@@ -349,7 +348,7 @@ namespace Spinnaker
             // in release builds this is always 0
             mutable long m_DebugCount;
 
-        private:
+          private:
             // not copyable
             CGlobalLock(const CGlobalLock&);
             CGlobalLock& operator=(const CGlobalLock&);
@@ -359,21 +358,21 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup GCSynch_h GCSynch Class
-        */
+         *  @addtogroup GCSynch_h GCSynch Class
+         */
         /*@{*/
 
         /**
-        * @brief Unlocks the global lock object on destruction
-        *
-        * This is for automatic UNLOCKING only.
-        * We can't do automatic locking here since there is no returnvalue for contructors
-        */
+         * @brief Unlocks the global lock object on destruction
+         *
+         * This is for automatic UNLOCKING only.
+         * We can't do automatic locking here since there is no returnvalue for contructors
+         */
         //-----------------------------------------------------------------
         // unlocks the global lock object on destruction
         // this is for automatic UNLOCKING only.
@@ -381,16 +380,17 @@ namespace Spinnaker
         //-----------------------------------------------------------------
         class SPINNAKER_API CGlobalLockUnlocker
         {
-        protected:
-            CGlobalLock&    m_Lock;
-            bool            m_enabled;
+          protected:
+            CGlobalLock& m_Lock;
+            bool m_enabled;
 
-        public:
+          public:
             CGlobalLockUnlocker(CGlobalLock& lock)
-                : m_Lock(lock)
-                , m_enabled(true) // this allows the auto unlock to be turned off for messy code structures
+                : m_Lock(lock),
+                  m_enabled(true) // this allows the auto unlock to be turned off for messy code structures
             {
-                // explicitly don't lock the object here since we want to do this manually and handle the return value properly
+                // explicitly don't lock the object here since we want to do this manually and handle the return value
+                // properly
             }
 
             ~CGlobalLockUnlocker()
@@ -399,8 +399,8 @@ namespace Spinnaker
             }
 
             /**
-            * This function allows to unlock the object early before the object is destroyed
-            */
+             * This function allows to unlock the object early before the object is destroyed
+             */
             void UnlockEarly(void)
             {
                 if (m_enabled)
@@ -410,14 +410,14 @@ namespace Spinnaker
                 }
             }
 
-        private:
+          private:
             CGlobalLockUnlocker& operator=(const CGlobalLockUnlocker&);
             CGlobalLockUnlocker(const CGlobalLockUnlocker&);
         };
 
-    /*@}*/
-    /*@}*/
-    }
-}
+        /*@}*/
+        /*@}*/
+    } // namespace GenICam
+} // namespace Spinnaker
 
 #endif // SPINNAKER_GENAPI_GCSYNCH_H

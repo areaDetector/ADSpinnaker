@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -27,23 +27,22 @@
 //#include <assert.h>
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(push)
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
 #endif
-
 
 namespace Spinnaker
 {
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
-        */
+         *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
+         */
         /*@{*/
 
         /**
-        *  @defgroup ICategory_h ICategory Interfaces
-        */
+         *  @defgroup ICategory_h ICategory Interfaces
+         */
         /*@{*/
 
         interface INode;
@@ -53,23 +52,23 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * @brief Gives access to a category node
-        */
+         * @brief Gives access to a category node
+         */
         interface SPINNAKER_API_ABSTRACT ICategory : virtual public IValue
         {
             /**
-            * @brief Get all features of the category (including sub-categories)
-            */
-            virtual void GetFeatures(FeatureList_t &Features) const = 0;
+             * @brief Get all features of the category (including sub-categories)
+             */
+            virtual void GetFeatures(FeatureList_t & Features) const = 0;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // ifndef SPINNAKER_GENAPI_ICATEGORY_H

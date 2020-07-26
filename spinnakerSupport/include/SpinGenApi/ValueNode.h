@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -27,10 +27,11 @@
 #include "Node.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
-#pragma warning( disable : 4250 ) // C4250 - 'class1' : inherits 'class2::member' via dominance
-#pragma warning (disable : 4275 ) // warning C4275: non dll-interface struct 'Spinnaker::GenApi::IValue' used as base for dll-interface class 'Spinnaker::GenApi::Value'
+#pragma warning(push)
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(disable : 4250) // C4250 - 'class1' : inherits 'class2::member' via dominance
+#pragma warning(disable : 4275) // warning C4275: non dll-interface struct 'Spinnaker::GenApi::IValue' used as base for
+                                // dll-interface class 'Spinnaker::GenApi::Value'
 #endif
 
 namespace Spinnaker
@@ -38,13 +39,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup ValueNode_h ValueNode Class
-        */
+         *  @defgroup ValueNode_h ValueNode Class
+         */
         /*@{*/
 
         //*************************************************************
@@ -52,66 +53,66 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * @brief Interface for value properties
-        */
+         * @brief Interface for value properties
+         */
         class SPINNAKER_API ValueNode : virtual public IValue, virtual public Node
         {
-        public:
+          public:
             struct NodeImpl;
             /**
-            * Constructor*/
+             * Constructor*/
             ValueNode();
 
             /**
-            * constructor with GenICam IValue*/
+             * constructor with GenICam IValue*/
             ValueNode(std::shared_ptr<Node::NodeImpl> pValue);
 
             /**
-            * Destructor*/
+             * Destructor*/
             ~ValueNode();
 
             virtual INode* GetNode();
 
             /**
-            * Get content of the node as string
-            *
-            * @param Verify Enables Range verification (default = false). The AccessMode is always checked
-            * @param IgnoreCache If true the value is read ignoring any caches (default = false)
-            * @return The value read
-            */
+             * Get content of the node as string
+             *
+             * @param Verify Enables Range verification (default = false). The AccessMode is always checked
+             * @param IgnoreCache If true the value is read ignoring any caches (default = false)
+             * @return The value read
+             */
             virtual GenICam::gcstring ToString(bool Verify = false, bool IgnoreCache = false);
 
             /**
-            * Set content of the node as string
-            *
-            * @param ValueStr The value to set
-            * @param Verify Enables AccessMode and Range verification (default = true)
-            */
+             * Set content of the node as string
+             *
+             * @param ValueStr The value to set
+             * @param Verify Enables AccessMode and Range verification (default = true)
+             */
             virtual void FromString(const GenICam::gcstring& ValueStr, bool Verify = true);
 
             /**
-            * Checks if the value comes from cache or is requested from another node
-            */
+             * Checks if the value comes from cache or is requested from another node
+             */
             virtual bool IsValueCacheValid() const;
 
             /**
-            * overload SetReference for Value
-            */
+             * overload SetReference for Value
+             */
             virtual void SetReference(INode* pBase);
 
-        private:
+          private:
             std::shared_ptr<Node::NodeImpl> m_pIValue;
         };
 
-    typedef ValueNode CValueRef;
+        typedef ValueNode CValueRef;
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // ifndef SPINNAKER_GENAPI_VALUENODE_H

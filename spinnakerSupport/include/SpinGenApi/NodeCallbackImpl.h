@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -15,7 +15,7 @@
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
 /*!
-* @brief   This file exists only for backward compatibility reasons
-*/
+ * @brief   This file exists only for backward compatibility reasons
+ */
 
 #include "SpinGenApi/NodeCallback.h"

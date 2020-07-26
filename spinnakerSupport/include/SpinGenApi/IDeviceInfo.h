@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -24,8 +24,8 @@
 #include "GCTypes.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(push)
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
 #endif
 
 namespace Spinnaker
@@ -33,13 +33,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
-        */
+         *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
+         */
         /*@{*/
 
         /**
-        *  @defgroup IDeviceInfo_h IDeviceInfo Interface
-        */
+         *  @defgroup IDeviceInfo_h IDeviceInfo Interface
+         */
         /*@{*/
 
         //*************************************************************
@@ -47,63 +47,63 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * @brief Interface to get information about the device (= nodemap)
-        */
+         * @brief Interface to get information about the device (= nodemap)
+         */
         interface SPINNAKER_API_ABSTRACT IDeviceInfo
         {
             /**
-            * Get the model name
-            */
+             * Get the model name
+             */
             virtual GenICam::gcstring GetModelName() = 0;
 
             /**
-            * Get the vendor name
-            */
+             * Get the vendor name
+             */
             virtual GenICam::gcstring GetVendorName() = 0;
 
             /**
-            * Get tool tip
-            */
+             * Get tool tip
+             */
             virtual GenICam::gcstring GetToolTip() = 0;
 
             /**
-            * Get the standard name space
-            */
+             * Get the standard name space
+             */
             virtual GenICam::gcstring GetStandardNameSpace() = 0;
 
             /**
-            * Get the version of the DLL's GenApi implementation
-            */
-            virtual void GetGenApiVersion(GenICam::Version_t &Version, uint16_t &Build) = 0;
+             * Get the version of the DLL's GenApi implementation
+             */
+            virtual void GetGenApiVersion(GenICam::Version_t & Version, uint16_t & Build) = 0;
 
             /**
-            * Get the schema version number
-            */
-            virtual void GetSchemaVersion(GenICam::Version_t &Version) = 0;
+             * Get the schema version number
+             */
+            virtual void GetSchemaVersion(GenICam::Version_t & Version) = 0;
 
             /**
-            * Get the version of the device description file
-            */
-            virtual void GetDeviceVersion(GenICam::Version_t &Version) = 0;
+             * Get the version of the device description file
+             */
+            virtual void GetDeviceVersion(GenICam::Version_t & Version) = 0;
 
             /**
-            * Get the Guid describing the product
-            */
+             * Get the Guid describing the product
+             */
             virtual GenICam::gcstring GetProductGuid() = 0;
 
             /**
-            * Get the Guid describing the product version
-            */
+             * Get the Guid describing the product version
+             */
             virtual GenICam::gcstring GetVersionGuid() = 0;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // ifndef SPINNAKER_GENAPI_IDEVICEINFO_H

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2018 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -30,7 +30,7 @@ typedef __int32 int32_t;
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
 typedef __int32 int32_t;
-typedef __int64	int64_t;
+typedef __int64 int64_t;
 #endif
 #else
 
@@ -41,7 +41,7 @@ typedef __int64	int64_t;
 #include <stddef.h>
 
 /* Function declaration modifiers */
-#if defined (_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 
 // Windows 32-bit and 64-bit
 #ifndef SPINC_NO_DECLSPEC_STATEMENTS
@@ -62,7 +62,7 @@ typedef __int64	int64_t;
 #define EXTERN_C extern "C"
 #endif
 
-#elif defined (__GNUC__) && (__GNUC__ >= 4) && (defined (__linux__) || defined (__APPLE__))
+#elif defined(__GNUC__) && (__GNUC__ >= 4) && (defined(__linux__) || defined(__APPLE__))
 
 // Linux
 #define SPINC_IMPORT_EXPORT __attribute__((visibility("default")))
@@ -95,18 +95,20 @@ typedef __int64	int64_t;
 // Helper to deprecate functions and methods
 // For C++14
 #if __cplusplus >= 201402L
-	#if defined(__has_cpp_attribute)
-		#if __has_cpp_attribute(deprecated)
-			#define SPINNAKERC_API_DEPRECATED(msg, func) [[deprecated(msg)]] SPINC_IMPORT_EXPORT spinError SPINC_CALLTYPE func
-		#endif
-	#endif
+#if defined(__has_cpp_attribute)
+#if __has_cpp_attribute(deprecated)
+#define SPINNAKERC_API_DEPRECATED(msg, func) [[deprecated(msg)]] SPINC_IMPORT_EXPORT spinError SPINC_CALLTYPE func
+#endif
+#endif
 // For other C++ versions
 #else
-	#ifdef __GNUC__
-		#define SPINNAKERC_API_DEPRECATED(msg, func) SPINC_IMPORT_EXPORT spinError SPINC_CALLTYPE func __attribute__ ((deprecated(msg)))
-	#elif defined(_MSC_VER)
-		#define SPINNAKERC_API_DEPRECATED(msg, func) __declspec(deprecated(msg)) SPINC_IMPORT_EXPORT spinError SPINC_CALLTYPE func
-	#endif
+#ifdef __GNUC__
+#define SPINNAKERC_API_DEPRECATED(msg, func)                                                                           \
+    SPINC_IMPORT_EXPORT spinError SPINC_CALLTYPE func __attribute__((deprecated(msg)))
+#elif defined(_MSC_VER)
+#define SPINNAKERC_API_DEPRECATED(msg, func)                                                                           \
+    __declspec(deprecated(msg)) SPINC_IMPORT_EXPORT spinError SPINC_CALLTYPE func
+#endif
 #endif
 
 /* C API Interface Functions */

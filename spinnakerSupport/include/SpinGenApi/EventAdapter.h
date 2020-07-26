@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -28,55 +28,54 @@ namespace Spinnaker
     {
 
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup EventAdapter_h EventAdapter Class
-        */
+         *  @defgroup EventAdapter_h EventAdapter Class
+         */
         /*@{*/
 
         /**
-        * @brief Delivers Events to ports
-        */
+         * @brief Delivers Events to ports
+         */
         class SPINNAKER_API CEventAdapter
         {
 
-        public:
+          public:
             /**
-            * Constructor
-            */
+             * Constructor
+             */
             CEventAdapter(INodeMap* pNodeMap = NULL);
 
             /**
-            * Destructor
-            */
+             * Destructor
+             */
             virtual ~CEventAdapter();
 
             /**
-            * Attaches to a node map and retrieves the chunk ports
-            */
+             * Attaches to a node map and retrieves the chunk ports
+             */
             virtual void AttachNodeMap(INodeMap* pNodeMap);
 
             /**
-            * Detaches from the node emap
-            */
+             * Detaches from the node emap
+             */
             virtual void DetachNodeMap();
 
             /**
-            * Deliver message
-            */
+             * Deliver message
+             */
             virtual void DeliverMessage(const uint8_t msg[], uint32_t numBytes) = 0;
 
-        protected:
-
+          protected:
             void* m_pEventAdapter;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #endif // SPINNAKER_GENAPI_EVENTADAPTER_H

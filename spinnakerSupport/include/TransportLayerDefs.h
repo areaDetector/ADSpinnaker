@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -38,31 +38,19 @@ namespace Spinnaker
 
 	enum StreamTypeEnum	/*!< Stream type of the device.*/
 	{
-		StreamType_Mixed,	/*!< Stream Type - Mixed*/
-		StreamType_Custom,	/*!< Stream Type - Custom*/
-		StreamType_GEV,	/*!< Stream Type - GEV*/
-		StreamType_CL,	/*!< Stream Type - CL*/
-		StreamType_IIDC,	/*!< Stream Type - IIDC*/
-		StreamType_UVC,	/*!< Stream Type - UVC*/
-		StreamType_CXP,	/*!< Stream Type - CXP*/
-		StreamType_CLHS,	/*!< Stream Type - CLHS*/
-		StreamType_U3V,	/*!< Stream Type - U3V*/
-		StreamType_ETHERNET,	/*!< Stream Type - ETHERNET*/
-		StreamType_PCI,	/*!< Stream Type - PCI*/
+		StreamType_GigEVision,	/*!< GigE Vision*/
+		StreamType_CameraLink,	/*!< Camera Link*/
+		StreamType_CameraLinkHS,	/*!< Camera Link High Speed*/
+		StreamType_CoaXPress,	/*!< CoaXPress*/
+		StreamType_USB3Vision,	/*!< USB3 Vision*/
+		StreamType_Custom,	/*!< Custom transport layer*/
 		NUMSTREAMTYPE
-	};
-
-	enum StreamDefaultBufferCountModeEnum	/*!< DEPRECATED; Replaced by StreamBufferCountMode. Controls access to setting the number of buffers used for the stream. Locked to Manual mode on 32-bit Windows due to memory constraints.*/
-	{
-		StreamDefaultBufferCountMode_Manual,	/*!< DEPRECATED. The number of buffers used for the stream are set by the user.*/
-		StreamDefaultBufferCountMode_Auto,	/*!< DEPRECATED. The number of buffers used for the stream is automatically calculated.*/
-		NUMSTREAMDEFAULTBUFFERCOUNTMODE
 	};
 
 	enum StreamBufferCountModeEnum	/*!< Controls access to setting the number of buffers used for the stream. Locked to Manual mode on 32-bit Windows due to memory constraints.*/
 	{
 		StreamBufferCountMode_Manual,	/*!< The number of buffers used for the stream are set by the user.*/
-		StreamBufferCountMode_Auto,	/*!< The number of buffers used for the stream is automatically calculated based on the device frame rate.*/
+		StreamBufferCountMode_Auto,	/*!< DEPRECATED. The number of buffers used for the stream is automatically calculated based on the device frame rate.*/
 		NUMSTREAMBUFFERCOUNTMODE
 	};
 
@@ -70,34 +58,31 @@ namespace Spinnaker
 	{
 		StreamBufferHandlingMode_OldestFirst,	/*!< The application always gets the buffer from the head of the output buffer queue (thus, the oldest available one). If the output buffer queue is empty, the application waits for a newly acquired buffer until the timeout expires.*/
 		StreamBufferHandlingMode_OldestFirstOverwrite,	/*!< The application always gets the buffer from the head of the output buffer queue (thus, the oldest available one). If the output buffer queue is empty, the application waits for a newly acquired buffer until the timeout expires. If a new buffer arrives it will overwrite the existing buffer from the head of the queue (behaves like a circular buffer).*/
-		StreamBufferHandlingMode_NewestFirst,	/*!< The application always gets the buffer from the tail of the output buffer queue (thus, the newest available one). If the output buffer queue is empty, the application waits for a newly acquired buffer until the timeout expires.*/
-		StreamBufferHandlingMode_NewestFirstOverwrite,	/*!< DEPRECATED.  This is replaced by NewestOnly.*/
 		StreamBufferHandlingMode_NewestOnly,	/*!< The application always gets the latest completed buffer (the newest one).  If the Output Buffer Queue is empty, the application waits for a newly acquired buffer until the timeout expires.  This buffer handling mode is typically used in a live display GUI where it is important that there is no lag between camera and display.*/
+		StreamBufferHandlingMode_NewestFirst,	/*!< The application always gets the buffer from the tail of the output buffer queue (thus, the newest available one). If the output buffer queue is empty, the application waits for a newly acquired buffer until the timeout expires.*/
 		NUMSTREAMBUFFERHANDLINGMODE
 	};
 
 	enum DeviceTypeEnum	/*!< Transport layer type of the device.*/
 	{
-		DeviceType_Mixed,	/*!< TL - Mixed*/
-		DeviceType_Custom,	/*!< TL - Custom*/
-		DeviceType_GEV,	/*!< TL - GEV*/
-		DeviceType_CL,	/*!< TL - CL*/
-		DeviceType_IIDC,	/*!< TL - IIDC*/
-		DeviceType_UVC,	/*!< TL - UVC*/
-		DeviceType_CXP,	/*!< TL - CXP*/
-		DeviceType_CLHS,	/*!< TL - CLHS*/
-		DeviceType_U3V,	/*!< TL - U3V*/
-		DeviceType_ETHERNET,	/*!< TL - ETHERNET*/
-		DeviceType_PCI,	/*!< TL - PCI*/
+		DeviceType_GigEVision,	/*!< GigE Vision*/
+		DeviceType_CameraLink,	/*!< Camera Link*/
+		DeviceType_CameraLinkHS,	/*!< Camera Link High Speed*/
+		DeviceType_CoaXPress,	/*!< CoaXPress*/
+		DeviceType_USB3Vision,	/*!< USB3 Vision*/
+		DeviceType_Custom,	/*!< Custom transport layer*/
 		NUMDEVICETYPE
 	};
 
 	enum DeviceAccessStatusEnum	/*!< Gets the access status the transport layer Producer has on the device.*/
 	{
-		DeviceAccessStatus_Unknown,	/*!< Unknown status*/
+		DeviceAccessStatus_Unknown,	/*!< Not known to producer.*/
 		DeviceAccessStatus_ReadWrite,	/*!< Full access*/
 		DeviceAccessStatus_ReadOnly,	/*!< Read-only access*/
-		DeviceAccessStatus_NoAccess,	/*!< Non-available devices*/
+		DeviceAccessStatus_NoAccess,	/*!< Not available to connect*/
+		DeviceAccessStatus_Busy,	/*!< The device is already opened by another entity*/
+		DeviceAccessStatus_OpenReadWrite,	/*!< Open in Read/Write mode by this GenTL host*/
+		DeviceAccessStatus_OpenReadOnly,	/*!< Open in Read access mode by this GenTL host*/
 		NUMDEVICEACCESSSTATUS
 	};
 
@@ -140,6 +125,17 @@ namespace Spinnaker
 		NUMDEVICECURRENTSPEED
 	};
 
+	enum InterfaceTypeEnum	/*!< Transport layer type of the interface.*/
+	{
+		InterfaceType_GigEVision,	/*!< GigE Vision*/
+		InterfaceType_CameraLink,	/*!< Camera Link*/
+		InterfaceType_CameraLinkHS,	/*!< Camera Link High Speed*/
+		InterfaceType_CoaXPress,	/*!< CoaXPress*/
+		InterfaceType_USB3Vision,	/*!< USB3 Vision*/
+		InterfaceType_Custom,	/*!< Custom transport layer*/
+		NUMINTERFACETYPE
+	};
+
 	enum POEStatusEnum	/*!< Reports and controls the interface's power over Ethernet status.*/
 	{
 		POEStatus_NotSupported,	/*!< Not Supported*/
@@ -154,6 +150,18 @@ namespace Spinnaker
 		FilterDriverStatus_Disabled,	/*!< FLIR Light Weight Filter Driver is disabled*/
 		FilterDriverStatus_Enabled,	/*!< FLIR Light Weight Filter Driver is enabled*/
 		NUMFILTERDRIVERSTATUS
+	};
+
+	enum TLTypeEnum	/*!< Transport layer type of the GenTL Producer implementation.*/
+	{
+		TLType_GigEVision,	/*!< GigE Vision*/
+		TLType_CameraLink,	/*!< Camera Link*/
+		TLType_CameraLinkHS,	/*!< Camera Link High Speed*/
+		TLType_CoaXPress,	/*!< CoaXPress*/
+		TLType_USB3Vision,	/*!< USB3 Vision*/
+		TLType_Mixed,	/*!< Different Interface modules of the GenTL Producer are of different types*/
+		TLType_Custom,	/*!< Custom transport layer*/
+		NUMTLTYPE
 	};
 
 	/*@}*/

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -29,10 +29,10 @@
 #include "IEnumEntry.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning( disable : 4250 ) // C4250 - 'class1' : inherits 'class2::member' via dominance
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
-#pragma warning( disable: 4275 ) // non dll-interface structXXX used as base
+#pragma warning(push)
+#pragma warning(disable : 4250) // C4250 - 'class1' : inherits 'class2::member' via dominance
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(disable : 4275) // non dll-interface structXXX used as base
 #endif
 
 namespace Spinnaker
@@ -40,21 +40,21 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup EnumNode_h EnumNode Class
-        */
+         *  @defgroup EnumNode_h EnumNode Class
+         */
         /*@{*/
 
         /**
-        * @brief Interface for string properties
-        */
+         * @brief Interface for string properties
+         */
         class SPINNAKER_API EnumNode : virtual public IEnumeration, virtual public ValueNode
         {
-        public:
+          public:
             struct NodeImpl;
             EnumNode();
 
@@ -63,77 +63,75 @@ namespace Spinnaker
             virtual ~EnumNode();
 
             /**
-            * Get list of symbolic Values
-            */
-            virtual void GetSymbolics(StringList_t & Symbolics);
+             * Get list of symbolic Values
+             */
+            virtual void GetSymbolics(StringList_t& Symbolics);
 
             /**
-            * Get list of entry nodes
-            */
-            virtual void GetEntries(NodeList_t & Entries);
+             * Get list of entry nodes
+             */
+            virtual void GetEntries(NodeList_t& Entries);
 
             /**
-            * Set string node value
-            */
+             * Set string node value
+             */
             virtual IEnumeration& operator=(const GenICam::gcstring& ValueStr);
 
             /**
-            * Set integer node value
-            *
-            * @param Value The value to set
-            * @param Verify Enables AccessMode and Range verification (default = true)
-            */
+             * Set integer node value
+             *
+             * @param Value The value to set
+             * @param Verify Enables AccessMode and Range verification (default = true)
+             */
             virtual void SetIntValue(int64_t Value, bool Verify = true);
 
             /**
-            * Get string node value
-            */
+             * Get string node value
+             */
             virtual GenICam::gcstring operator*();
 
             /**
-            * Get integer node value
-            *
-            * @param Verify Enables Range verification (default = false). The AccessMode is always checked
-            * @param IgnoreCache If true the value is read ignoring any caches (default = false)
-            * @return The value read
-            */
+             * Get integer node value
+             *
+             * @param Verify Enables Range verification (default = false). The AccessMode is always checked
+             * @param IgnoreCache If true the value is read ignoring any caches (default = false)
+             * @return The value read
+             */
             virtual int64_t GetIntValue(bool Verify = false, bool IgnoreCache = false);
 
             /**
-            * Get an entry node by name
-            */
+             * Get an entry node by name
+             */
             virtual IEnumEntry* GetEntryByName(const GenICam::gcstring& Symbolic);
 
             /**
-            * Get an entry node by its IntValue
-            */
+             * Get an entry node by its IntValue
+             */
             virtual IEnumEntry* GetEntry(const int64_t IntValue);
 
             /**
-            * Get the current entry
-            */
+             * Get the current entry
+             */
             virtual IEnumEntry* GetCurrentEntry(bool Verify = false, bool IgnoreCache = false);
 
             /**
-            * overload SetReference for Enumeration
-            */
+             * overload SetReference for Enumeration
+             */
             virtual void SetReference(INode* pBase);
 
-        protected:
-
+          protected:
             std::shared_ptr<Node::NodeImpl> m_pEnumeration;
-
         };
 
         typedef EnumNode CEnumerationRef;
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // SPINNAKER_GENAPI_ENUMNODE_H

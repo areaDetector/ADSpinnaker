@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -22,9 +22,9 @@
 #include "Types.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
-#pragma warning ( disable: 4275 ) // non dll-interface structXXX used as base
+#pragma warning(push)
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(disable : 4275) // non dll-interface structXXX used as base
 #endif
 
 namespace Spinnaker
@@ -32,33 +32,33 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
-        */
+         *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
+         */
         /*@{*/
 
         /**
-        *  @defgroup Base_h IBase Interface
-        */
+         *  @defgroup Base_h IBase Interface
+         */
         /*@{*/
 
         /**
-        * @brief Base interface common to all nodes.
-        */
+         * @brief Base interface common to all nodes.
+         */
         interface SPINNAKER_API_ABSTRACT IBase
         {
             /**
-            * Get the access mode of the node
-            */
+             * Get the access mode of the node
+             */
             virtual EAccessMode GetAccessMode() const = 0;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // ifndef SPINNAKER_GENAPI_IBASE_H

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -24,59 +24,69 @@
 #include "PortNode.h"
 #include "PortWriteList.h"
 
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
-
 namespace Spinnaker
 {
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup PortReplay_h PortReplay Class
-        */
+         *  @defgroup PortReplay_h PortReplay Class
+         */
         /*@{*/
 
         /**
-        * @brief Interface for replaying write commands on a port
-        */
+         * @brief Interface for replaying write commands on a port
+         */
         class SPINNAKER_API PortReplay : virtual public IPortReplay, virtual public PortNode
         {
-        public:
+          public:
             PortReplay();
 
             virtual ~PortReplay();
 
             /**
-            * sends the commands to the camera.
-            */
+             * sends the commands to the camera.
+             */
             /*! the default implementation just walks the list and issues each command
                 using the WriteRegister method. Depending on the capabilities of
                 the transport layer the implementation can however use a special command
                 which sends all register write commands as one package.
             */
-            virtual void Replay(IPortWriteList *pPortRecorder, bool Invalidate = true);
+            virtual void Replay(IPortWriteList* pPortRecorder, bool Invalidate = true);
 
             /**
-            * overload SetReference for Value
-            */
+             * overload SetReference for Value
+             */
             virtual void SetReference(IPort* pBase);
 
             void* GetPortReplayHandle();
 
-        private:
+            virtual EAccessMode GetAccessMode() const
+            {
+                return PortNode::GetAccessMode();
+            }
+
+            virtual void Read(void* pBuffer, int64_t Address, int64_t Length)
+            {
+                return PortNode::Read(pBuffer, Address, Length);
+            }
+
+            virtual void Write(const void* pBuffer, int64_t Address, int64_t Length)
+            {
+                return PortNode::Write(pBuffer, Address, Length);
+            }
+
+          private:
             void* m_pPortReplay;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
-
-#pragma warning ( pop )
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #endif // ifndef SPINNAKER_GENAPI_PORTREPLAY_H

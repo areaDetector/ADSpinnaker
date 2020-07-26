@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -25,55 +25,50 @@
 namespace Spinnaker
 {
     /**
-    *  @defgroup SpinnakerClasses Spinnaker Classes
-    */
+     *  @defgroup SpinnakerClasses Spinnaker Classes
+     */
 
     /*@{*/
 
     /**
-    *  @defgroup InterfacePtr_h InterfacePtr Class
-    */
+     *  @defgroup InterfacePtr_h InterfacePtr Class
+     */
 
     /*@{*/
 
     /**
-    * @brief A reference tracked pointer to the interface object.
-    */
+     * @brief A reference tracked pointer to the interface object.
+     */
 
     class SPINNAKER_API InterfacePtr : public BasePtr<IInterface>
     {
-    public:
+      public:
         /**
-        * Default Constructor
-        */
-        InterfacePtr() throw()
-            : BasePtr<IInterface>()
+         * Default Constructor
+         */
+        InterfacePtr() throw() : BasePtr<IInterface>()
         {
         }
 
         /**
-        * Default Constructor with argument
-        */
-        InterfacePtr(const int /*nMustBeNull*/) throw()
-            : BasePtr<IInterface>()
+         * Default Constructor with argument
+         */
+        InterfacePtr(const int /*nMustBeNull*/) throw() : BasePtr<IInterface>()
         {
         }
 
-        InterfacePtr(const long /*nMustBeNull*/) throw()
-            : BasePtr<IInterface>()
+        InterfacePtr(const long /*nMustBeNull*/) throw() : BasePtr<IInterface>()
         {
         }
 
-        InterfacePtr(const nullptr_t /*nullPtr*/) throw()
-            : BasePtr<IInterface>()
+        InterfacePtr(const std::nullptr_t /*nullPtr*/) throw() : BasePtr<IInterface>()
         {
         }
-        
     };
 
     /*@}*/
 
     /*@}*/
-}
+} // namespace Spinnaker
 
-#endif //FLIR_SPINNAKER_INTERFACE_PTR_H
+#endif // FLIR_SPINNAKER_INTERFACE_PTR_H

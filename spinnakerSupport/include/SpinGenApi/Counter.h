@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -20,31 +20,33 @@
 
 namespace Spinnaker
 {
-    namespace GenApi 
+    namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup Counter_h Counter Class
-        */
+         *  @defgroup Counter_h Counter Class
+         */
         /*@{*/
 
         /**
-        * @brief Definition of a simple Counter class
-        */
+         * @brief Definition of a simple Counter class
+         */
 
         class Counter
         {
-        public:
+          public:
             Counter() : m_value(0)
             {
             }
 
             unsigned int GetValue() const
-                { return m_value; }
+            {
+                return m_value;
+            }
 
             unsigned int operator++() // prefix
             {
@@ -58,13 +60,13 @@ namespace Spinnaker
 
             unsigned int operator--(int) // postfix
             {
-                assert( m_value > 0);
+                assert(m_value > 0);
                 return m_value--;
             }
 
             unsigned int operator--() // prefix
             {
-                assert( m_value > 0);
+                assert(m_value > 0);
                 return --m_value;
             }
 
@@ -78,13 +80,13 @@ namespace Spinnaker
                 return m_value == 0;
             }
 
-        private:
+          private:
             unsigned int m_value;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #endif // SPINNAKER_GENAPI_COUNTER_H

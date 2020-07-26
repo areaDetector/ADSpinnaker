@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -26,25 +26,24 @@ namespace Spinnaker
     class ImagePtr;
 
     /**
-    *  @defgroup SpinnakerClasses Spinnaker Classes
-    */
+     *  @defgroup SpinnakerClasses Spinnaker Classes
+     */
     /*@{*/
 
     /**
-    *  @defgroup AVIRecorder_h AVI Recorder Class
-    */
+     *  @defgroup AVIRecorder_h AVI Recorder Class
+     */
     /*@{*/
 
     /**
-    * @brief Provides the functionality for the user to record images to an AVI file.
-    *
-    * NOTE: This class is deprecated and replaced by SpinVideo. Refer to SpinVideo.h instead.
-    */
+     * @brief Provides the functionality for the user to record images to an AVI file.
+     *
+     * NOTE: This class is deprecated and replaced by SpinVideo. Refer to SpinVideo.h instead.
+     */
 
     class DEPRECATED_CLASS("AVIRecorder is deprecated, use SpinVideo instead.") SPINNAKER_API AVIRecorder
     {
-    public:
-
+      public:
         /**
          * Default constructor.
          */
@@ -66,9 +65,7 @@ namespace Spinnaker
          * @see AVIClose()
          *
          */
-        virtual void AVIOpen(
-            const char* pFileName,
-            AVIOption &  pOption );
+        virtual void AVIOpen(const char* pFileName, AVIOption& pOption);
 
         /**
          * Open an MJPEG AVI file in preparation for writing Images to disk.
@@ -82,12 +79,9 @@ namespace Spinnaker
          * @see MJPGOption
          *
          */
-        virtual void AVIOpen(
-            const char* pFileName,
-            MJPGOption &  pOption );
+        virtual void AVIOpen(const char* pFileName, MJPGOption& pOption);
 
-
-         /**
+        /**
          * Open an H264 MP4 file in preparation for writing Images to disk.
          * The size of MP4 files is limited to 2GB. The filenames are
          * automatically generated using the filename specified.
@@ -99,10 +93,7 @@ namespace Spinnaker
          * @see H264Option
          *
          */
-        virtual void AVIOpen(
-            const char* pFileName,
-            H264Option &  pOption );
-
+        virtual void AVIOpen(const char* pFileName, H264Option& pOption);
 
         /**
          * Append an image to the AVI/MP4 file.
@@ -110,7 +101,7 @@ namespace Spinnaker
          * @param pImage The image to append.
          *
          */
-        virtual void AVIAppend( ImagePtr pImage);
+        virtual void AVIAppend(ImagePtr pImage);
 
         /**
          * Close the AVI/MP4 file.
@@ -118,7 +109,7 @@ namespace Spinnaker
          * @see AVIOpen()
          *
          */
-        virtual void AVIClose( );
+        virtual void AVIClose();
 
         /**
          * Set the maximum file size (in megabytes) of a AVI/MP4 file. A new AVI/MP4 file
@@ -132,10 +123,9 @@ namespace Spinnaker
          */
         virtual void SetMaximumAVISize(unsigned int size);
 
-    private:
-
-        AVIRecorder( const AVIRecorder& );
-        AVIRecorder& operator=( const AVIRecorder& );
+      private:
+        AVIRecorder(const AVIRecorder&);
+        AVIRecorder& operator=(const AVIRecorder&);
 
         struct AVIRecorderData; // Forward declaration
 
@@ -145,6 +135,6 @@ namespace Spinnaker
     /*@}*/
 
     /*@}*/
-}
+} // namespace Spinnaker
 
 #endif // FLIR_SPINNAKER_AVIRECORDER_H

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -26,13 +26,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup EnumClasses_h EnumClasses Class
-        */
+         *  @defgroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         //*************************************************************
@@ -40,24 +40,24 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * @brief Holds conversion methods for the sign enumeration
-        */
+         * @brief Holds conversion methods for the sign enumeration
+         */
         class SPINNAKER_API ESignClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, ESign *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, ESign* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, ESign *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, ESign* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(ESign Value);
         };
 
@@ -65,34 +65,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the endianess enumeration
-        */
+         * @brief Holds conversion methods for the endianess enumeration
+         */
         class SPINNAKER_API EEndianessClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, EEndianess *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, EEndianess* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, EEndianess *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, EEndianess* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(EEndianess Value);
         };
 
@@ -100,34 +100,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the representation enumeration
-        */
+         * @brief Holds conversion methods for the representation enumeration
+         */
         class SPINNAKER_API ERepresentationClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, ERepresentation *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, ERepresentation* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, ERepresentation *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, ERepresentation* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(ERepresentation Value);
         };
 
@@ -135,34 +135,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the visibility enumeration
-        */
+         * @brief Holds conversion methods for the visibility enumeration
+         */
         class SPINNAKER_API EVisibilityClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, EVisibility *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, EVisibility* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, EVisibility *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, EVisibility* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(EVisibility Value);
         };
 
@@ -170,34 +170,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the access mode enumeration
-        */
+         * @brief Holds conversion methods for the access mode enumeration
+         */
         class SPINNAKER_API EAccessModeClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, EAccessMode *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, EAccessMode* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, EAccessMode *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, EAccessMode* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(EAccessMode Value);
         };
 
@@ -205,31 +205,31 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the caching mode enumeration
-        */
+         * @brief Holds conversion methods for the caching mode enumeration
+         */
         class SPINNAKER_API ECachingModeClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, ECachingMode *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, ECachingMode* pValue);
 
-            static void ToString(GenICam::gcstring &ValueStr, ECachingMode *pValue);
+            static void ToString(GenICam::gcstring& ValueStr, ECachingMode* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(ECachingMode Value);
         };
 
@@ -237,34 +237,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the namespace enumeration
-        */
+         * @brief Holds conversion methods for the namespace enumeration
+         */
         class SPINNAKER_API ENameSpaceClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, ENameSpace *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, ENameSpace* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, ENameSpace *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, ENameSpace* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(ENameSpace Value);
         };
 
@@ -272,34 +272,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the standard namespace enumeration
-        */
+         * @brief Holds conversion methods for the standard namespace enumeration
+         */
         class SPINNAKER_API EYesNoClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, EYesNo *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, EYesNo* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, EYesNo *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, EYesNo* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(EYesNo Value);
         };
 
@@ -307,34 +307,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the standard namespace enumeration
-        */
+         * @brief Holds conversion methods for the standard namespace enumeration
+         */
         class SPINNAKER_API EStandardNameSpaceClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, EStandardNameSpace *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, EStandardNameSpace* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, EStandardNameSpace *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, EStandardNameSpace* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(EStandardNameSpace Value);
         };
 
@@ -342,34 +342,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the converter formulas
-        */
+         * @brief Holds conversion methods for the converter formulas
+         */
         class SPINNAKER_API ESlopeClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, ESlope *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, ESlope* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, ESlope *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, ESlope* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(ESlope Value);
         };
 
@@ -377,34 +377,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the notation type of floats
-        */
+         * @brief Holds conversion methods for the notation type of floats
+         */
         class SPINNAKER_API EDisplayNotationClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, EDisplayNotation *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, EDisplayNotation* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, EDisplayNotation *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, EDisplayNotation* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(EDisplayNotation Value);
         };
 
@@ -412,34 +412,34 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief Holds conversion methods for the notation type of floats
-        */
+         * @brief Holds conversion methods for the notation type of floats
+         */
         class SPINNAKER_API EInputDirectionClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, EInputDirection *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, EInputDirection* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, EInputDirection *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, EInputDirection* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(EInputDirection Value);
         };
 
@@ -447,41 +447,40 @@ namespace Spinnaker
         /*@}*/
 
         /**
-        *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @addtogroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @addtogroup EnumClasses_h EnumClasses Class
-        */
+         *  @addtogroup EnumClasses_h EnumClasses Class
+         */
         /*@{*/
 
         /**
-        * @brief helper class converting EGenApiSchemaVersion from and to string
-        */
+         * @brief helper class converting EGenApiSchemaVersion from and to string
+         */
         class SPINNAKER_API EGenApiSchemaVersionClass
         {
-        public:
+          public:
             /**
-            * Converts a string to enum value
-            */
-            static bool FromString(const GenICam::gcstring &ValueStr, EGenApiSchemaVersion *pValue);
+             * Converts a string to enum value
+             */
+            static bool FromString(const GenICam::gcstring& ValueStr, EGenApiSchemaVersion* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
-            static void ToString(GenICam::gcstring &ValueStr, EGenApiSchemaVersion *pValue);
+             * Converts a string to an int32_t property
+             */
+            static void ToString(GenICam::gcstring& ValueStr, EGenApiSchemaVersion* pValue);
 
             /**
-            * Converts a string to an int32_t property
-            */
+             * Converts a string to an int32_t property
+             */
             static GenICam::gcstring ToString(EGenApiSchemaVersion Value);
         };
 
         /*@}*/
         /*@}*/
-    };
-};
-
+    }; // namespace GenApi
+};     // namespace Spinnaker
 
 #endif // ifndef SPINNAKER_GENAPI_ENUMCLASSES_H

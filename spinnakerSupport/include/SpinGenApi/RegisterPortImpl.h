@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -27,13 +27,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup RegisterPortImpl_h RegisterPortImpl Class
-        */
+         *  @defgroup RegisterPortImpl_h RegisterPortImpl Class
+         */
         /*@{*/
 
         //*************************************************************
@@ -41,19 +41,19 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * @brief Standard implementation for a port using a register based transport layer
-        */
+         * @brief Standard implementation for a port using a register based transport layer
+         */
         class CRegisterPortImpl : public CPortImpl
         {
-        public:
+          public:
             /**
-            * Constructor
-            */
+             * Constructor
+             */
             CRegisterPortImpl(int MaxNumQuadlets = 1, bool TransportLayerSwapsEndianess = false){};
 
             /**
-            * Destructor
-            */
+             * Destructor
+             */
             virtual ~CRegisterPortImpl(){};
 
             //---------------------------------------------------------------
@@ -61,11 +61,11 @@ namespace Spinnaker
             //---------------------------------------------------------------
 
             /**
-            * Get the access mode of the node
-            */
+             * Get the access mode of the node
+             */
             /*!
-            * Driver closed => NI, Driver open => RW, analyzing a struct, RO
-            */
+             * Driver closed => NI, Driver open => RW, analyzing a struct, RO
+             */
             virtual EAccessMode GetAccessMode() const = 0;
 
             //---------------------------------------------------------------
@@ -73,36 +73,36 @@ namespace Spinnaker
             //---------------------------------------------------------------
 
             /**
-            * Reads an array of quadlets from the port
-            */
-            virtual void ReadRegister(uint32_t *pRegisters, int64_t Address, int64_t Length) = 0;
+             * Reads an array of quadlets from the port
+             */
+            virtual void ReadRegister(uint32_t* pRegisters, int64_t Address, int64_t Length) = 0;
 
             /**
-            * Writes an array of quadlets to the port
-            */
-            virtual void WriteRegister(const uint32_t *pRegisters, int64_t Address, int64_t Length) = 0;
+             * Writes an array of quadlets to the port
+             */
+            virtual void WriteRegister(const uint32_t* pRegisters, int64_t Address, int64_t Length) = 0;
 
             //---------------------------------------------------------------
             // IPort
             //---------------------------------------------------------------
 
             /**
-            * Reads a chunk of bytes from the port
-            */
-            virtual void Read(void *pBuffer, int64_t Address, int64_t Length){};
+             * Reads a chunk of bytes from the port
+             */
+            virtual void Read(void* pBuffer, int64_t Address, int64_t Length){};
 
             /**
-            * Writes a chunk of bytes to the port
-            */
-            virtual void Write(const void *pBuffer, int64_t Address, int64_t Length){};
+             * Writes a chunk of bytes to the port
+             */
+            virtual void Write(const void* pBuffer, int64_t Address, int64_t Length){};
 
             //---------------------------------------------------------------
             // IPortConstruct implementation (without IPort & IBase)
             //---------------------------------------------------------------
 
             /**
-            * Sets pointer the real port implementation; this function may called only once
-            */
+             * Sets pointer the real port implementation; this function may called only once
+             */
             virtual void SetPortImpl(IPort* pPort)
             {
                 m_ptrPort = pPort;
@@ -112,7 +112,7 @@ namespace Spinnaker
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #endif // ifndef SPINNAKER_GENAPI_REGISTERPORTIMPL_H

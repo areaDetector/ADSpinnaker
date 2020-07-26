@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -23,26 +23,25 @@
 namespace Spinnaker
 {
     /**
-    * @defgroup SpinnakerClasses Spinnaker Classes
-    */
+     * @defgroup SpinnakerClasses Spinnaker Classes
+     */
 
     /*@{*/
 
     /**
-    * @defgroup IImageStatistics_h IImageStatistics Class
-    */
+     * @defgroup IImageStatistics_h IImageStatistics Class
+     */
 
     /*@{*/
 
     /**
-    * @brief The interface file for image statistics.
-    */
+     * @brief The interface file for image statistics.
+     */
 
-    class  SPINNAKER_API IImageStatistics
+    class SPINNAKER_API IImageStatistics
     {
-    public:
-
-        virtual ~IImageStatistics() {};
+      public:
+        virtual ~IImageStatistics(){};
 
         virtual void EnableAll() = 0;
         virtual void DisableAll() = 0;
@@ -53,8 +52,8 @@ namespace Spinnaker
         virtual void SetChannelStatus(StatisticsChannel channel, bool enabled) = 0;
         virtual void GetRange(StatisticsChannel channel, unsigned int* pMin, unsigned int* pMax) const = 0;
         virtual void GetPixelValueRange(
-            StatisticsChannel channel, 
-            unsigned int* pPixelValueMin, 
+            StatisticsChannel channel,
+            unsigned int* pPixelValueMin,
             unsigned int* pPixelValueMax) const = 0;
         virtual void GetNumPixelValues(StatisticsChannel channel, unsigned int* pNumPixelValues) const = 0;
         virtual void GetMean(StatisticsChannel channel, float* pPixelValueMean) const = 0;
@@ -69,14 +68,14 @@ namespace Spinnaker
             float* pPixelValueMean = NULL,
             int** ppHistogram = NULL) const = 0;
 
-    protected:
-        IImageStatistics() {};
-        IImageStatistics(const IImageStatistics&) {};
+      protected:
+        IImageStatistics(){};
+        IImageStatistics(const IImageStatistics&){};
     };
 
     /*@}*/
 
     /*@}*/
-}
+} // namespace Spinnaker
 
 #endif // FLIR_SPINNAKER_IIMAGESTATISTICS_H

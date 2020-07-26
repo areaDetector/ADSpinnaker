@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -24,8 +24,8 @@
 #include "GCString.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(push)
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
 #endif
 
 namespace Spinnaker
@@ -33,13 +33,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
-        */
+         *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
+         */
         /*@{*/
 
         /**
-        *  @defgroup IFloat_h IFloat Interface
-        */
+         *  @defgroup IFloat_h IFloat Interface
+         */
         /*@{*/
 
         //*************************************************************
@@ -47,110 +47,110 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * @brief Interface for float properties
-        */
+         * @brief Interface for float properties
+         */
         interface SPINNAKER_API_ABSTRACT IFloat : virtual public IValue
         {
             /**
-            * Set node value
-            *
-            * @param Value The value to set
-            * @param Verify Enables AccessMode and Range verification (default = true)
-            */
+             * Set node value
+             *
+             * @param Value The value to set
+             * @param Verify Enables AccessMode and Range verification (default = true)
+             */
             virtual void SetValue(double Value, bool Verify = true) = 0;
 
             /**
-            * Set node value
-            */
+             * Set node value
+             */
             virtual IFloat& operator=(double Value) = 0;
 
             /**
-            * Get node value
-            *
-            * @param Verify Enables Range verification (default = false). The AccessMode is always checked
-            * @param IgnoreCache If true the value is read ignoring any caches (default = false)
-            * @return The value read
-            */
+             * Get node value
+             *
+             * @param Verify Enables Range verification (default = false). The AccessMode is always checked
+             * @param IgnoreCache If true the value is read ignoring any caches (default = false)
+             * @return The value read
+             */
             virtual double GetValue(bool Verify = false, bool IgnoreCache = false) = 0;
 
             /**
-            * Get node value
-            */
+             * Get node value
+             */
             virtual double operator()() = 0;
 
             /**
-            * Get node value
-            */
+             * Get node value
+             */
             virtual double operator*() = 0;
 
             /**
-            * Get minimum value allowed
-            */
+             * Get minimum value allowed
+             */
             virtual double GetMin() = 0;
 
             /**
-            * Get maximum value allowed
-            */
+             * Get maximum value allowed
+             */
             virtual double GetMax() = 0;
 
             /**
-            * True if the float has a constant increment
-            */
+             * True if the float has a constant increment
+             */
             virtual bool HasInc() = 0;
 
             /**
-            * Get increment mode
-            */
+             * Get increment mode
+             */
             virtual EIncMode GetIncMode() = 0;
 
             /**
-            * Get the constant increment if there is any
-            */
+             * Get the constant increment if there is any
+             */
             virtual double GetInc() = 0;
 
             /**
-            * Get list of valid value
-            */
+             * Get list of valid value
+             */
             virtual double_autovector_t GetListOfValidValues(bool bounded = true) = 0;
 
             /**
-            * Get recommended representation
-            */
-            virtual  ERepresentation GetRepresentation() = 0;
+             * Get recommended representation
+             */
+            virtual ERepresentation GetRepresentation() = 0;
 
             /**
-            * Get the physical unit name
-            */
+             * Get the physical unit name
+             */
             virtual GenICam::gcstring GetUnit() const = 0;
 
             /**
-            * Get the way the float should be converted to a string
-            */
+             * Get the way the float should be converted to a string
+             */
             virtual EDisplayNotation GetDisplayNotation() const = 0;
 
             /**
-            * Get the precision to be used when converting the float to a string
-            */
+             * Get the precision to be used when converting the float to a string
+             */
             virtual int64_t GetDisplayPrecision() const = 0;
 
             /**
-            * Restrict minimum value
-            */
+             * Restrict minimum value
+             */
             virtual void ImposeMin(double Value) = 0;
 
             /**
-            * Restrict maximum value
-            */
+             * Restrict maximum value
+             */
             virtual void ImposeMax(double Value) = 0;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // ifndef SPINNAKER_GENAPI_IFLOAT_H

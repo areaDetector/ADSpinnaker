@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -28,10 +28,10 @@
 #include "IString.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning( disable : 4250 ) // C4250 - 'class1' : inherits 'class2::member' via dominance
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
-#pragma warning( disable: 4275 ) // non dll-interface structXXX used as base
+#pragma warning(push)
+#pragma warning(disable : 4250) // C4250 - 'class1' : inherits 'class2::member' via dominance
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(disable : 4275) // non dll-interface structXXX used as base
 #endif
 
 namespace Spinnaker
@@ -39,21 +39,21 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup StringNode_h StringNode Class
-        */
+         *  @defgroup StringNode_h StringNode Class
+         */
         /*@{*/
 
         /**
-        * @brief Interface for string properties
-        */
+         * @brief Interface for string properties
+         */
         class SPINNAKER_API StringNode : virtual public IString, virtual public ValueNode
         {
-        public:
+          public:
             struct NodeImpl;
             StringNode();
 
@@ -62,62 +62,60 @@ namespace Spinnaker
             virtual ~StringNode();
 
             /**
-            * Set node value
-            *
-            * @param Value The value to set
-            * @param Verify Enables AccessMode and Range verification (default = true)
-            */
+             * Set node value
+             *
+             * @param Value The value to set
+             * @param Verify Enables AccessMode and Range verification (default = true)
+             */
             virtual void SetValue(const GenICam::gcstring& Value, bool Verify = true);
 
             /**
-            * Set node value
-            */
+             * Set node value
+             */
             virtual IString& operator=(const GenICam::gcstring& Value);
 
             /**
-            * Get node value
-            *
-            * @param Verify Enables Range verification (default = false). The AccessMode is always checked
-            * @param IgnoreCache If true the value is read ignoring any caches (default = false)
-            * @return The value read
-            */
+             * Get node value
+             *
+             * @param Verify Enables Range verification (default = false). The AccessMode is always checked
+             * @param IgnoreCache If true the value is read ignoring any caches (default = false)
+             * @return The value read
+             */
             virtual GenICam::gcstring GetValue(bool Verify = false, bool IgnoreCache = false);
 
             /**
-            * Get node value
-            */
+             * Get node value
+             */
             virtual GenICam::gcstring operator()();
 
             /**
-            * Get node value
-            */
+             * Get node value
+             */
             virtual GenICam::gcstring operator*();
 
             /**
-            * Retrieves the maximum length of the string in bytes
-            */
+             * Retrieves the maximum length of the string in bytes
+             */
             virtual int64_t GetMaxLength();
 
             /**
-            * overload SetReference for Value
-            */
+             * overload SetReference for Value
+             */
             virtual void SetReference(INode* pBase);
 
-        private:
-
+          private:
             std::shared_ptr<Node::NodeImpl> m_pString;
-
         };
 
-    typedef StringNode CStringRef;
+        typedef StringNode CStringRef;
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // SPINNAKER_GENAPI_STRINGNODE_H

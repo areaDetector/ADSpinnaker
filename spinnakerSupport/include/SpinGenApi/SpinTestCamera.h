@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -25,13 +25,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup SpinTestCamera_h SpinTestCamera Class
-        */
+         *  @defgroup SpinTestCamera_h SpinTestCamera Class
+         */
         /*@{*/
 
         class SPINNAKER_API SpinTestCamera : virtual public NodeMap
@@ -42,7 +42,7 @@ namespace Spinnaker
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #endif // ifndef SPINNAKER_GENAPI_SPINTESTCAMERA_H

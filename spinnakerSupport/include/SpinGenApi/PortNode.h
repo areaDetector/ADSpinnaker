@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -28,10 +28,11 @@
 #include "Pointer.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
-#pragma warning( disable : 4250 ) // C4250 - 'class1' : inherits 'class2::member' via dominance
-#pragma warning (disable : 4275 ) // warning C4275: non dll-interface struct 'Spinnaker::GenApi::IValue' used as base for dll-interface class 'Spinnaker::GenApi::Value'
+#pragma warning(push)
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(disable : 4250) // C4250 - 'class1' : inherits 'class2::member' via dominance
+#pragma warning(disable : 4275) // warning C4275: non dll-interface struct 'Spinnaker::GenApi::IValue' used as base for
+                                // dll-interface class 'Spinnaker::GenApi::Value'
 #endif
 
 namespace Spinnaker
@@ -39,13 +40,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup PortNode_h PortNode Class
-        */
+         *  @defgroup PortNode_h PortNode Class
+         */
         /*@{*/
 
         //*************************************************************
@@ -53,29 +54,28 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * @brief Interface for value properties
-        */
-        class SPINNAKER_API PortNode :
-            virtual public IPortConstruct,
-            virtual public IChunkPort,
-            virtual public IPortRecorder,
-            virtual public Node
+         * @brief Interface for value properties
+         */
+        class SPINNAKER_API PortNode : virtual public IPortConstruct,
+                                       virtual public IChunkPort,
+                                       virtual public IPortRecorder,
+                                       virtual public Node
         {
-        public:
+          public:
             struct NodeImpl;
             /**
-            * Constructor
-            */
+             * Constructor
+             */
             PortNode();
 
             /**
-            * constructor with GenICam IValue
-            */
+             * constructor with GenICam IValue
+             */
             PortNode(std::shared_ptr<Node::NodeImpl> pValue);
 
             /**
-            * Destructor
-            */
+             * Destructor
+             */
             ~PortNode();
 
             //-------------------------------------------------------------
@@ -83,27 +83,27 @@ namespace Spinnaker
             //-------------------------------------------------------------
 
             /**
-            * Reads a chunk of bytes from the port
-            */
-            virtual void Read(void *pBuffer, int64_t Address, int64_t Length);
+             * Reads a chunk of bytes from the port
+             */
+            virtual void Read(void* pBuffer, int64_t Address, int64_t Length);
 
             /**
-            * Writes a chunk of bytes to the port
-            */
-            virtual void Write(const void *pBuffer, int64_t Address, int64_t Length);
+             * Writes a chunk of bytes to the port
+             */
+            virtual void Write(const void* pBuffer, int64_t Address, int64_t Length);
 
             //-------------------------------------------------------------
             // IPortConstruct implementation
             //-------------------------------------------------------------
 
             /**
-            * Sets pointer the real port implementation; this function may called only once
-            */
+             * Sets pointer the real port implementation; this function may called only once
+             */
             void SetPortImpl(IPort* pPort);
 
             /**
-            * Determines if the port adapter must perform an endianess swap
-            */
+             * Determines if the port adapter must perform an endianess swap
+             */
             virtual EYesNo GetSwapEndianess();
 
             //-------------------------------------------------------------
@@ -111,13 +111,13 @@ namespace Spinnaker
             //-------------------------------------------------------------
 
             /**
-            * Get the Id of the chunk the port should be attached to
-            */
+             * Get the Id of the chunk the port should be attached to
+             */
             virtual Spinnaker::GenICam::gcstring GetChunkID() const;
 
             /**
-            * Indicates if the chunk a adapter must hold a cached version of the chunk data
-            */
+             * Indicates if the chunk a adapter must hold a cached version of the chunk data
+             */
             virtual EYesNo CacheChunkData() const;
 
             //-------------------------------------------------------------
@@ -125,13 +125,13 @@ namespace Spinnaker
             //-------------------------------------------------------------
 
             /**
-            * Starts logging all WriteRegister commands to a list
-            */
-            virtual void StartRecording( IPortWriteList *pPortRecorder );
+             * Starts logging all WriteRegister commands to a list
+             */
+            virtual void StartRecording(IPortWriteList* pPortRecorder);
 
             /**
-            * Stops recording
-            */
+             * Stops recording
+             */
             virtual void StopRecording();
 
             //-------------------------------------------------------------
@@ -139,28 +139,30 @@ namespace Spinnaker
             //-------------------------------------------------------------
 
             /**
-            * Sends the commands to the camera.
-            */
+             * Sends the commands to the camera.
+             */
             /*! The default implementation just walks the list and issues each command
                 using the WriteRegister method. Depending on the capabilities of
                 the transport layer the implementation can however use a special command
                 which sends all register write commands as one package.
             */
-            virtual void Replay( IPortWriteList *pPortRecorder, bool Invalidate = true );
+            virtual void Replay(IPortWriteList* pPortRecorder, bool Invalidate = true);
 
             /**
-            * overload SetReference for Value
-            */
+             * overload SetReference for Value
+             */
             virtual void SetReference(INode* pBase);
 
+            using Node::SetReference;
+
             /**
-            * overload SetReference for Value
-            */
+             * overload SetReference for Value
+             */
             virtual void SetReference(IPort* pBase);
 
             /**
-            * overload SetReference for Value
-            */
+             * overload SetReference for Value
+             */
             virtual void SetReference(IChunkPort* pBase);
 
             std::shared_ptr<Node::NodeImpl> GetPortHandle()
@@ -168,7 +170,7 @@ namespace Spinnaker
                 return m_pPort;
             }
 
-        private:
+          private:
             std::shared_ptr<Node::NodeImpl> m_pPort;
         };
 
@@ -176,11 +178,11 @@ namespace Spinnaker
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // ifndef SPINNAKER_GENAPI_PORTNODE_H

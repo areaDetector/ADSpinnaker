@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -60,10 +60,15 @@ typedef struct _quickSpinTLDevice
 	quickSpinCommandNode GevDeviceDiscoverMaximumPacketSize;
 	quickSpinIntegerNode GevDeviceMaximumPacketSize;
 	quickSpinBooleanNode GevDeviceIsWrongSubnet;
+	quickSpinCommandNode GevDeviceAutoForceIP;
 	quickSpinCommandNode GevDeviceForceIP;
+	quickSpinIntegerNode GevDeviceForceIPAddress;
+	quickSpinIntegerNode GevDeviceForceSubnetMask;
+	quickSpinIntegerNode GevDeviceForceGateway;
 	quickSpinBooleanNode DeviceMulticastMonitorMode;
 	quickSpinEnumerationNode DeviceEndianessMechanism;
 	quickSpinStringNode DeviceInstanceId;
+	quickSpinStringNode DeviceLocation;
 	quickSpinEnumerationNode DeviceCurrentSpeed;
 	quickSpinBooleanNode DeviceU3VProtocol;
 } quickSpinTLDevice;

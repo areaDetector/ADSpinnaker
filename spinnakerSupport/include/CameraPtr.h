@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -22,53 +22,47 @@
 #include "BasePtr.h"
 #include "Camera.h"
 
-
 namespace Spinnaker
 {
     /**
-    *  @defgroup SpinnakerClasses Spinnaker Classes
-    */
+     *  @defgroup SpinnakerClasses Spinnaker Classes
+     */
 
     /*@{*/
 
     /**
-    *  @defgroup CameraPtr_h CameraPtr Class
-    */
+     *  @defgroup CameraPtr_h CameraPtr Class
+     */
 
     /*@{*/
 
     /**
-    * @brief A reference tracked pointer to a camera object. 
-    */
+     * @brief A reference tracked pointer to a camera object.
+     */
 
     class SPINNAKER_API CameraPtr : public BasePtr<Camera, ICameraBase>
     {
 
-    public:
+      public:
         //! Default constructor.
-        CameraPtr() throw()
-            : BasePtr<Camera, ICameraBase>()
+        CameraPtr() throw() : BasePtr<Camera, ICameraBase>()
         {
         }
 
         //! Default constructor.
-        CameraPtr(const int /*nMustBeNull*/) throw()
-            : BasePtr<Camera, ICameraBase>()
+        CameraPtr(const int /*nMustBeNull*/) throw() : BasePtr<Camera, ICameraBase>()
         {
         }
 
         //! Default constructor with argument.
-        CameraPtr(const long /*nMustBeNull*/) throw()
-            : BasePtr<Camera, ICameraBase>()
+        CameraPtr(const long /*nMustBeNull*/) throw() : BasePtr<Camera, ICameraBase>()
         {
         }
 
-        CameraPtr(const nullptr_t /*nullPtr*/) throw()
-            : BasePtr<Camera, ICameraBase>()
+        CameraPtr(const std::nullptr_t /*nullPtr*/) throw() : BasePtr<Camera, ICameraBase>()
         {
         }
-        
     };
-}
+} // namespace Spinnaker
 
 #endif // FLIR_SPINNAKER_CAMERA_PTR_H

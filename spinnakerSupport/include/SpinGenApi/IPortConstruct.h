@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -23,8 +23,8 @@
 #include "IPort.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(push)
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
 #endif
 
 namespace Spinnaker
@@ -32,13 +32,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
-        */
+         *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
+         */
         /*@{*/
 
         /**
-        *  @defgroup IPortConstruct_h IPortConstruct Interface
-        */
+         *  @defgroup IPortConstruct_h IPortConstruct Interface
+         */
         /*@{*/
 
         //*************************************************************
@@ -46,28 +46,28 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * @brief Interface for ports
-        */
+         * @brief Interface for ports
+         */
         interface SPINNAKER_API IPortConstruct : virtual public IPort
         {
             /**
-            * Sets pointer the real port implementation; this function may called only once
-            */
-            virtual void SetPortImpl(IPort* pPort) = 0;
+             * Sets pointer the real port implementation; this function may called only once
+             */
+            virtual void SetPortImpl(IPort * pPort) = 0;
 
             /**
-            * Determines if the port adapter must perform an endianess swap
-            */
+             * Determines if the port adapter must perform an endianess swap
+             */
             virtual EYesNo GetSwapEndianess() = 0;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // ifndef SPINNAKER_GENAPI_IPORTCONSTRUCT_H

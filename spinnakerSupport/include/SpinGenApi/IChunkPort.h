@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -24,8 +24,8 @@
 #include "IPort.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(push)
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
 #endif
 
 namespace Spinnaker
@@ -33,13 +33,13 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
-        */
+         *  @defgroup SpinnakerGenApiInterfaces Spinnaker GenApi Interfaces
+         */
         /*@{*/
 
         /**
-        *  @defgroup IChunkPort_h IChunkPort Interface
-        */
+         *  @defgroup IChunkPort_h IChunkPort Interface
+         */
         /*@{*/
 
         //*************************************************************
@@ -47,48 +47,50 @@ namespace Spinnaker
         //*************************************************************
 
         /**
-        * Address of a int64_t pseudo register containing the base address of the chunk (MAX_INT64)
-        */
-#   define CHUNK_BASE_ADDRESS_REGISTER     GC_INT64_MAX
+         * Address of a int64_t pseudo register containing the base address of the chunk (MAX_INT64)
+         */
+#define CHUNK_BASE_ADDRESS_REGISTER GC_INT64_MAX
 
         /**
-        * Lenght of the CHUNK_BASE_ADDRESS_REGISTER pseudo register
-        */
-#   define CHUNK_BASE_ADDRESS_REGISTER_LEN 8
+         * Lenght of the CHUNK_BASE_ADDRESS_REGISTER pseudo register
+         */
+#define CHUNK_BASE_ADDRESS_REGISTER_LEN 8
 
         /**
-        * Address of a int64_t pseudo register containing the length of the chunk
-        */
-#   define CHUNK_LENGTH_REGISTER     (GC_INT64_MAX-15)
+         * Address of a int64_t pseudo register containing the length of the chunk
+         */
+#ifndef CHUNK_LENGTH_REGISTER
+#define CHUNK_LENGTH_REGISTER (GC_INT64_MAX - 15)
+#endif
 
         /**
-        * Lenght of the CHUNK_LENGTH_REGISTER pseudo register
-        */
-#   define CHUNK_LENGTH_REGISTER_LEN 8
+         * Lenght of the CHUNK_LENGTH_REGISTER pseudo register
+         */
+#define CHUNK_LENGTH_REGISTER_LEN 8
 
         /**
-        * @brief Interface for ports attached to a chunk
-        */
+         * @brief Interface for ports attached to a chunk
+         */
         interface SPINNAKER_API_ABSTRACT IChunkPort : virtual public IPort
         {
             /**
-            * Get the Id of the chunk the port should be attached to
-            */
+             * Get the Id of the chunk the port should be attached to
+             */
             virtual GenICam::gcstring GetChunkID() const = 0;
 
             /**
-            * Indicates if the chunk a adapter must hold a cached version of the chunk data
-            */
+             * Indicates if the chunk a adapter must hold a cached version of the chunk data
+             */
             virtual EYesNo CacheChunkData() const = 0;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // ifndef SPINNAKER_GENAPI_ICHUNKPORT_H

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -72,7 +72,13 @@ namespace Spinnaker
 		 * Description: Transport layer type of the interface.
 		 * Visibility: Expert
 		 */
-		GenApi::IString &InterfaceType;
+		GenApi::IEnumerationT<InterfaceTypeEnum> &InterfaceType;
+
+		/**
+		 * Description: Selector for the different gateway entries for this interface.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevInterfaceGatewaySelector;
 
 		/**
 		 * Description: IP address of the selected gateway entry of this interface.
@@ -87,16 +93,40 @@ namespace Spinnaker
 		GenApi::IInteger &GevInterfaceMACAddress;
 
 		/**
+		 * Description: Selector for the subnet of this interface.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevInterfaceSubnetSelector;
+
+		/**
 		 * Description: IP address of the selected subnet of this interface.
 		 * Visibility: Expert
 		 */
-		GenApi::IInteger &GevInterfaceIPAddress;
+		GenApi::IInteger &GevInterfaceSubnetIPAddress;
 
 		/**
 		 * Description: Subnet mask of the selected subnet of this interface.
 		 * Visibility: Expert
 		 */
 		GenApi::IInteger &GevInterfaceSubnetMask;
+
+		/**
+		 * Description: Transmit link speed of this interface in bits per second.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevInterfaceTransmitLinkSpeed;
+
+		/**
+		 * Description: Receive link speed of this interface in bits per second.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevInterfaceReceiveLinkSpeed;
+
+		/**
+		 * Description: Maximum transmission unit of this interface.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevInterfaceMTU;
 
 		/**
 		 * Description: Reports and controls the interface's power over Ethernet status.
@@ -183,6 +213,12 @@ namespace Spinnaker
 		GenApi::IString &DeviceModelName;
 
 		/**
+		 * Description: Serial number of the selected remote device.
+		 * Visibility: Expert
+		 */
+		GenApi::IString &DeviceSerialNumber;
+
+		/**
 		 * Description: Gives the device's access status at the moment of the last execution of "DeviceUpdateList". This value only changes on execution of "DeviceUpdateList".
 		 * Visibility: Expert
 		 */
@@ -201,16 +237,16 @@ namespace Spinnaker
 		GenApi::IInteger &GevDeviceSubnetMask;
 
 		/**
+		 * Description: Current gateway IP address of the GVCP interface of the selected remote device.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevDeviceGateway;
+
+		/**
 		 * Description: 48-bit MAC address of the GVCP interface of the selected remote device.
 		 * Visibility: Expert
 		 */
 		GenApi::IInteger &GevDeviceMACAddress;
-
-		/**
-		 * Description: Automatically forces any cameras on interface to an IP Address on the same subnet as the interface.
-		 * Visibility: Expert
-		 */
-		GenApi::ICommand &AutoForceIP;
 
 		/**
 		 * Description: Number of incompatible devices detected on current interface.
@@ -259,6 +295,36 @@ namespace Spinnaker
 		 * Visibility: Expert
 		 */
 		GenApi::IInteger &IncompatibleGevDeviceMACAddress;
+
+		/**
+		 * Description: Apply the force IP settings (GevDeviceForceIPAddress, GevDeviceForceSubnetMask and GevDeviceForceGateway) in the selected remote device using ForceIP command.
+		 * Visibility: Expert
+		 */
+		GenApi::ICommand &GevDeviceForceIP;
+
+		/**
+		 * Description: Static IP address to set for the GVCP interface of the selected remote device.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevDeviceForceIPAddress;
+
+		/**
+		 * Description: Static subnet mask to set for GVCP interface of the selected remote device.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevDeviceForceSubnetMask;
+
+		/**
+		 * Description: Static gateway IP address to set for the GVCP interface of the selected remote device.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &GevDeviceForceGateway;
+
+		/**
+		 * Description: Automatically forces the selected remote device to an IP Address on the same subnet as the GVCP interface.
+		 * Visibility: Expert
+		 */
+		GenApi::ICommand &GevDeviceAutoForceIP;
 
 		/**
 		 * Description: User readable name of the interface's host adapter.

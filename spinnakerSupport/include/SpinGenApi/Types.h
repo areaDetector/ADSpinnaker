@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -33,43 +33,43 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiEnums Spinnaker GenApi Enums
-        */
+         *  @defgroup SpinnakerGenApiEnums Spinnaker GenApi Enums
+         */
         /*@{*/
 
         /**
-        *  @defgroup Types_h Types Enums
-        */
+         *  @defgroup Types_h Types Enums
+         */
         /*@{*/
 
         /**
-        * signed or unsigned integers
-        */
+         * signed or unsigned integers
+         */
         typedef enum _ESign
         {
-            Signed,         /** Integer is signed*/
-            Unsigned,       /** Integer is unsigned*/
-            _UndefinedSign  /** Object is not yet initialized*/
+            Signed,        /** Integer is signed*/
+            Unsigned,      /** Integer is unsigned*/
+            _UndefinedSign /** Object is not yet initialized*/
         } ESign;
 
         /**
-        * access mode of a node
-        */
+         * access mode of a node
+         */
         typedef enum _EAccessMode
         {
-            NI,        /** Not implemented*/
-            NA,        /** Not available*/
-            WO,        /** Write Only*/
-            RO,        /** Read Only*/
-            RW,        /** Read and Write*/
-            _UndefinedAccesMode,    /** Object is not yet initialized*/
-            _CycleDetectAccesMode   /** used internally for AccessMode cycle detection*/
+            NI,                   /** Not implemented*/
+            NA,                   /** Not available*/
+            WO,                   /** Write Only*/
+            RO,                   /** Read Only*/
+            RW,                   /** Read and Write*/
+            _UndefinedAccesMode,  /** Object is not yet initialized*/
+            _CycleDetectAccesMode /** used internally for AccessMode cycle detection*/
 
         } EAccessMode;
 
         /**
-        * recommended visibility of a node
-        */
+         * recommended visibility of a node
+         */
         typedef enum _EVisibility
         {
             Beginner = 0,             /** Always visible*/
@@ -80,9 +80,9 @@ namespace Spinnaker
         } EVisibility;
 
         /**
-        * caching mode of a register
-        * \ingroup Spinnaker_GenApi_PublicUtilities
-        */
+         * caching mode of a register
+         * \ingroup Spinnaker_GenApi_PublicUtilities
+         */
         typedef enum _ECachingMode
         {
             NoCache,              /** Do not use cache*/
@@ -92,38 +92,38 @@ namespace Spinnaker
         } ECachingMode;
 
         /**
-        * recommended representation of a node value
-        */
+         * recommended representation of a node value
+         */
         typedef enum _ERepresentation
         {
-            Linear,                     /** Slider with linear behavior*/
-            Logarithmic,                /** Slider with logarithmic behavior*/
-            Boolean,                    /** Check box*/
-            PureNumber,                 /** Decimal number in an edit control*/
-            HexNumber,                  /** Hex number in an edit control*/
-            IPV4Address,                /** IP-Address*/
-            MACAddress,                 /** MAC-Address*/
+            Linear,      /** Slider with linear behavior*/
+            Logarithmic, /** Slider with logarithmic behavior*/
+            Boolean,     /** Check box*/
+            PureNumber,  /** Decimal number in an edit control*/
+            HexNumber,   /** Hex number in an edit control*/
+            IPV4Address, /** IP-Address*/
+            MACAddress,  /** MAC-Address*/
             _UndefinedRepresentation
         } ERepresentation;
 
         // this define is required to deal with a spelling error corrected in v1.2
 #ifndef NO_UNDEFINEDED_REPRESENTATION
-#   define _UndefindedRepresentation _UndefinedRepresentation
+#define _UndefindedRepresentation _UndefinedRepresentation
 #endif
 
         /**
-        * Endianess of a value in a register
-        */
+         * Endianess of a value in a register
+         */
         typedef enum _EEndianess
         {
-            BigEndian,        /** Register is big endian*/
-            LittleEndian,     /** Register is little endian*/
-            _UndefinedEndian  /** Object is not yet initialized*/
+            BigEndian,       /** Register is big endian*/
+            LittleEndian,    /** Register is little endian*/
+            _UndefinedEndian /** Object is not yet initialized*/
         } EEndianess;
 
         /**
-        * Defines if a node name is standard or custom
-        */
+         * Defines if a node name is standard or custom
+         */
         typedef enum _ENameSpace
         {
             Custom,             /** name resides in custom namespace*/
@@ -132,36 +132,36 @@ namespace Spinnaker
         } ENameSpace;
 
         /**
-        * Defines from which standard namespace a node name comes from
-        */
+         * Defines from which standard namespace a node name comes from
+         */
         typedef enum _EStandardNameSpace
         {
-            None,            /** name resides in custom namespace*/
-            GEV,             /** name resides in GigE Vision namespace*/
-            IIDC,            /** name resides in 1394 IIDC namespace*/
-            CL,              /** name resides in camera link namespace*/
-            USB,             /** name resides in USB namespace*/
-            _UndefinedStandardNameSpace  /** Object is not yet initialized*/
+            None,                       /** name resides in custom namespace*/
+            GEV,                        /** name resides in GigE Vision namespace*/
+            IIDC,                       /** name resides in 1394 IIDC namespace*/
+            CL,                         /** name resides in camera link namespace*/
+            USB,                        /** name resides in USB namespace*/
+            _UndefinedStandardNameSpace /** Object is not yet initialized*/
         } EStandardNameSpace;
 
         /**
-        * Defines the choices of a Yes/No alternative
-        */
+         * Defines the choices of a Yes/No alternative
+         */
         typedef enum _EYesNo
         {
-            Yes = 1,                /** yes*/
-            No = 0,                 /** no*/
-            _UndefinedYesNo = 2     /** Object is not yet initialized*/
+            Yes = 1,            /** yes*/
+            No = 0,             /** no*/
+            _UndefinedYesNo = 2 /** Object is not yet initialized*/
         } EYesNo;
 
         /**
-        * A list of strings
-        */
+         * A list of strings
+         */
         typedef GenICam::gcstring_vector StringList_t;
 
         /**
-        * typedef for formula type
-        */
+         * typedef for formula type
+         */
         typedef enum _ESlope
         {
             Increasing,      /** strictly monotonous increasing*/
@@ -172,35 +172,35 @@ namespace Spinnaker
         } ESlope;
 
         /**
-        * typedef describing the different validity checks which can be performed on an XML file
-        */
+         * typedef describing the different validity checks which can be performed on an XML file
+         */
         /*!
-        * The enum values for a bit field of length uint32_t
-        */
+         * The enum values for a bit field of length uint32_t
+         */
         typedef enum _EXMLValidation
         {
-            xvLoad = 0x00000001L,                 /** Creates a dummy node map*/
-            xvCycles = 0x00000002L,               /** checks for write and dependency cycles (implies xvLoad)*/
-            xvSFNC = 0x00000004L,                 /** checks for conformance with the standard feature naming convention (SFNC)*/
-            xvDefault = 0x00000000L,              /** checks performed if nothing else is said*/
-            xvAll = 0xffffffffL,                  /** all possible checks*/
+            xvLoad = 0x00000001L,    /** Creates a dummy node map*/
+            xvCycles = 0x00000002L,  /** checks for write and dependency cycles (implies xvLoad)*/
+            xvSFNC = 0x00000004L,    /** checks for conformance with the standard feature naming convention (SFNC)*/
+            xvDefault = 0x00000000L, /** checks performed if nothing else is said*/
+            xvAll = 0xffffffffL,     /** all possible checks*/
             _UndefinedEXMLValidation = 0x8000000L /** Object is not yet initialized*/
         } EXMLValidation;
 
         /**
-        * typedef for float notation
-        */
+         * typedef for float notation
+         */
         typedef enum _EDisplayNotation
         {
-            fnAutomatic,                /** the notation if either scientific or fixed depending on what is shorter*/
-            fnFixed,                    /** the notation is fixed, e.g. 123.4*/
-            fnScientific,               /** the notation is scientific, e.g. 1.234e2*/
-            _UndefinedEDisplayNotation  /** Object is not yet initialized*/
+            fnAutomatic,               /** the notation if either scientific or fixed depending on what is shorter*/
+            fnFixed,                   /** the notation is fixed, e.g. 123.4*/
+            fnScientific,              /** the notation is scientific, e.g. 1.234e2*/
+            _UndefinedEDisplayNotation /** Object is not yet initialized*/
         } EDisplayNotation;
 
         /**
-        * typedef for interface type
-        */
+         * typedef for interface type
+         */
         typedef enum _EInterfaceType
         {
             intfIValue,       /** IValue interface*/
@@ -218,21 +218,22 @@ namespace Spinnaker
         } EInterfaceType;
 
         /**
-        * typedef for link type
-        */
+         * typedef for link type
+         */
         typedef enum _ELinkType
         {
             ctParentNodes,          /** All nodes for which this node is at least an invalidating child*/
             ctReadingChildren,      /** All nodes which can be read from*/
             ctWritingChildren,      /** All nodes which can write a value further down the node stack*/
             ctInvalidatingChildren, /** All directly connected nodes which invalidate this node*/
-            ctDependingNodes,       /** All directly or indirectly connected nodes which are invalidated by this nodes (i.e. which are dependent on this node)*/
-            ctTerminalNodes         /** All indirectly connected terminal nodes*/
+            ctDependingNodes, /** All directly or indirectly connected nodes which are invalidated by this nodes (i.e.
+                                 which are dependent on this node)*/
+            ctTerminalNodes   /** All indirectly connected terminal nodes*/
         } ELinkType;
 
         /**
-        * typedef for increment mode
-        */
+         * typedef for increment mode
+         */
         typedef enum _EIncMode
         {
             noIncrement,    /** The feature has no increment*/
@@ -241,8 +242,8 @@ namespace Spinnaker
         } EIncMode;
 
         /**
-        * typedef for link type
-        */
+         * typedef for link type
+         */
         typedef enum _EInputDirection
         {
             idFrom, /** Indicates a swiss knife that it is used as worker for a converter computing FROM*/
@@ -251,8 +252,8 @@ namespace Spinnaker
         } EInputDirection;
 
         /**
-        * GenApi schema version
-        */
+         * GenApi schema version
+         */
         typedef enum _EGenApiSchemaVersion
         {
             v1_0 = 1,
@@ -262,7 +263,7 @@ namespace Spinnaker
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #endif // ifndef SPINNAKER_GENAPI_TYPES_H

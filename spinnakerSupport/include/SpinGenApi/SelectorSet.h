@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -28,55 +28,52 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup SelectorSet_h SelectorSet Class
-        */
+         *  @defgroup SelectorSet_h SelectorSet Class
+         */
         /*@{*/
 
         /**
-        * The set of selectors selecting a given node
-        */
+         * The set of selectors selecting a given node
+         */
         class SPINNAKER_API CSelectorSet : virtual public Node
         {
-        public:
+          public:
+            /**
+             * Constructor
+             */
+            CSelectorSet(IBase* pBase /*!> Feature selected by the selector set*/
+            );
 
             /**
-            * Constructor
-            */
-            CSelectorSet (
-                IBase *pBase /*!> Feature selected by the selector set*/
-                );
-
-            /**
-            * Destructor
-            */
+             * Destructor
+             */
             ~CSelectorSet();
 
             /**
-            * returns true if no selectors are present
-            */
+             * returns true if no selectors are present
+             */
             bool IsEmpty();
 
             // Implementation of ISelectorDigit
-        public:
+          public:
             virtual bool SetFirst();
             virtual bool SetNext(bool Tick = true);
             virtual void Restore();
             virtual GenICam::gcstring ToString();
-            virtual void GetSelectorList( FeatureList_t &SelectorList, bool Incremental = false );
+            virtual void GetSelectorList(FeatureList_t& SelectorList, bool Incremental = false);
 
-        private:
-
+          private:
             INode* m_pNode;
             void* m_pSelectorSet;
         };
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 #endif

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -28,10 +28,10 @@
 #include "IEnumEntry.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning( disable : 4250 ) // C4250 - 'class1' : inherits 'class2::member' via dominance
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
-#pragma warning( disable: 4275 ) // non dll-interface structXXX used as base
+#pragma warning(push)
+#pragma warning(disable : 4250) // C4250 - 'class1' : inherits 'class2::member' via dominance
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(disable : 4275) // non dll-interface structXXX used as base
 #endif
 
 namespace Spinnaker
@@ -39,21 +39,21 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
-        /*@{*/
-        
-        /**
-        *  @defgroup EnumEntryNode_h EnumEntryNode Class
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        * @brief Interface for string properties
-        */
+         *  @defgroup EnumEntryNode_h EnumEntryNode Class
+         */
+        /*@{*/
+
+        /**
+         * @brief Interface for string properties
+         */
         class SPINNAKER_API EnumEntryNode : virtual public IEnumEntry, virtual public ValueNode
         {
-        public:
+          public:
             struct NodeImpl;
             EnumEntryNode();
 
@@ -62,46 +62,43 @@ namespace Spinnaker
             virtual ~EnumEntryNode();
 
             /**
-            * Get numeric enum value
-            */
+             * Get numeric enum value
+             */
             virtual int64_t GetValue();
 
             /**
-            * Get symbolic enum value
-            */
-            virtual GenICam::gcstring GetSymbolic()const;
+             * Get symbolic enum value
+             */
+            virtual GenICam::gcstring GetSymbolic() const;
 
             /**
-            * Get double number associated with the entry
-            */
+             * Get double number associated with the entry
+             */
             virtual double GetNumericValue();
 
             /**
-            * Indicates if the corresponding EnumEntry is self clearing
-            */
+             * Indicates if the corresponding EnumEntry is self clearing
+             */
             virtual bool IsSelfClearing();
 
             /**
-            * overload SetReference for EnumEntry
-            */
+             * overload SetReference for EnumEntry
+             */
             virtual void SetReference(INode* pBase);
 
-
-        private:
-
+          private:
             std::shared_ptr<Node::NodeImpl> m_pEnumEntry;
-
         };
 
         typedef EnumEntryNode CEnumEntryRef;
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // SPINNAKER_GENAPI_ENUMENTRYNODE_H

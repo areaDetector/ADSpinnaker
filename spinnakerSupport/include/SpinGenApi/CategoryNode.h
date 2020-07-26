@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -28,10 +28,10 @@
 #include "ICategory.h"
 
 #ifdef _WIN32
-#pragma warning ( push )
-#pragma warning( disable : 4250 ) // C4250 - 'class1' : inherits 'class2::member' via dominance
-#pragma warning ( disable : 4251 ) // XXX needs to have dll-interface to be used by clients of class YYY
-#pragma warning( disable: 4275 ) // non dll-interface structXXX used as base
+#pragma warning(push)
+#pragma warning(disable : 4250) // C4250 - 'class1' : inherits 'class2::member' via dominance
+#pragma warning(disable : 4251) // XXX needs to have dll-interface to be used by clients of class YYY
+#pragma warning(disable : 4275) // non dll-interface structXXX used as base
 #endif
 
 namespace Spinnaker
@@ -39,21 +39,21 @@ namespace Spinnaker
     namespace GenApi
     {
         /**
-        *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
-        */
+         *  @defgroup SpinnakerGenApiClasses Spinnaker GenApi Classes
+         */
         /*@{*/
 
         /**
-        *  @defgroup CategoryNode_h CategoryNode Class
-        */
+         *  @defgroup CategoryNode_h CategoryNode Class
+         */
         /*@{*/
 
         /**
-        * @brief Interface for string properties.
-        */
+         * @brief Interface for string properties.
+         */
         class SPINNAKER_API CategoryNode : virtual public ICategory, virtual public ValueNode
         {
-        public:
+          public:
             struct NodeImpl;
 
             CategoryNode();
@@ -63,30 +63,28 @@ namespace Spinnaker
             virtual ~CategoryNode();
 
             /**
-            * Get all features of the category (including sub-categories)
-            */
-            virtual void GetFeatures(FeatureList_t &Features) const;
+             * Get all features of the category (including sub-categories)
+             */
+            virtual void GetFeatures(FeatureList_t& Features) const;
 
             /**
-            * @overload SetReference for Value
-            */
+             * @overload SetReference for Value
+             */
             virtual void SetReference(INode* pBase);
 
-        private:
-
+          private:
             std::shared_ptr<Node::NodeImpl> m_pCategory;
-
         };
 
         typedef CategoryNode CCategoryRef;
 
         /*@}*/
         /*@}*/
-    }
-}
+    } // namespace GenApi
+} // namespace Spinnaker
 
 #ifdef _WIN32
-#pragma warning ( pop )
+#pragma warning(pop)
 #endif
 
 #endif // SPINNAKER_GENAPI_CATEGORYNODE_H

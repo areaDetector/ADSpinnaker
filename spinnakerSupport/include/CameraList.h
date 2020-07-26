@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -35,32 +35,31 @@ namespace Spinnaker
     /*@{*/
 
     /**
-    * @brief Used to hold a list of camera objects.
-    */
+     * @brief Used to hold a list of camera objects.
+     */
 
     class SPINNAKER_API CameraList : public ICameraList
     {
-    public:
-
+      public:
         /**
-        * Default constructor.
-        */
+         * Default constructor.
+         */
         CameraList(void);
 
         /**
-        * Virtual destructor.
-        */
+         * Virtual destructor.
+         */
         virtual ~CameraList(void);
 
         /**
-        * Copy constructor
-        */
-        CameraList(const CameraList & iface);
+         * Copy constructor
+         */
+        CameraList(const CameraList& iface);
 
         /**
          * Assignment operator.
          */
-        CameraList& operator=( const CameraList& iface );
+        CameraList& operator=(const CameraList& iface);
 
         /**
          * Array subscription operators.
@@ -87,13 +86,13 @@ namespace Spinnaker
         CameraPtr GetByIndex(unsigned int index) const;
 
         /**
-        * Returns a pointer to a camera object with the specified serial number. This
-        * function will return a NULL CameraPtr if no matching camera serial is found.
-        *
-        * @param serialNumber The serial number of the camera object to retrieve
-        *
-        * @return A pointer to an camera object.
-        */
+         * Returns a pointer to a camera object with the specified serial number. This
+         * function will return a NULL CameraPtr if no matching camera serial is found.
+         *
+         * @param serialNumber The serial number of the camera object to retrieve
+         *
+         * @return A pointer to an camera object.
+         */
         CameraPtr GetBySerial(std::string serialNumber) const;
 
         /**
@@ -118,12 +117,12 @@ namespace Spinnaker
         void RemoveByIndex(unsigned int index);
 
         /**
-        * Removes a camera using its serial number and destroys its corresponding reference counted
-        * object. This function will throw a Spinnaker exception with SPINNAKER_ERR_NOT_AVAILABLE
-        * error if no matching camera serial is found.
-        *
-        * @param serialNumber The serial number of the Camera object to remove
-        */
+         * Removes a camera using its serial number and destroys its corresponding reference counted
+         * object. This function will throw a Spinnaker exception with SPINNAKER_ERR_NOT_AVAILABLE
+         * error if no matching camera serial is found.
+         *
+         * @param serialNumber The serial number of the Camera object to remove
+         */
         void RemoveBySerial(std::string serialNumber);
 
         /**
@@ -131,12 +130,12 @@ namespace Spinnaker
          *
          * @param otherList The other list to append to this list
          */
-        void Append(CameraList & otherList);
+        void Append(CameraList& otherList);
     };
 
     /*@}*/
 
     /*@}*/
-}
+} // namespace Spinnaker
 
 #endif // FLIR_SPINNAKER_CAMERALIST_H

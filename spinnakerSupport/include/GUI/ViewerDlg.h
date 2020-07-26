@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -21,115 +21,104 @@
 
 namespace Spinnaker
 {
-	namespace GUI
-	{
-		/**
-		 * @defgroup SpinnakerGUI Spinnaker GUI Classes
-		 */
+    namespace GUI
+    {
+        /**
+         * @defgroup SpinnakerGUI Spinnaker GUI Classes
+         */
 
-		/*@{*/
+        /*@{*/
 
-		/**
-		 * @defgroup ViewerDlg_h Spinnaker GUI Viewer Dialog Class
-		 */
+        /**
+         * @defgroup ViewerDlg_h Spinnaker GUI Viewer Dialog Class
+         */
 
-		/*@{*/
+        /*@{*/
 
-		class SPINNAKER_API ViewerDlg
-		{
-		public:
+        class SPINNAKER_API ViewerDlg
+        {
+          public:
+            /**
+             * Default constructor.
+             */
+            ViewerDlg(void);
 
-			/**
-			* Default constructor.
-			*/
-			ViewerDlg(void);
+            /**
+             * Default destructor.
+             */
+            ~ViewerDlg(void);
 
+            /**
+             * Connect ImageDrawingWindow to camera.
+             *
+             * @param pointer to a camera object
+             *
+             * @return boolean indicating whether the operation was successful
+             */
+            bool Connect(Spinnaker::CameraPtr camera);
 
-			/**
-			 * Default destructor.
-			 */
-			~ViewerDlg(void);
+            /**
+             * Start image streaming.
+             *
+             */
+            void StartStreaming();
 
+            /**
+             * Stop image streaming.
+             *
+             */
+            void StopStreaming();
 
-			/**
-			 * Connect ImageDrawingWindow to camera.
-			 *
-			 * @param pointer to a camera object
-			 *
-			 * @return boolean indicating whether the operation was successful
-			 */
-			bool Connect(Spinnaker::CameraPtr camera);
+            /**
+             * Set the window title.
+             *
+             * @param string representing the title.
+             */
+            std::string GetTitle();
 
+            /**
+             * Get the window title.
+             *
+             * @return string representing the title.
+             */
+            void SetTitle(std::string title);
 
-			/**
-			 * Start image streaming.
-			 *
-			 */
-			void StartStreaming();
+            /**
+             * Disconnect the ImageDrawingWindow from associated
+             * camera object.
+             *
+             */
+            void Disconnect();
 
+            /**
+             * Get a boolean indicating whether Window is connected to a camera object.
+             *
+             * @return boolean indicating connection status.
+             */
+            bool IsConnected();
 
-			/**
-			 * Stop image streaming.
-			 *
-			 */
-			void StopStreaming();
+            /**
+             * Show the ImageDrawingWindow.
+             *
+             */
+            void Open();
 
+            /**
+             * Hide the ImageDrawingWindow.
+             *
+             */
+            void Close();
 
-			/**
-			 * Set the window title.
-			 *
-			 * @param string representing the title.
-			 */
-			std::string GetTitle();
+          protected:
+#ifdef GUIFrame_GTK
+            Spinnaker::GUI_GTKmm::Viewer* m_pGTKViewer;
+#else
+            Spinnaker::GUI_WPF::ImageDrawingWindow* m_pWPFViewer;
+#endif
+        };
 
+        /*@}*/
 
-			/**
-			 * Get the window title.
-			 *
-			 * @return string representing the title.
-			 */
-			void SetTitle(std::string title);
-
-
-			/**
-			 * Disconnect the ImageDrawingWindow from associated
-			 * camera object.
-			 *
-			 */
-			void Disconnect();
-
-
-			/**
-			 * Get a boolean indicating whether Window is connected to a camera object.
-			 *
-			 * @return boolean indicating connection status.
-			 */
-			bool IsConnected();
-
-
-			/**
-			 * Show the ImageDrawingWindow.
-			 *
-			 */
-			void Open();
-
-
-			/**
-			 * Hide the ImageDrawingWindow.
-			 *
-			 */
-			void Close();
-		protected:
-
-	#ifdef GUIFrame_GTK
-			Spinnaker::GUI_GTKmm::Viewer* m_pGTKViewer;
-	#else
-			Spinnaker::GUI_WPF::ImageDrawingWindow* m_pWPFViewer;
-	#endif
-		};
-
-		/*@}*/
-
-		/*@}*/
-	}
-}
+        /*@}*/
+    } // namespace GUI
+} // namespace Spinnaker

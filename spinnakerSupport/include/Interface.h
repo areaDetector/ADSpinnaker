@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -35,15 +35,15 @@ namespace Spinnaker
     /*@{*/
 
     /**
-    * @brief An interface object which holds a list of cameras.
-    */
+     * @brief An interface object which holds a list of cameras.
+     */
 
-    class SPINNAKER_API Interface: public IInterface
+    class SPINNAKER_API Interface : public IInterface
     {
-    public:
+      public:
         /**
-        * Virtual Destructor
-        */
+         * Virtual Destructor
+         */
         virtual ~Interface(void);
 
         /**
@@ -60,7 +60,7 @@ namespace Spinnaker
          *
          * @see CameraList::Clear()
          *
-         * @param updateCameras A flag used to issue an updateCameras() call internally 
+         * @param updateCameras A flag used to issue an updateCameras() call internally
          *        before getting the camera list
          *
          * @return An CameraList object that contains a list of cameras on this interface.
@@ -70,8 +70,8 @@ namespace Spinnaker
         /**
          * Updates the list of cameras on this interface.  This function needs to be called
          * before any cameras can be discovered using GetCameras().  System::GetCameras() will
-         * automatically call this function for each interface it enumerates.  If the list 
-         * changed after the last time System::GetCameras() or UpdateCameras() was called 
+         * automatically call this function for each interface it enumerates.  If the list
+         * changed after the last time System::GetCameras() or UpdateCameras() was called
          * then the return value will be true, otherwise it is false.
          *
          * @see System::GetCameras()
@@ -88,67 +88,87 @@ namespace Spinnaker
          *
          * @return  A reference to a INodeMap object.
          */
-        GenApi::INodeMap & GetTLNodeMap() const;
+        GenApi::INodeMap& GetTLNodeMap() const;
 
         /**
-        * Registers an event for the interface
-        *
-        * @param evtToRegister The event to register for the interface        
-        *
-        */
-        void RegisterEvent(Event & evtToRegister);
+         * Registers an event handler for the interface
+         *
+         * @param evtHandlerToRegister The event handler to register for the interface
+         *
+         */
+        void RegisterEventHandler(EventHandler& evtHandlerToRegister);
 
         /**
-        * Unregisters an event for the interface
-        *
-        * @param evtToUnregister The event to unregister from the interface
-        *
-        */
-        void UnregisterEvent(Event & evtToUnregister);
+         * Unregisters an event handler for the interface
+         *
+         * @param evtHandlerToUnregister The event handler to unregister from the interface
+         *
+         */
+        void UnregisterEventHandler(EventHandler& evtHandlerToUnregister);
 
         /**
-        * Checks if the interface is in use by any camera objects
-        *
-        * @return Returns true if the interface is in use and false otherwise.
-        */
+         * Checks if the interface is in use by any camera objects
+         *
+         * @return Returns true if the interface is in use and false otherwise.
+         */
         bool IsInUse() const;
 
         /**
-        * Broadcast an Action Command to all devices on interface
-        *
-        * @param deviceKey The Action Command's device key
-        * @param groupKey The Action Command's group key
-        * @param groupMask The Action Command's group mask
-        * @param actionTime (Optional) Time when to assert a future action. Zero means immediate action.
-        * @param pResultSize (Optional) The number of results in the results array. The value passed should be equal to the expected number of devices that acknowledge the command. Returns the number of received results.
-        * @param results (Optional) An Array with *pResultSize elements to hold the action command result status. The buffer is filled starting from index 0. If received results are less than expected number of devices that acknowledge the command, remaining results are not changed. If received results are more than expected number of devices that acknowledge the command, extra results are ignored and not appended to array. This parameter is ignored if pResultSize is 0. Thus this parameter can be NULL if pResultSize is 0 or NULL.
-        *
-        */
-        void SendActionCommand(unsigned int deviceKey, unsigned int groupKey, unsigned int groupMask, unsigned long long actionTime = 0, unsigned int* pResultSize = 0, ActionCommandResult results[] = NULL) const;
+         * Broadcast an Action Command to all devices on interface
+         *
+         * @param deviceKey The Action Command's device key
+         * @param groupKey The Action Command's group key
+         * @param groupMask The Action Command's group mask
+         * @param actionTime (Optional) Time when to assert a future action. Zero means immediate action.
+         * @param pResultSize (Optional) The number of results in the results array. The value passed should be equal to
+         * the expected number of devices that acknowledge the command. Returns the number of received results. If this
+         * parameter is 0 or NULL, the function will return as soon as the command has been broadcasted.
+         * @param results (Optional) An Array with *pResultSize elements to hold the action command result status. The
+         * buffer is filled starting from index 0. If received results are less than expected number of devices that
+         * acknowledge the command, remaining results are not changed. If received results are more than expected number
+         * of devices that acknowledge the command, extra results are ignored and not appended to array. This parameter
+         * is ignored if pResultSize is 0. Thus this parameter can be NULL if pResultSize is 0 or NULL.
+         *
+         */
+        void SendActionCommand(
+            unsigned int deviceKey,
+            unsigned int groupKey,
+            unsigned int groupMask,
+            unsigned long long actionTime = 0,
+            unsigned int* pResultSize = 0,
+            ActionCommandResult results[] = NULL) const;
 
-    protected:
+        /**
+         * IsValid
+         * Checks a flag to determine if interface is still valid for use.
+         *
+         * @return If interface is valid or not
+         */
+        bool IsValid();
+
+      protected:
         friend class InterfaceInternal;
 
-    private:
+      private:
         /*
-        * Default Constructor
-        */
+         * Default Constructor
+         */
         Interface(void);
 
         /*
-        * Copy Constructor
-        */
-        Interface(const Interface & /*iface*/);
+         * Copy Constructor
+         */
+        Interface(const Interface& /*iface*/);
 
         /**
-        * Assignment operator.
-        */
-        Interface&	operator=(const Interface&  /*iface*/);
+         * Assignment operator.
+         */
+        Interface& operator=(const Interface& /*iface*/);
     };
 
     /*@}*/
 
     /*@}*/
-}
+} // namespace Spinnaker
 
 #endif // FLIR_SPINNAKER_INTERFACE_H

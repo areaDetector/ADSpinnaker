@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -19,104 +19,96 @@
 
 namespace Spinnaker
 {
-	namespace GUI
-	{
-		/**
-		 * @defgroup SpinnakerGUI Spinnaker GUI Classes
-		 */
+    namespace GUI
+    {
+        /**
+         * @defgroup SpinnakerGUI Spinnaker GUI Classes
+         */
 
-		/*@{*/
+        /*@{*/
 
-		/**
-		 * @defgroup PropertyGridDlg_h Spinnaker GUI Property Grid Class
-		 */
+        /**
+         * @defgroup PropertyGridDlg_h Spinnaker GUI Property Grid Class
+         */
 
-		/*@{*/
+        /*@{*/
 
-		class SPINNAKER_API PropertyGridDlg
-		{
-			public:
+        class SPINNAKER_API PropertyGridDlg
+        {
+          public:
+            /**
+             * Default constructor.
+             */
+            PropertyGridDlg(void);
 
-				/**
-				* Default constructor.
-				*/
-				PropertyGridDlg(void);
+            /**
+             * Default destructor.
+             */
+            ~PropertyGridDlg(void);
 
+            /**
+             * Connect the PropertyGridWindow to a NodeMap object.
+             *
+             * @return boolean indicating whether the operation was successful
+             */
+            bool Connect(Spinnaker::CameraPtr camera);
 
-				/**
-				* Default destructor.
-				*/
-				~PropertyGridDlg(void);
+            /**
+             * Disconnect the PropertyGridWindow from associated
+             * nodemap object.
+             *
+             */
+            void Disconnect();
 
-				/**
-				 * Connect the PropertyGridWindow to a NodeMap object.
-				 *
-				 * @return boolean indicating whether the operation was successful
-				 */
-				bool Connect(Spinnaker::CameraPtr camera);
+            /**
+             * Get a boolean indicating whether PropertyGridWindow is connected to a camera object.
+             *
+             * @return boolean indicating connection status.
+             */
+            bool IsConnected();
 
+            /**
+             * Immediately refresh all features listed in PropertyGrid.
+             *
+             */
+            void Refresh();
 
-				/**
-				 * Disconnect the PropertyGridWindow from associated
-				 * nodemap object.
-				 *
-				 */
-				void Disconnect();
+            /**
+             * Get the window title.
+             *
+             * @return string representing the title.
+             */
+            std::string GetTitle();
 
+            /**
+             * Set the window title.
+             *
+             * @param string representing the title.
+             */
+            void SetTitle(std::string title);
 
-				/**
-				 * Get a boolean indicating whether PropertyGridWindow is connected to a camera object.
-				 *
-				 * @return boolean indicating connection status.
-				 */
-				bool IsConnected();
+            /**
+             * Show the PropertyGridWindow.
+             *
+             */
+            void Open();
 
+            /**
+             * Hide the PropertyGridWindow.
+             *
+             */
+            void Close();
 
-				/**
-				 * Immediately refresh all features listed in PropertyGrid.
-				 *
-				 */
-				void Refresh();
+          protected:
+#ifdef GUIFrame_GTK
+            Spinnaker::GUI_GTKmm::PropertyGrid* m_pGtkPropertyGrid;
+#else
+            Spinnaker::GUI_WPF::PropertyGridWindow* m_pWPFPropertyGrid;
+#endif
+        };
 
+        /*@}*/
 
-
-				/**
-				 * Get the window title.
-				 *
-				 * @return string representing the title.
-				 */
-				std::string GetTitle();
-
-				/**
-				 * Set the window title.
-				 *
-				 * @param string representing the title.
-				 */
-				void SetTitle(std::string title);
-
-
-				/**
-				 * Show the PropertyGridWindow.
-				 *
-				 */
-				void Open();
-
-				/**
-				 * Hide the PropertyGridWindow.
-				 *
-				 */
-				void Close();
-
-			protected:
-	#ifdef GUIFrame_GTK
-				Spinnaker::GUI_GTKmm::PropertyGrid* m_pGtkPropertyGrid;
-	#else
-				Spinnaker::GUI_WPF::PropertyGridWindow* m_pWPFPropertyGrid;
-	#endif
-		};
-
-		/*@}*/
-
-		/*@}*/
-	}
-}
+        /*@}*/
+    } // namespace GUI
+} // namespace Spinnaker

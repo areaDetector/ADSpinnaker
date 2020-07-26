@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -23,42 +23,42 @@
 namespace Spinnaker
 {
     /**
-    * @defgroup SpinnakerClasses Spinnaker Classes
-    */
+     * @defgroup SpinnakerClasses Spinnaker Classes
+     */
 
     /*@{*/
 
     /**
-    * @defgroup IInterfaceList_h IInterfaceList Class
-    */
+     * @defgroup IInterfaceList_h IInterfaceList Class
+     */
 
     /*@{*/
 
     /**
-    * @brief The interface file for InterfaceList class.
-    */
+     * @brief The interface file for InterfaceList class.
+     */
 
     class SPINNAKER_API IInterfaceList
     {
-    public:
-        virtual ~IInterfaceList(void) {};
+      public:
+        virtual ~IInterfaceList(void){};
         virtual InterfacePtr operator[](unsigned int index) = 0;
         virtual unsigned int GetSize() const = 0;
         virtual InterfacePtr GetByIndex(unsigned int index) const = 0;
         virtual void Clear() = 0;
 
-    protected:
+      protected:
         struct InterfaceListData; // Forward declaration
         InterfaceListData* m_pInterfaceListData;
 
-        IInterfaceList(void) {};
-        IInterfaceList(const IInterfaceList &) {};
-        IInterfaceList&	operator=(const IInterfaceList&);
+        IInterfaceList(void){};
+        IInterfaceList(const IInterfaceList&){};
+        IInterfaceList& operator=(const IInterfaceList&);
     };
 
     /*@}*/
 
     /*@}*/
-}
+} // namespace Spinnaker
 
 #endif // FLIR_SPINNAKER_IINTERFACELIST_H
