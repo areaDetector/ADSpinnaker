@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright 2017 FLIR Integrated Imaging Solutions, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -48,66 +48,65 @@ using namespace std;
 namespace CpuUtil
 {
 #ifdef _WIN32
-	struct CpuUsageInfo
-	{
-		CpuUsageInfo()
-		{
-			memset(&kernelStartTime, 0, sizeof(FILETIME));
-			memset(&kernelStopTime, 0, sizeof(FILETIME));
-			memset(&userStartTime, 0, sizeof(FILETIME));
-			memset(&userStopTime, 0, sizeof(FILETIME));
-			memset(&trackingStartTime, 0, sizeof(FILETIME));
-			memset(&trackingStopTime, 0, sizeof(FILETIME));
-		}
+    struct CpuUsageInfo
+    {
+        CpuUsageInfo()
+        {
+            memset(&kernelStartTime, 0, sizeof(FILETIME));
+            memset(&kernelStopTime, 0, sizeof(FILETIME));
+            memset(&userStartTime, 0, sizeof(FILETIME));
+            memset(&userStopTime, 0, sizeof(FILETIME));
+            memset(&trackingStartTime, 0, sizeof(FILETIME));
+            memset(&trackingStopTime, 0, sizeof(FILETIME));
+        }
 
-		FILETIME kernelStartTime;
-		FILETIME kernelStopTime;
-		FILETIME userStartTime;
-		FILETIME userStopTime;
+        FILETIME kernelStartTime;
+        FILETIME kernelStopTime;
+        FILETIME userStartTime;
+        FILETIME userStopTime;
 
-		FILETIME trackingStartTime;
-		FILETIME trackingStopTime;
+        FILETIME trackingStartTime;
+        FILETIME trackingStopTime;
 
-		double cpuPercentage;
-		SYSTEMTIME kernelSystemTime, userSystemTime;
-		double kernelTimeMilliseconds;
-		double userTimeMilliseconds;
-		double elapsedTime;
-
-	};
+        double cpuPercentage;
+        SYSTEMTIME kernelSystemTime, userSystemTime;
+        double kernelTimeMilliseconds;
+        double userTimeMilliseconds;
+        double elapsedTime;
+    };
 #else
-	struct CpuUsageInfo
-	{
-		bool dummy;
-	};
+    struct CpuUsageInfo
+    {
+        bool dummy;
+    };
 #endif
 
-	bool StartCpuTracing(CpuUsageInfo* cpuUsage);
-	bool StopCpuTracing(CpuUsageInfo* cpuUsage);
-	std::string GetCpuStats(CpuUsageInfo* cpuUsage);
-}
+    bool StartCpuTracing(CpuUsageInfo* cpuUsage);
+    bool StopCpuTracing(CpuUsageInfo* cpuUsage);
+    std::string GetCpuStats(CpuUsageInfo* cpuUsage);
+} // namespace CpuUtil
 //=============================================================================
 // Performance counter
 //=============================================================================
 namespace PerformanceCounter
 {
 
-	void StartPerformanceCounter(); //Starts or resets counter
-	double GetPerformanceCounter();
-}
+    void StartPerformanceCounter(); // Starts or resets counter
+    double GetPerformanceCounter();
+} // namespace PerformanceCounter
 //=============================================================================
 // Seconds counter
 //=============================================================================
 namespace SecondsCounter
 {
-	void StartSecondsCounter();
-	int GetSecondsCounter();
-}
+    void StartSecondsCounter();
+    int GetSecondsCounter();
+} // namespace SecondsCounter
 //=============================================================================
 // Type conversion
 //=============================================================================
 namespace Conversion
 {
-	string NumToCString(int number);
-	string NumToCString(double number);
-}
+    string NumToCString(int number);
+    string NumToCString(double number);
+} // namespace Conversion
