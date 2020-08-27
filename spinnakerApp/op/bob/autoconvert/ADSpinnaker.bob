@@ -268,10 +268,9 @@
   </widget>
   <widget type="label" version="2.0.0">
     <name>text #61</name>
-    <text>Buffer underrun</text>
-    <x>730</x>
+    <text>Lost frame</text>
+    <x>780</x>
     <y>90</y>
-    <width>150</width>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
       </font>
@@ -280,7 +279,7 @@
   </widget>
   <widget type="textupdate" version="2.0.0">
     <name>text update #64</name>
-    <pv_name>$(P)$(R)BufferUnderrunCount</pv_name>
+    <pv_name>$(P)$(R)LostFrameCount</pv_name>
     <x>884</x>
     <y>91</y>
     <width>120</width>

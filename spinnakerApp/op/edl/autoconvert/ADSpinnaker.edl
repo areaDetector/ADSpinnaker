@@ -434,9 +434,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 730
+x 780
 y 90
-w 150
+w 100
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "right"
@@ -444,7 +444,7 @@ fgColor rgb 0 0 0
 bgColor index 3
 useDisplayBg
 value {
-  "Buffer underrun"
+  "Lost frame"
 }
 endObjectProperties
 
@@ -458,7 +458,7 @@ x 884
 y 91
 w 120
 h 18
-controlPv "$(P)$(R)BufferUnderrunCount"
+controlPv "$(P)$(R)LostFrameCount"
 format "decimal"
 font "helvetica-medium-r-14.0"
 fontAlign "left"
@@ -1569,24 +1569,11 @@ newPos
 objType "controls"
 endObjectProperties
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 360
-y 205
-w 350
-h 500
-
-beginGroup
-
 # (Embedded Window)
 object activePipClass
 beginObjectProperties
 major 4
-minor 1
+minor 0
 release 0
 x 360
 y 205
@@ -1606,30 +1593,11 @@ displayFileName {
 noScroll
 endObjectProperties
 
-endGroup
-
-visMin "A"
-visMax "1"
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 5
-y 465
-w 350
-h 155
-
-beginGroup
-
 # (Embedded Window)
 object activePipClass
 beginObjectProperties
 major 4
-minor 1
+minor 0
 release 0
 x 5
 y 465
@@ -1647,12 +1615,6 @@ displayFileName {
   0 "ADGenICamTrigger.edl"
 }
 noScroll
-endObjectProperties
-
-endGroup
-
-visMin "A"
-visMax "1"
 endObjectProperties
 # (Group)
 object activeGroupClass
@@ -1686,26 +1648,26 @@ icon
 numPvs 18
 numDsps 9
 displayFileName {
-  0 $(C)-features.edl
-  1 $(C)-features_1.edl
-  2 $(C)-features_2.edl
-  3 $(C)-features_3.edl
-  4 $(C)-features_4.edl
-  5 $(C)-features_5.edl
-  6 $(C)-features_6.edl
-  7 $(C)-features_7.edl
-  8 $(C)-features_8.edl
+  0 "$(C)-features.edl"
+  1 "$(C)-features_1.edl"
+  2 "$(C)-features_2.edl"
+  3 "$(C)-features_3.edl"
+  4 "$(C)-features_4.edl"
+  5 "$(C)-features_5.edl"
+  6 "$(C)-features_6.edl"
+  7 "$(C)-features_7.edl"
+  8 "$(C)-features_8.edl"
 }
 menuLabel {
-  0 Features (custom)
-  1 Features #1
-  2 Features #2
-  3 Features #3
-  4 Features #4
-  5 Features #5
-  6 Features #6
-  7 Features #7
-  8 Features #8
+  0 "Features (custom)"
+  1 "Features #1"
+  2 "Features #2"
+  3 "Features #3"
+  4 "Features #4"
+  5 "Features #5"
+  6 "Features #6"
+  7 "Features #7"
+  8 "Features #8"
 }
 symbols {
   0 "P=$(P),R=$(R)"

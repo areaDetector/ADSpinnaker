@@ -661,7 +661,7 @@ border-radius: 2px;
                 </color>
             </property>
             <property name="text">
-                <string>Buffer underrun</string>
+                <string>Lost frame</string>
             </property>
             <property name="fontScaleMode">
                 <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -671,9 +671,9 @@ border-radius: 2px;
             </property>
             <property name="geometry">
                 <rect>
-                    <x>730</x>
+                    <x>780</x>
                     <y>90</y>
-                    <width>150</width>
+                    <width>100</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -691,7 +691,7 @@ border-radius: 2px;
                 <enum>caLineEdit::WidthAndHeight</enum>
             </property>
             <property name="channel">
-                <string>$(P)$(R)BufferUnderrunCount</string>
+                <string>$(P)$(R)LostFrameCount</string>
             </property>
             <property name="foreground">
                 <color alpha="255">
