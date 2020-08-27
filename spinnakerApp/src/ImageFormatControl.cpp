@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -16,7 +16,7 @@
 //=============================================================================
 
 /**
- *  example ImageFormatControl.cpp
+ *  @example ImageFormatControl.cpp
  *
  *  @brief ImageFormatControl.cpp shows how to apply custom image settings to
  *	the camera. It relies on information provided in the Enumeration,
@@ -44,13 +44,13 @@ using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
 
-// This function configures a number of settings on the camera including offsets 
+// This function configures a number of settings on the camera including offsets
 // X and Y, width, height, and pixel format. These settings must be applied before
 // BeginAcquisition() is called; otherwise, they will be read only. Also, it is
 // important to note that settings are applied immediately. This means if you plan
 // to reduce the width and move the x offset accordingly, you need to apply such
 // changes in the appropriate order.
-int ConfigureCustomImageSettings(INodeMap & nodeMap)
+int ConfigureCustomImageSettings(INodeMap& nodeMap)
 {
     int result = 0;
 
@@ -64,11 +64,11 @@ int ConfigureCustomImageSettings(INodeMap & nodeMap)
         // *** NOTES ***
         // Enumeration nodes are slightly more complicated to set than other
         // nodes. This is because setting an enumeration node requires working
-        // with two nodes instead of the usual one. 
+        // with two nodes instead of the usual one.
         //
-        // As such, there are a number of steps to setting an enumeration node: 
-        // retrieve the enumeration node from the nodemap, retrieve the desired 
-        // entry node from the enumeration node, retrieve the integer value from 
+        // As such, there are a number of steps to setting an enumeration node:
+        // retrieve the enumeration node from the nodemap, retrieve the desired
+        // entry node from the enumeration node, retrieve the integer value from
         // the entry node, and set the new value of the enumeration node with
         // the integer value from the entry node.
         //
@@ -98,12 +98,12 @@ int ConfigureCustomImageSettings(INodeMap & nodeMap)
             cout << "Pixel format not available..." << endl;
         }
 
-        // 
+        //
         // Apply minimum to offset X
         //
         // *** NOTES ***
         // Numeric nodes have both a minimum and maximum. A minimum is retrieved
-        // with the method GetMin(). Sometimes it can be important to check 
+        // with the method GetMin(). Sometimes it can be important to check
         // minimums to ensure that your desired value is within range.
         //
         CIntegerPtr ptrOffsetX = nodeMap.GetNode("OffsetX");
@@ -119,7 +119,7 @@ int ConfigureCustomImageSettings(INodeMap & nodeMap)
 
         //
         // Apply minimum to offset Y
-        // 
+        //
         // *** NOTES ***
         // It is often desirable to check the increment as well. The increment
         // is a number of which a desired value must be a multiple of. Certain
@@ -142,7 +142,7 @@ int ConfigureCustomImageSettings(INodeMap & nodeMap)
         // Set maximum width
         //
         // *** NOTES ***
-        // Other nodes, such as those corresponding to image width and height, 
+        // Other nodes, such as those corresponding to image width and height,
         // might have an increment other than 1. In these cases, it can be
         // important to check that the desired value is a multiple of the
         // increment. However, as these values are being set to the maximum,
@@ -183,7 +183,7 @@ int ConfigureCustomImageSettings(INodeMap & nodeMap)
             cout << "Height not available..." << endl << endl;
         }
     }
-    catch (Spinnaker::Exception &e)
+    catch (Spinnaker::Exception& e)
     {
         cout << "Error: " << e.what() << endl;
         result = -1;
@@ -195,7 +195,7 @@ int ConfigureCustomImageSettings(INodeMap & nodeMap)
 // This function prints the device information of the camera from the transport
 // layer; please see NodeMapInfo example for more in-depth comments on printing
 // device information from the nodemap.
-int PrintDeviceInfo(INodeMap & nodeMap)
+int PrintDeviceInfo(INodeMap& nodeMap)
 {
     int result = 0;
 
@@ -224,7 +224,7 @@ int PrintDeviceInfo(INodeMap & nodeMap)
             cout << "Device control information not available." << endl;
         }
     }
-    catch (Spinnaker::Exception &e)
+    catch (Spinnaker::Exception& e)
     {
         cout << "Error: " << e.what() << endl;
         result = -1;
@@ -235,7 +235,7 @@ int PrintDeviceInfo(INodeMap & nodeMap)
 
 // This function acquires and saves 10 images from a device; please see
 // Acquisition example for more in-depth comments on acquiring images.
-int AcquireImages(CameraPtr pCam, INodeMap & nodeMap, INodeMap & nodeMapTLDevice)
+int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 {
     int result = 0;
 
@@ -254,7 +254,8 @@ int AcquireImages(CameraPtr pCam, INodeMap & nodeMap, INodeMap & nodeMapTLDevice
         CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
         if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
         {
-            cout << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl << endl;
+            cout << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl
+                 << endl;
             return -1;
         }
 
@@ -289,16 +290,18 @@ int AcquireImages(CameraPtr pCam, INodeMap & nodeMap, INodeMap & nodeMapTLDevice
             try
             {
                 // Retrieve next received image and ensure image completion
-                ImagePtr pResultImage = pCam->GetNextImage();
+                ImagePtr pResultImage = pCam->GetNextImage(1000);
 
                 if (pResultImage->IsIncomplete())
                 {
-                    cout << "Image incomplete with image status " << pResultImage->GetImageStatus() << "..." << endl << endl;
+                    cout << "Image incomplete with image status " << pResultImage->GetImageStatus() << "..." << endl
+                         << endl;
                 }
                 else
                 {
                     // Print image information
-                    cout << "Grabbed image " << imageCnt << ", width = " << pResultImage->GetWidth() << ", height = " << pResultImage->GetHeight() << endl;
+                    cout << "Grabbed image " << imageCnt << ", width = " << pResultImage->GetWidth()
+                         << ", height = " << pResultImage->GetHeight() << endl;
 
                     // Convert image to mono 8
                     ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
@@ -324,7 +327,7 @@ int AcquireImages(CameraPtr pCam, INodeMap & nodeMap, INodeMap & nodeMapTLDevice
 
                 cout << endl;
             }
-            catch (Spinnaker::Exception &e)
+            catch (Spinnaker::Exception& e)
             {
                 cout << "Error: " << e.what() << endl;
                 result = -1;
@@ -334,7 +337,7 @@ int AcquireImages(CameraPtr pCam, INodeMap & nodeMap, INodeMap & nodeMapTLDevice
         // End acquisition
         pCam->EndAcquisition();
     }
-    catch (Spinnaker::Exception &e)
+    catch (Spinnaker::Exception& e)
     {
         cout << "Error: " << e.what() << endl;
         result = -1;
@@ -343,7 +346,7 @@ int AcquireImages(CameraPtr pCam, INodeMap & nodeMap, INodeMap & nodeMapTLDevice
     return result;
 }
 
-// This function acts as the body of the example; please see NodeMapInfo example 
+// This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
 int RunSingleCamera(CameraPtr pCam)
 {
@@ -353,7 +356,7 @@ int RunSingleCamera(CameraPtr pCam)
     try
     {
         // Retrieve TL device nodemap and print device information
-        INodeMap & nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
+        INodeMap& nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
 
         result = PrintDeviceInfo(nodeMapTLDevice);
 
@@ -361,7 +364,7 @@ int RunSingleCamera(CameraPtr pCam)
         pCam->Init();
 
         // Retrieve GenICam nodemap
-        INodeMap & nodeMap = pCam->GetNodeMap();
+        INodeMap& nodeMap = pCam->GetNodeMap();
 
         // Configure custom image settings
         err = ConfigureCustomImageSettings(nodeMap);
@@ -376,7 +379,7 @@ int RunSingleCamera(CameraPtr pCam)
         // Deinitialize camera
         pCam->DeInit();
     }
-    catch (Spinnaker::Exception &e)
+    catch (Spinnaker::Exception& e)
     {
         cout << "Error: " << e.what() << endl;
         result = -1;
@@ -385,19 +388,19 @@ int RunSingleCamera(CameraPtr pCam)
     return result;
 }
 
-// Example entry point; please see Enumeration example for additional 
+// Example entry point; please see Enumeration example for additional
 // comments on the steps in this function.
 int main(int /*argc*/, char** /*argv*/)
 {
     // Since this application saves images in the current folder
     // we must ensure that we have permission to write to this folder.
     // If we do not have permission, fail right away.
-    FILE *tempFile = fopen("test.txt", "w+");
+    FILE* tempFile = fopen("test.txt", "w+");
     if (tempFile == nullptr)
     {
         cout << "Failed to create file in current folder.  Please check "
-            "permissions."
-            << endl;
+                "permissions."
+             << endl;
         cout << "Press Enter to exit..." << endl;
         getchar();
         return -1;
@@ -415,11 +418,9 @@ int main(int /*argc*/, char** /*argv*/)
 
     // Print out current library version
     const LibraryVersion spinnakerLibraryVersion = system->GetLibraryVersion();
-    cout << "Spinnaker library version: "
-        << spinnakerLibraryVersion.major << "."
-        << spinnakerLibraryVersion.minor << "."
-        << spinnakerLibraryVersion.type << "."
-        << spinnakerLibraryVersion.build << endl << endl;
+    cout << "Spinnaker library version: " << spinnakerLibraryVersion.major << "." << spinnakerLibraryVersion.minor
+         << "." << spinnakerLibraryVersion.type << "." << spinnakerLibraryVersion.build << endl
+         << endl;
 
     // Retrieve list of cameras from the system
     CameraList camList = system->GetCameras();
