@@ -94,9 +94,9 @@ record(longin, "$(P)$(R)FailedBufferCount")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)BufferUnderrunCount")
+record(longin, "$(P)$(R)LostFrameCount")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT) 0)SP_BUFFER_UNDERRUN_COUNT")
+   field(INP,  "@asyn($(PORT) 0)SP_LOST_FRAME_COUNT")
    field(SCAN, "I/O Intr")
 }
