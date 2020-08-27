@@ -141,7 +141,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask,
     }
 
     createParam(SPConvertPixelFormatString,     asynParamInt32,   &SPConvertPixelFormat);
-    createParam(SPBufferUnderrunCountString,    asynParamInt32,   &SPBufferUnderrunCount);
+    createParam(SPLostFrameCountString,         asynParamInt32,   &SPLostFrameCount);
     createParam(SPFailedBufferCountString,      asynParamInt32,   &SPFailedBufferCount);
     createParam(SPFailedPacketCountString,      asynParamInt32,   &SPFailedPacketCount);
     createParam(SPTimeStampModeString,          asynParamInt32,   &SPTimeStampMode);
@@ -162,8 +162,8 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask,
         cantProceed("ADSpinnaker::ADSpinnaker epicsMessageQueueCreate failure\n");
     }
 
-    pImageEventHandler_ = new ImageEventHandler(pCallbackMsgQ_);
-    pCamera_->RegisterEvent(*pImageEventHandler_);
+    pImageEventHandler_ = new ADSpinnakerImageEventHandler(pCallbackMsgQ_);
+    pCamera_->RegisterEventHandler(*pImageEventHandler_);
 
     startEventId_ = epicsEventCreate(epicsEventEmpty);
 
@@ -187,7 +187,7 @@ void ADSpinnaker::shutdown(void)
     lock();
     exiting_ = 1;
     try {
-        pCamera_->UnregisterEvent(*pImageEventHandler_);
+        pCamera_->UnregisterEventHandler(*pImageEventHandler_);
         delete pImageEventHandler_;
         pNodeMap_ = 0;
         pCamera_->DeInit();
@@ -729,10 +729,10 @@ asynStatus ADSpinnaker::readStatus()
 //		    cout << "Stream Buffer Handling Mode: " << camInfo.StreamBufferHandlingMode.ToString() << endl;
 //        cout << "Stream Packets Received: " << camInfo.GevTotalPacketCount.ToString() << endl;
 //        getSPProperty(ADTemperatureActual);
-//printf("StreamBufferUnderrunCount = %d\n", (int)camInfo.StreamBufferUnderrunCount.GetValue());
-        setIntegerParam(SPBufferUnderrunCount, (int)camInfo.StreamBufferUnderrunCount.GetValue());
+//printf("StreamLostFrameCount = %d\n", (int)camInfo.StreamLostFrameCount.GetValue());
+        setIntegerParam(SPLostFrameCount, (int)camInfo.StreamLostFrameCount.GetValue());
         setIntegerParam(SPFailedBufferCount,   (int)camInfo.StreamFailedBufferCount.GetValue());
-        if (camInfo.StreamType.GetIntValue() == StreamType_GEV) {
+        if (camInfo.StreamType.GetIntValue() == StreamType_GigEVision) {
 //printf("GeVFailedPacketCount = %d\n", (int)camInfo.GevFailedPacketCount.GetValue());
             setIntegerParam(SPFailedPacketCount,   (int)camInfo.GevFailedPacketCount.GetValue());
 //printf("GeVTotalPacketCount = %d\n", (int)camInfo.GevTotalPacketCount.GetValue());

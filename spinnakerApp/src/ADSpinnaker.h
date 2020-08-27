@@ -12,20 +12,20 @@ using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 
 #define SPConvertPixelFormatString  "SP_CONVERT_PIXEL_FORMAT"   // asynParamInt32, R/W
-#define SPBufferUnderrunCountString "SP_BUFFER_UNDERRUN_COUNT"  // asynParamInt32, R/O
+#define SPLostFrameCountString      "SP_LOST_FRAME_COUNT"       // asynParamInt32, R/O
 #define SPFailedBufferCountString   "SP_FAILED_BUFFER_COUNT"    // asynParamInt32, R/O
 #define SPFailedPacketCountString   "SP_FAILED_PACKET_COUNT"    // asynParamInt32, R/O
 #define SPTimeStampModeString       "SP_TIME_STAMP_MODE"        // asynParamInt32, R/O
 #define SPUniqueIdModeString        "SP_UNIQUE_ID_MODE"         // asynParamInt32, R/O
 
-class ImageEventHandler : public ImageEvent
+class ADSpinnakerImageEventHandler : public ImageEventHandler
 {
 public:
 
-    ImageEventHandler(epicsMessageQueue *pMsgQ) 
+    ADSpinnakerImageEventHandler(epicsMessageQueue *pMsgQ) 
      : pMsgQ_(pMsgQ)
     {}
-    ~ImageEventHandler() {}
+    ~ADSpinnakerImageEventHandler() {}
   
     void OnImageEvent(ImagePtr image) {
         ImagePtr *imagePtrAddr = new ImagePtr(image);
@@ -68,7 +68,7 @@ public:
 private:
     int SPConvertPixelFormat;
 #define FIRST_SP_PARAM SPConvertPixelFormat
-    int SPBufferUnderrunCount;
+    int SPLostFrameCount;
     int SPFailedBufferCount;
     int SPFailedPacketCount;
     int SPTimeStampMode;
