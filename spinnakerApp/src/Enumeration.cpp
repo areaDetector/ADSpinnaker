@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2018 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -36,7 +36,7 @@
 #include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
 #include <iostream>
-#include <sstream> 
+#include <sstream>
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -56,10 +56,10 @@ int QueryInterface(InterfacePtr pInterface)
         //
         // *** NOTES ***
         // Each interface has a nodemap that can be retrieved in order to
-        // access information about the interface itself, any devices 
+        // access information about the interface itself, any devices
         // connected, or addressing information if applicable.
         //
-        INodeMap & nodeMapInterface = pInterface->GetTLNodeMap();
+        INodeMap& nodeMapInterface = pInterface->GetTLNodeMap();
 
         //
         // Print interface display name
@@ -67,9 +67,9 @@ int QueryInterface(InterfacePtr pInterface)
         // *** NOTES ***
         // Grabbing node information requires first retrieving the node and
         // then retrieving its information. There are two things to keep in
-        // mind. First, a node is distinguished by type, which is related 
-        // to its value's data type. Second, nodes should be checked for 
-        // availability and readability/writability prior to making an 
+        // mind. First, a node is distinguished by type, which is related
+        // to its value's data type. Second, nodes should be checked for
+        // availability and readability/writability prior to making an
         // attempt to read from or write to the node.
         //
         CStringPtr ptrInterfaceDisplayName = nodeMapInterface.GetNode("InterfaceDisplayName");
@@ -89,7 +89,7 @@ int QueryInterface(InterfacePtr pInterface)
         // Update list of cameras on the interface
         //
         // *** NOTES ***
-        // Updating the cameras on each interface is especially important if 
+        // Updating the cameras on each interface is especially important if
         // there has been any device arrivals or removals since the last time
         // that UpdateCameras() was called.
         //
@@ -102,13 +102,13 @@ int QueryInterface(InterfacePtr pInterface)
         // Camera lists can be retrieved from an interface or the system object.
         // Camera lists retrieved from an interface, such as this one, only
         // return cameras attached on that specific interface whereas camera
-        // lists retrieved from the system will return all cameras on all 
+        // lists retrieved from the system will return all cameras on all
         // interfaces.
         //
         // *** LATER ***
         // Camera lists must be cleared manually. This must be done prior to
         // releasing the system and while the camera list is still in scope.
-        // 
+        //
         CameraList camList = pInterface->GetCameras();
 
         // Retrieve number of cameras
@@ -128,14 +128,14 @@ int QueryInterface(InterfacePtr pInterface)
             // Select camera
             //
             // *** NOTES ***
-            // Each camera is retrieved from a camera list with an index. If 
+            // Each camera is retrieved from a camera list with an index. If
             // the index is out of range, an exception is thrown.
-            // 
+            //
             CameraPtr pCam = camList.GetByIndex(i);
 
-            // Retrieve TL device nodemap; please see NodeMapInfo example for 
+            // Retrieve TL device nodemap; please see NodeMapInfo example for
             // additional comments on transport layer nodemaps
-            INodeMap & nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
+            INodeMap& nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
 
             cout << "\tDevice " << i << " ";
 
@@ -144,9 +144,9 @@ int QueryInterface(InterfacePtr pInterface)
             // *** NOTES ***
             // Grabbing node information requires first retrieving the node and
             // then retrieving its information. There are two things to keep in
-            // mind. First, a node is distinguished by type, which is related 
-            // to its value's data type. Second, nodes should be checked for 
-            // availability and readability/writability prior to making an 
+            // mind. First, a node is distinguished by type, which is related
+            // to its value's data type. Second, nodes should be checked for
+            // availability and readability/writability prior to making an
             // attempt to read from or write to the node.
             //
             CStringPtr ptrDeviceVendorName = nodeMapTLDevice.GetNode("DeviceVendorName");
@@ -172,14 +172,14 @@ int QueryInterface(InterfacePtr pInterface)
         // Clear camera list before losing scope
         //
         // *** NOTES ***
-        // Camera lists (and interface lists) must be cleared manually while in 
+        // Camera lists (and interface lists) must be cleared manually while in
         // the same scope that the system is released. However, in cases like this
         // where scope is lost, camera lists (and interface lists) will be cleared
         // automatically.
         //
         camList.Clear();
     }
-    catch (Spinnaker::Exception &e)
+    catch (Spinnaker::Exception& e)
     {
         cout << "Error: " << e.what() << endl;
         result = -1;
@@ -196,15 +196,15 @@ int main(int /*argc*/, char** /*argv*/)
     // Print application build information
     cout << "Application build date: " << __DATE__ << " " << __TIME__ << endl << endl;
 
-    // 
+    //
     // Retrieve singleton reference to system object
     //
     // *** NOTES ***
     // Everything originates with the system object. It is important to notice
-    // that it has a singleton implementation, so it is impossible to have 
+    // that it has a singleton implementation, so it is impossible to have
     // multiple system objects at the same time. Users can only get a smart
     // pointer (SystemPtr) to the system instance.
-    // 
+    //
     // *** LATER ***
     // The system object should be cleared prior to program completion. If not
     // released explicitly, it will be released automatically when all SystemPtr
@@ -214,22 +214,20 @@ int main(int /*argc*/, char** /*argv*/)
 
     // Print out current library version
     const LibraryVersion spinnakerLibraryVersion = system->GetLibraryVersion();
-    cout << "Spinnaker library version: "
-        << spinnakerLibraryVersion.major << "."
-        << spinnakerLibraryVersion.minor << "."
-        << spinnakerLibraryVersion.type << "."
-        << spinnakerLibraryVersion.build << endl << endl;
+    cout << "Spinnaker library version: " << spinnakerLibraryVersion.major << "." << spinnakerLibraryVersion.minor
+         << "." << spinnakerLibraryVersion.type << "." << spinnakerLibraryVersion.build << endl
+         << endl;
 
     //
     // Retrieve list of interfaces from the system
     //
     // *** NOTES ***
     // Interface lists are retrieved from the system object.
-    // 
+    //
     // *** LATER ***
     // Interface lists must be cleared manually. This must be done prior to
     // releasing the system and while the interface list is still in scope.
-    // 
+    //
     InterfaceList interfaceList = system->GetInterfaces();
 
     unsigned int numInterfaces = interfaceList.GetSize();
@@ -247,7 +245,7 @@ int main(int /*argc*/, char** /*argv*/)
     // *** LATER ***
     // Camera lists must be cleared manually. This must be done prior to
     // releasing the system and while the camera list is still in scope.
-    // 
+    //
     CameraList camList = system->GetCameras();
 
     unsigned int numCameras = camList.GetSize();
@@ -279,12 +277,12 @@ int main(int /*argc*/, char** /*argv*/)
     // Create shared pointer interface
     //
     // *** NOTES ***
-    // The InterfacePtr object is a smart pointer, and will generally clean 
+    // The InterfacePtr object is a smart pointer, and will generally clean
     // itself up upon exiting its scope.
     //
     // *** LATER ***
-    // However, if a smart interface pointer is created in the same scope that 
-    // a system object is explicitly released (i.e. this scope), the reference to 
+    // However, if a smart interface pointer is created in the same scope that
+    // a system object is explicitly released (i.e. this scope), the reference to
     // the interface must be broken by manually setting the pointer to nullptr.
     //
     InterfacePtr interfacePtr = nullptr;
@@ -302,8 +300,8 @@ int main(int /*argc*/, char** /*argv*/)
     // Release reference to the interface
     //
     // *** NOTES ***
-    // Had the InterfacePtr object been created within the for-loop, it would 
-    // not be necessary to manually break the reference because the smart 
+    // Had the InterfacePtr object been created within the for-loop, it would
+    // not be necessary to manually break the reference because the smart
     // pointer would have automatically cleaned itself up upon exiting the loop.
     //
     interfacePtr = nullptr;
