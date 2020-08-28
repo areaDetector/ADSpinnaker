@@ -477,6 +477,7 @@ asynStatus ADSpinnaker::grabImage()
             }
     
             pixelFormat = pImage->GetPixelFormat();
+            unlock();
             try {
                 pImage  = pImage->Convert(convertedFormat);
                 imageConverted = true;
@@ -486,6 +487,7 @@ asynStatus ADSpinnaker::grabImage()
                      "%s::%s pixel format conversion exception %s\n",
                  driverName, functionName, e.what());
             }
+            lock();
         }
     
         pixelFormat = pImage->GetPixelFormat();
