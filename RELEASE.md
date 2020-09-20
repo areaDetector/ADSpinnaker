@@ -18,6 +18,14 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-0 (September 20, 2020)
+------------------------
+* Updated Spinnaker version from 1.2.0 to 2.0.0.147.
+  Windows users will need to update their local install of Spinnaker to this version. 
+  Linux users do not need to do anything, since all required files are included with ADSpinnaker.
+* The BufferUnderrunCount record has changed to LostFrameCount, because this is what the feature
+  is called in the new version of the SDK.
+
 R2-2 (April 9, 2020)
 ------------------------
 * Worked around a bug that is present in all versions of EPICS base.
