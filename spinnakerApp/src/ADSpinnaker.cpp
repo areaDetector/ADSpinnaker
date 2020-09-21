@@ -40,8 +40,8 @@ using namespace std;
 #include "SPFeature.h"
 #include "ADSpinnaker.h"
 
-#define DRIVER_VERSION      2
-#define DRIVER_REVISION     2
+#define DRIVER_VERSION      3
+#define DRIVER_REVISION     0
 #define DRIVER_MODIFICATION 0
 
 static const char *driverName = "ADSpinnaker";
