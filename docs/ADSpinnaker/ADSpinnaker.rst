@@ -88,7 +88,7 @@ IOC startup script
 ------------------
 The command to configure an ADSpinnaker camera in the startup script is::
 
-  ADSpinnakerConfig(const char *portName, const char *cameraId, int traceMask,
+  ADSpinnakerConfig(const char *portName, const char *cameraId, int numSPBuffers,
                     size_t maxMemory, int priority, int stackSize)
 
 ``portName`` is the name for the ADSpinnaker port driver
@@ -98,7 +98,9 @@ on the camera, and it is also the last part of the camera name returned by arv-t
 ``"Point Grey Research-Blackfly S BFS-PGE-50S5C-18585624"``, it would be 18585624. 
 If cameraId is less than 1000 it is assumed to be the system index number, if 1000 or greater it is assumed to be a serial number.
 
-``traceMask`` is the initial value of asynTraceMask to be used for debugging problems in the constructor.
+``numSPBuffers`` is the number of TransportLayer buffers to allocate in Spinnaker. If set to 0 or omitted the default of 100 will be used.
+The driver enforces a minimum value of 10, which is the Spinnaker default.  10 is not large enough to prevent dropped frames
+with some cameras, particularly when doing data type conversions from Mono12Packed to Mono16 or from Bayer to RGB.
 
 ``maxMemory`` is the maximum amount of memory the NDArrayPool is allowed to allocate.  0 means unlimited.
 
