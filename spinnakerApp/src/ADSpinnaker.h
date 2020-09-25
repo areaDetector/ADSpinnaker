@@ -47,7 +47,7 @@ private:
 class ADSpinnaker : public ADGenICam
 {
 public:
-    ADSpinnaker(const char *portName, int cameraId, int traceMask,
+    ADSpinnaker(const char *portName, int cameraId, int numSPBuffers,
                 size_t maxMemory, int priority, int stackSize);
 
     // virtual methods to override from ADGenICam
@@ -89,9 +89,11 @@ private:
     int cameraId_;
     
     INodeMap *pNodeMap_;    
+    INodeMap *pTLStreamNodeMap_;    
     SystemPtr system_;
     CameraList camList_;
     CameraPtr pCamera_;
+    int numSPBuffers_;
     ImageEventHandler *pImageEventHandler_;
 
     int exiting_;
