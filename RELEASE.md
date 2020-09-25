@@ -18,6 +18,20 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-1 (September XXX, 2020)
+------------------------
+* Changed the arguments passed to the constructor and to the ADSpinnakerConfig() command.
+  The asynTrace argument was replaced with numSPBuffers.
+  IMPORTANT NOTE: This change may require modification of startup scripts.
+  The previous asynTrace argument was not used for any other driver, and was only used for debugging.
+  The new numSPBuffers argument is the number of TransportLayer buffers to be allocated in Spinnaker.
+  If this argument is 0 it defaults to 100, and it is set to a minimum value of 10.
+  The Spinnaker default of 10 is not large enough to prevent dropped frames with some
+  cameras when converting from Mono12Packed to Mono16 or from Bayer to RGB.
+* Changed iocSpinnaker/st.cmd.base to remove the asynTrace argument to ADSpinnakerConfig().
+  The numSPBuffers argument will default to 0, and thus get set to 100 by the driver.
+* Moved the Spinnaker test programs from the src/ directory to exampleSrc/.
+
 R3-0 (September 20, 2020)
 ------------------------
 * Updated Spinnaker version from 1.2.0 to 2.0.0.147.
