@@ -47,7 +47,7 @@ using namespace std;
 static const char *driverName = "ADSpinnaker";
 
 // Size of message queue for callback function
-#define CALLBACK_MESSAGE_QUEUE_SIZE 10
+#define CALLBACK_MESSAGE_QUEUE_SIZE 100
 
 typedef enum {
     SPPixelConvertNone,
@@ -75,18 +75,16 @@ typedef enum {
  * function instantiates one object from the ADSpinnaker class.
  * \param[in] portName asyn port name to assign to the camera.
  * \param[in] cameraId The camera index or serial number; <1000 is assumed to be index, >=1000 is assumed to be serial number.
- * \param[in] traceMask The initial value of the asynTraceMask.  
- *            If set to 0 or 1 then asynTraceMask will be set to ASYN_TRACE_ERROR.
- *            If set to 0x21 (ASYN_TRACE_WARNING | ASYN_TRACE_ERROR) then each call to the
- *            Spinnaker library will be traced including during initialization.
+ * \param[in] numSPBuffers The number of TransportLayer buffers to allocate in Spinnaker.
+ *            If set to 0 or omitted the default of 100 will be used.
  * \param[in] maxMemory Maximum memory (in bytes) that this driver is allowed to allocate. 0=unlimited.
  * \param[in] priority The EPICS thread priority for this driver.  0=use asyn default.
  * \param[in] stackSize The size of the stack for the EPICS port thread. 0=use asyn default.
  */
-extern "C" int ADSpinnakerConfig(const char *portName, int cameraId, int traceMask,
+extern "C" int ADSpinnakerConfig(const char *portName, int cameraId, int numSPBuffers,
                                  size_t maxMemory, int priority, int stackSize)
 {
-    new ADSpinnaker( portName, cameraId, traceMask, maxMemory, priority, stackSize);
+    new ADSpinnaker( portName, cameraId, numSPBuffers, maxMemory, priority, stackSize);
     return asynSuccess;
 }
 
@@ -108,24 +106,24 @@ static void imageGrabTaskC(void *drvPvt)
 /** Constructor for the ADSpinnaker class
  * \param[in] portName asyn port name to assign to the camera.
  * \param[in] cameraId The camera index or serial number; <1000 is assumed to be index, >=1000 is assumed to be serial number.
- * \param[in] traceMask The initial value of the asynTraceMask.  
- *            If set to 0 or 1 then asynTraceMask will be set to ASYN_TRACE_ERROR.
- *            If set to 0x21 (ASYN_TRACE_WARNING | ASYN_TRACE_ERROR) then each call to the
- *            Spinnaker library will be traced including during initialization.
+ * \param[in] numSPBuffers The number of TransportLayer buffers to allocate in Spinnaker.
+ *            If set to 0 or omitted the default of 100 will be used.
  * \param[in] maxMemory Maximum memory (in bytes) that this driver is allowed to allocate. 0=unlimited.
  * \param[in] priority The EPICS thread priority for this driver.  0=use asyn default.
  * \param[in] stackSize The size of the stack for the EPICS port thread. 0=use asyn default.
  */
-ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int traceMask,
+ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int numSPBuffers,
                          size_t maxMemory, int priority, int stackSize )
     : ADGenICam(portName, maxMemory, priority, stackSize),
-    cameraId_(cameraId), exiting_(0), pRaw_(NULL), uniqueId_(0)
+    cameraId_(cameraId), numSPBuffers_(numSPBuffers), exiting_(0), pRaw_(NULL), uniqueId_(0)
 {
     static const char *functionName = "ADSpinnaker";
     asynStatus status;
     
-    if (traceMask == 0) traceMask = ASYN_TRACE_ERROR;
-    pasynTrace->setTraceMask(pasynUserSelf, traceMask);
+    //pasynTrace->setTraceMask(pasynUserSelf, ASYN_TRACE_ERROR | ASYN_TRACE_WARNING | ASYN_TRACEIO_DRIVER);
+    
+    if (numSPBuffers_ == 0) numSPBuffers_ = 100;
+    if (numSPBuffers_ < 10) numSPBuffers_ = 10;
 
     // Retrieve singleton reference to system object
     system_ = System::GetInstance();
@@ -260,6 +258,20 @@ asynStatus ADSpinnaker::connectCamera(void)
         
         // Retrieve GenICam nodemap
         pNodeMap_ = &pCamera_->GetNodeMap();
+
+        // Retrieve TLStream nodemap
+        pTLStreamNodeMap_ = &pCamera_->GetTLStreamNodeMap();
+
+        // Retrieve Buffer Handling Mode Information
+        CEnumerationPtr ptrHandlingMode = pTLStreamNodeMap_->GetNode("StreamBufferHandlingMode");
+        CEnumEntryPtr ptrHandlingModeEntry = ptrHandlingMode->GetCurrentEntry();
+        // Set stream buffer Count Mode to manual
+        CEnumerationPtr ptrStreamBufferCountMode = pTLStreamNodeMap_->GetNode("StreamBufferCountMode");
+        CEnumEntryPtr ptrStreamBufferCountModeManual = ptrStreamBufferCountMode->GetEntryByName("Manual");
+        // Retrieve and modify Stream Buffer Count
+        CIntegerPtr ptrBufferCount = pTLStreamNodeMap_->GetNode("StreamBufferCountManual");
+        ptrStreamBufferCountMode->SetIntValue(ptrStreamBufferCountModeManual->GetValue());
+        ptrBufferCount->SetValue(numSPBuffers_);
     }
 
     catch (Spinnaker::Exception &e) {
@@ -447,6 +459,9 @@ asynStatus ADSpinnaker::grabImage()
         }
         nCols = pImage->GetWidth();
         nRows = pImage->GetHeight();
+        // Print the first 16 bytes of the buffer in hex
+        //pData = pImage->GetData();
+        //for (int i=0; i<16; i++) printf("%x ", ((epicsUInt8 *)pData)[i]); printf("\n");
      
         // Convert the pixel format if requested
         getIntegerParam(SPConvertPixelFormat, &convertPixelFormat);
@@ -479,7 +494,12 @@ asynStatus ADSpinnaker::grabImage()
             pixelFormat = pImage->GetPixelFormat();
             unlock();
             try {
+                //epicsTimeStamp tstart, tend;
+                //epicsTimeGetCurrent(&tstart);
                 pImage  = pImage->Convert(convertedFormat);
+                //epicsTimeGetCurrent(&tend);
+                //asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s time for pImage->convert=%f\n", 
+                //    driverName, functionName, epicsTimeDiffInSeconds(&tend, &tstart));
                 imageConverted = true;
             }
             catch (Spinnaker::Exception &e) {
@@ -579,6 +599,8 @@ asynStatus ADSpinnaker::grabImage()
             return(asynError);
         }
         pData = pImage->GetData();
+        // Print the first 8 pixels of the buffer in decimal
+        //for (int i=0; i<8; i++) printf("%u ", ((epicsUInt16 *)pData)[i]); printf("\n");
         if (pData) {
             memcpy(pRaw_->pData, pData, dataSize);
         } else {
@@ -843,7 +865,7 @@ void ADSpinnaker::report(FILE *fp, int details)
 
 static const iocshArg configArg0 = {"Port name", iocshArgString};
 static const iocshArg configArg1 = {"cameraId", iocshArgInt};
-static const iocshArg configArg2 = {"traceMask", iocshArgInt};
+static const iocshArg configArg2 = {"# Spinnaker buffers", iocshArgInt};
 static const iocshArg configArg3 = {"maxMemory", iocshArgInt};
 static const iocshArg configArg4 = {"priority", iocshArgInt};
 static const iocshArg configArg5 = {"stackSize", iocshArgInt};
