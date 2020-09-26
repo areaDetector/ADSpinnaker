@@ -13,6 +13,7 @@ ADSpinnaker
 .. _ADSpinnaker:  https://github.com/areaDetector/ADSpinnaker
 .. _ADSupport:    https://github.com/areaDetector/ADSupport
 .. _Spinnaker:    https://www.flir.com/products/spinnaker-sdk
+.. _ADSpinnaker class: ../areaDetectorDoxygenHTML/class_a_d_spinnaker.html
 
 Overview
 --------
@@ -22,7 +23,9 @@ This is an :doc:`../index` driver for GenICam_ cameras using the Spinnaker_ libr
 GenICam_ is a Generic Interface for Cameras from the European Machine Vision Association (EMVA). 
 
 ADSpinnaker is derived from the base class ADGenICam_, which handles many of the details of
-mapping GenICam_ features to EPICS records. 
+mapping GenICam_ features to EPICS records.
+
+`ADSpinnaker class`_ describes this class in detail.
 
 As it name implies, ADSpinnaker_ uses the FLIR/Point Grey Spinnaker_ library.
 It runs on Windows, and on Linux versions with gcc 7.5 and higher (e.g. Ubuntu 18, RHEL 8, Centos 8, Debian 10)
