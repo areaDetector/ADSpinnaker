@@ -139,8 +139,13 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int numSPBuffers,
     }
 
     createParam(SPConvertPixelFormatString,     asynParamInt32,   &SPConvertPixelFormat);
+    createParam(SPDeliveredFrameCountString,    asynParamInt32,   &SPDeliveredFrameCount);
     createParam(SPLostFrameCountString,         asynParamInt32,   &SPLostFrameCount);
+    createParam(SPInputBufferCountString,       asynParamInt32,   &SPInputBufferCount);
+    createParam(SPOutputBufferCountString,      asynParamInt32,   &SPOutputBufferCount);
     createParam(SPFailedBufferCountString,      asynParamInt32,   &SPFailedBufferCount);
+    createParam(SPTotalPacketCountString,       asynParamInt32,   &SPTotalPacketCount);
+    createParam(SPResendPacketCountString,      asynParamInt32,   &SPResendPacketCount);
     createParam(SPFailedPacketCountString,      asynParamInt32,   &SPFailedPacketCount);
     createParam(SPTimeStampModeString,          asynParamInt32,   &SPTimeStampMode);
     createParam(SPUniqueIdModeString,           asynParamInt32,   &SPUniqueIdMode);
@@ -398,6 +403,34 @@ void ADSpinnaker::imageGrabTask()
             ((imageMode == ADImageMultiple) && (numImagesCounter >= numImages))) {
             setIntegerParam(ADStatus, ADStatusIdle);
             status = stopCapture();
+        }
+        try {
+            const TransportLayerStream& camInfo = pCamera_->TLStream;
+            camInfo.InvalidateNodes();
+            setIntegerParam(SPDeliveredFrameCount, (int)camInfo.StreamDeliveredFrameCount.GetValue());
+            setIntegerParam(SPLostFrameCount,      (int)camInfo.StreamLostFrameCount.GetValue());
+            setIntegerParam(SPFailedBufferCount,   (int)camInfo.StreamFailedBufferCount.GetValue());
+            setIntegerParam(SPInputBufferCount,    (int)camInfo.StreamInputBufferCount.GetValue());
+            setIntegerParam(SPOutputBufferCount,   (int)camInfo.StreamOutputBufferCount.GetValue());
+            cout << endl;
+            cout << "StreamDeliveredFrameCount:" << camInfo.StreamDeliveredFrameCount.GetValue() << endl;
+            cout << "StreamLostFrameCount:" << camInfo.StreamLostFrameCount.GetValue() << endl;
+            cout << "StreamFailedBufferCount:" << camInfo.StreamFailedBufferCount.GetValue() << endl;
+            cout << "StreamInputBufferCount:" << camInfo.StreamInputBufferCount.GetValue() << endl;
+            cout << "StreamOutputBufferCount:" << camInfo.StreamOutputBufferCount.GetValue() << endl;
+            if (camInfo.StreamType.GetIntValue() == StreamType_GigEVision) {
+                setIntegerParam(SPTotalPacketCount,  (int)camInfo.GevTotalPacketCount.GetValue());
+                setIntegerParam(SPFailedPacketCount, (int)camInfo.GevFailedPacketCount.GetValue());
+                setIntegerParam(SPResendPacketCount, (int)camInfo.GevResendPacketCount.GetValue());
+            cout << "GevTotalPacketCount:" << camInfo.GevTotalPacketCount.GetValue() << endl;
+            cout << "GevFailedPacketCount:" << camInfo.GevFailedPacketCount.GetValue() << endl;
+            cout << "GevResendPacketCount:" << camInfo.GevResendPacketCount.GetValue() << endl;
+            }
+        }
+        catch (Spinnaker::Exception &e) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s::%s exception %s\n",
+                driverName, functionName, e.what());
         }
         callParamCallbacks();
     }
@@ -737,39 +770,6 @@ asynStatus ADSpinnaker::stopCapture()
 
     // Need to empty the message queue it could have some images in it
     while(pCallbackMsgQ_->tryReceive(&dummy, sizeof(dummy)) != -1) {}
-    return asynSuccess;
-}
-
-
-asynStatus ADSpinnaker::readStatus()
-{
-    static const char *functionName = "readStatus";
-
-    try {
-        const TransportLayerStream& camInfo = pCamera_->TLStream;
-//  		  cout << "Stream ID: " << camInfo.StreamID.ToString() << endl;
-//	  	  cout << "Stream Type: " << camInfo.StreamType.ToString() << endl;
-//		    cout << "Stream Buffer Count: " << camInfo.StreamDefaultBufferCount.ToString() << endl;
-//		    cout << "Stream Buffer Handling Mode: " << camInfo.StreamBufferHandlingMode.ToString() << endl;
-//        cout << "Stream Packets Received: " << camInfo.GevTotalPacketCount.ToString() << endl;
-//        getSPProperty(ADTemperatureActual);
-//printf("StreamLostFrameCount = %d\n", (int)camInfo.StreamLostFrameCount.GetValue());
-        setIntegerParam(SPLostFrameCount, (int)camInfo.StreamLostFrameCount.GetValue());
-        setIntegerParam(SPFailedBufferCount,   (int)camInfo.StreamFailedBufferCount.GetValue());
-        if (camInfo.StreamType.GetIntValue() == StreamType_GigEVision) {
-//printf("GeVFailedPacketCount = %d\n", (int)camInfo.GevFailedPacketCount.GetValue());
-            setIntegerParam(SPFailedPacketCount,   (int)camInfo.GevFailedPacketCount.GetValue());
-//printf("GeVTotalPacketCount = %d\n", (int)camInfo.GevTotalPacketCount.GetValue());
-        }
-    }
-    catch (Spinnaker::Exception &e) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s exception %s\n",
-            driverName, functionName, e.what());
-        return asynError;
-    }
-    ADGenICam::readStatus();
-    callParamCallbacks();
     return asynSuccess;
 }
 
