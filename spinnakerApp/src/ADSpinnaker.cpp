@@ -405,26 +405,17 @@ void ADSpinnaker::imageGrabTask()
             status = stopCapture();
         }
         try {
-            const TransportLayerStream& camInfo = pCamera_->TLStream;
-            camInfo.InvalidateNodes();
-            setIntegerParam(SPDeliveredFrameCount, (int)camInfo.StreamDeliveredFrameCount.GetValue());
-            setIntegerParam(SPLostFrameCount,      (int)camInfo.StreamLostFrameCount.GetValue());
-            setIntegerParam(SPFailedBufferCount,   (int)camInfo.StreamFailedBufferCount.GetValue());
-            setIntegerParam(SPInputBufferCount,    (int)camInfo.StreamInputBufferCount.GetValue());
-            setIntegerParam(SPOutputBufferCount,   (int)camInfo.StreamOutputBufferCount.GetValue());
-            cout << endl;
-            cout << "StreamDeliveredFrameCount:" << camInfo.StreamDeliveredFrameCount.GetValue() << endl;
-            cout << "StreamLostFrameCount:" << camInfo.StreamLostFrameCount.GetValue() << endl;
-            cout << "StreamFailedBufferCount:" << camInfo.StreamFailedBufferCount.GetValue() << endl;
-            cout << "StreamInputBufferCount:" << camInfo.StreamInputBufferCount.GetValue() << endl;
-            cout << "StreamOutputBufferCount:" << camInfo.StreamOutputBufferCount.GetValue() << endl;
-            if (camInfo.StreamType.GetIntValue() == StreamType_GigEVision) {
-                setIntegerParam(SPTotalPacketCount,  (int)camInfo.GevTotalPacketCount.GetValue());
-                setIntegerParam(SPFailedPacketCount, (int)camInfo.GevFailedPacketCount.GetValue());
-                setIntegerParam(SPResendPacketCount, (int)camInfo.GevResendPacketCount.GetValue());
-            cout << "GevTotalPacketCount:" << camInfo.GevTotalPacketCount.GetValue() << endl;
-            cout << "GevFailedPacketCount:" << camInfo.GevFailedPacketCount.GetValue() << endl;
-            cout << "GevResendPacketCount:" << camInfo.GevResendPacketCount.GetValue() << endl;
+            const TransportLayerStream& streamStats = pCamera_->TLStream;
+            pTLStreamNodeMap_->InvalidateNodes();
+            setIntegerParam(SPDeliveredFrameCount, (int)streamStats.StreamDeliveredFrameCount.GetValue());
+            setIntegerParam(SPLostFrameCount,      (int)streamStats.StreamLostFrameCount.GetValue());
+            setIntegerParam(SPFailedBufferCount,   (int)streamStats.StreamFailedBufferCount.GetValue());
+            setIntegerParam(SPInputBufferCount,    (int)streamStats.StreamInputBufferCount.GetValue());
+            setIntegerParam(SPOutputBufferCount,   (int)streamStats.StreamOutputBufferCount.GetValue());
+            if (streamStats.StreamType.GetIntValue() == StreamType_GigEVision) {
+                setIntegerParam(SPTotalPacketCount,  (int)streamStats.GevTotalPacketCount.GetValue());
+                setIntegerParam(SPFailedPacketCount, (int)streamStats.GevFailedPacketCount.GetValue());
+                setIntegerParam(SPResendPacketCount, (int)streamStats.GevResendPacketCount.GetValue());
             }
         }
         catch (Spinnaker::Exception &e) {
