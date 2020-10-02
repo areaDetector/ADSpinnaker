@@ -18,7 +18,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R3-1 (September XXX, 2020)
+R3-1 (October 2, 2020)
 ------------------------
 * Changed the arguments passed to the constructor and to the ADSpinnakerConfig() command.
   The asynTrace argument was replaced with numSPBuffers.
@@ -30,6 +30,15 @@ R3-1 (September XXX, 2020)
   cameras when converting from Mono12Packed to Mono16 or from Bayer to RGB.
 * Changed iocSpinnaker/st.cmd.base to remove the asynTrace argument to ADSpinnakerConfig().
   The numSPBuffers argument will default to 0, and thus get set to 100 by the driver.
+* Added additional transport layer statistics records:
+  - TotalPacketCount
+  - ResendPacketCount
+  - FailedPacketCount
+  - InputBufferCount
+  - OutputBufferCount
+* Fixed a problem that was causing most of the statistics records not to update correctly.
+* The transport layer statistics are now updated each time an image is received, independent
+  of whether the ReadStatus record is processed. Changed the OPI display to make that clear.
 * Moved the Spinnaker test programs from the src/ directory to exampleSrc/.
 
 R3-0 (September 20, 2020)
