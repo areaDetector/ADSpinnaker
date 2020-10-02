@@ -12,8 +12,13 @@ using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 
 #define SPConvertPixelFormatString  "SP_CONVERT_PIXEL_FORMAT"   // asynParamInt32, R/W
+#define SPDeliveredFrameCountString "SP_DELIVERED_FRAME_COUNT"  // asynParamInt32, R/O
 #define SPLostFrameCountString      "SP_LOST_FRAME_COUNT"       // asynParamInt32, R/O
+#define SPInputBufferCountString    "SP_INPUT_BUFFER_COUNT"     // asynParamInt32, R/O
+#define SPOutputBufferCountString   "SP_OUTPUT_BUFFER_COUNT"    // asynParamInt32, R/O
 #define SPFailedBufferCountString   "SP_FAILED_BUFFER_COUNT"    // asynParamInt32, R/O
+#define SPTotalPacketCountString    "SP_TOTAL_PACKET_COUNT"     // asynParamInt32, R/O
+#define SPResendPacketCountString   "SP_RESEND_PACKET_COUNT"    // asynParamInt32, R/O
 #define SPFailedPacketCountString   "SP_FAILED_PACKET_COUNT"    // asynParamInt32, R/O
 #define SPTimeStampModeString       "SP_TIME_STAMP_MODE"        // asynParamInt32, R/O
 #define SPUniqueIdModeString        "SP_UNIQUE_ID_MODE"         // asynParamInt32, R/O
@@ -68,8 +73,13 @@ public:
 private:
     int SPConvertPixelFormat;
 #define FIRST_SP_PARAM SPConvertPixelFormat
+    int SPDeliveredFrameCount;
     int SPLostFrameCount;
+    int SPInputBufferCount;
+    int SPOutputBufferCount;
     int SPFailedBufferCount;
+    int SPTotalPacketCount;
+    int SPResendPacketCount;
     int SPFailedPacketCount;
     int SPTimeStampMode;
     int SPUniqueIdMode;
@@ -81,7 +91,6 @@ private:
     asynStatus stopCapture();
     asynStatus connectCamera();
     asynStatus disconnectCamera();
-    asynStatus readStatus();
     void imageEventCallback(ImagePtr pImage);
     void reportNode(FILE *fp, INodeMap *pNodeMap, gcstring nodeName, int level);
 
