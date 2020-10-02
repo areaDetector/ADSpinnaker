@@ -80,6 +80,20 @@ record(mbbi, "$(P)$(R)ConvertPixelFormat_RBV") {
   field(INP,  "@asyn($(PORT) 0)SP_CONVERT_PIXEL_FORMAT")
 }
 
+record(longin, "$(P)$(R)TotalPacketCount")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT) 0)SP_TOTAL_PACKET_COUNT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ResendPacketCount")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT) 0)SP_RESEND_PACKET_COUNT")
+   field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(P)$(R)FailedPacketCount")
 {
    field(DTYP, "asynInt32")
@@ -87,10 +101,31 @@ record(longin, "$(P)$(R)FailedPacketCount")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)InputBufferCount")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT) 0)SP_INPUT_BUFFER_COUNT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)OutputBufferCount")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT) 0)SP_OUTPUT_BUFFER_COUNT")
+   field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(P)$(R)FailedBufferCount")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT) 0)SP_FAILED_BUFFER_COUNT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)DeliveredFrameCount")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT) 0)SP_DELIVERED_FRAME_COUNT")
    field(SCAN, "I/O Intr")
 }
 
