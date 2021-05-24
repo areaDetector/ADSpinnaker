@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -92,8 +92,16 @@ namespace Spinnaker
          */
         void Clear();
 
+        /**
+         * Appends a copy of the interfact list.
+         *
+         * @param list Another InterfaceList object, whose elements are added to this list.
+         */
+        void Append(const InterfaceList* list);
+
       protected:
         friend class SystemImpl;
+        friend class ProducerImpl;
     };
 
     /*@}*/

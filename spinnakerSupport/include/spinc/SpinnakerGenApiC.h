@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -15,8 +15,8 @@
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
 
-#ifndef PGR_SPINNAKER_GENAPI_C_H_
-#define PGR_SPINNAKER_GENAPI_C_H_
+#ifndef FLIR_SPINNAKER_GENAPI_C_H_
+#define FLIR_SPINNAKER_GENAPI_C_H_
 
 #include "SpinnakerGenApiDefsC.h"
 #include "SpinnakerDefsC.h"
@@ -76,6 +76,21 @@ extern "C"
      */
     SPINNAKERC_API spinNodeMapGetNodeByIndex(spinNodeMapHandle hNodeMap, size_t index, spinNodeHandle* phNode);
 
+    /**
+     * Releases the entry node handle.
+     * Make sure node handle is cleaned up properly by setting it to NULL after the node is released.
+     * If this function is not explicitly called, the handle will be released upon the release of the
+     * camera handle.
+     * @see spinCameraRelease
+     * @see spinError
+     *
+     * @param hNodeMap The node map from which the node handle is retrieved
+     * @param hNode The node handle to be released
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinNodeMapReleaseNode(spinNodeMapHandle hNodeMap, spinNodeHandle hNode);
+    
     /**
      * Fires nodes which have a polling time
      * @see spinError
@@ -687,48 +702,63 @@ extern "C"
      * Retrieves the number of entries of an enum node
      * @see spinError
      *
-     * @param hNode The enum node where the entries to be counted are
+     * @param hEnumNode The enum node where the entries to be counted are
      * @param pValue The unsigned integer pointer in which the number of entries is returned
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinEnumerationGetNumEntries(spinNodeHandle hNode, size_t* pValue);
+    SPINNAKERC_API spinEnumerationGetNumEntries(spinNodeHandle hEnumNode, size_t* pValue);
 
     /**
      * Retrieves an entry node from an enum node using an index
      * @see spinError
      *
-     * @param hNode The enum node from which the entry node is retrieved
+     * @param hEnumNode The enum node from which the entry node is retrieved
      * @param index The index of the entry node
      * @param phEntry The node handle pointer in which the entry node is returned
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinEnumerationGetEntryByIndex(spinNodeHandle hNode, size_t index, spinNodeHandle* phEntry);
+    SPINNAKERC_API spinEnumerationGetEntryByIndex(spinNodeHandle hEnumNode, size_t index, spinNodeHandle* phEntry);
 
     /**
      * Retrieves an entry node from an enum node using the entry's symbolic
      * @see spinError
      *
-     * @param hNode The enum node from which the entry node is retrieved
+     * @param hEnumNode The enum node from which the entry node is retrieved
      * @param pName The name of the entry node
      * @param phEntry The node handle pointer in which the entry node is returned
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinEnumerationGetEntryByName(spinNodeHandle hNode, const char* pName, spinNodeHandle* phEntry);
+    SPINNAKERC_API spinEnumerationGetEntryByName(spinNodeHandle hEnumNode, const char* pName, spinNodeHandle* phEntry);
 
     /**
      * Retrieves the currently selected entry node from an enum node
      * @see spinError
      *
-     * @param hNode The enum node from which the current entry node is retrieved
+     * @param hEnumNode The enum node from which the current entry node is retrieved
      * @param phEntry The node handle pointer in which the current entry node is returned
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinEnumerationGetCurrentEntry(spinNodeHandle hNode, spinNodeHandle* phEntry);
+    SPINNAKERC_API spinEnumerationGetCurrentEntry(spinNodeHandle hEnumNode, spinNodeHandle* phEntry);
 
+    /**
+     * Releases the entry node from the enum node handle.
+     * Make sure node handle is cleaned up properly by setting it to NULL after the node is released
+     * If this function is not explicitly called, the handle will be released upon the release of the
+     * camera handle.
+     * @see spinCameraRelease
+     * @see spinError
+     *
+     * @param hEnumNode The enum node from which the current entry node is retrieved
+     * @param hEntry The entry node handle to be released
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinEnumerationReleaseNode(spinNodeHandle hEnumNode, spinNodeHandle hEntry);
+    
     /**
      * Sets a new entry using its integer value retrieved from a call to spinEnumerationEntryGetIntValue(); note that
      * enumeration entry int and enum values are different - int values defined on camera, enum values found in
@@ -736,13 +766,13 @@ extern "C"
      * @see spinEnumerationEntryGetIntValue()
      * @see spinError
      *
-     * @param hNode The enum node having its entry changed
+     * @param hEnumNode The enum node having its entry changed
      * @param value The integer value of the entry node to set; this corresponds to the integer value internal to the
      * camera
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinEnumerationSetIntValue(spinNodeHandle hNode, int64_t value);
+    SPINNAKERC_API spinEnumerationSetIntValue(spinNodeHandle hEnumNode, int64_t value);
 
     /**
      * Sets a new entry using its enum; note that enumeration entry int and enum values are different - int values
@@ -750,13 +780,13 @@ extern "C"
      * @see spinEnumerationEntryGetEnumValue()
      * @see spinError
      *
-     * @param hNode The enum node have its entry changed
+     * @param hEnumNode The enum node have its entry changed
      * @param value The enum value of the entry node to set; this corresponds to its integer value created in the
      * library
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinEnumerationSetEnumValue(spinNodeHandle hNode, size_t value);
+    SPINNAKERC_API spinEnumerationSetEnumValue(spinNodeHandle hEnumNode, size_t value);
     /*@}*/
 
     /**
@@ -885,25 +915,40 @@ extern "C"
      * Retrieves the number of a features (or child nodes) or a category node
      * @see spinError
      *
-     * @param hNode The category node where the features to be counted are
+     * @param hCategoryNode The category node where the features to be counted are
      * @param pValue The unsigned integer pointer in which the number of features is returned
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinCategoryGetNumFeatures(spinNodeHandle hNode, size_t* pValue);
+    SPINNAKERC_API spinCategoryGetNumFeatures(spinNodeHandle hCategoryNode, size_t* pValue);
 
     /**
      * Retrieves a node from a category node using an index
      * @see spinError
      *
-     * @param hNode The category node of the node to retrieve
+     * @param hCategoryNode The category node of the node to retrieve
      * @param index The index of the feature node
      * @param phFeature The node handle pointer in which the feature node is returned
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinCategoryGetFeatureByIndex(spinNodeHandle hNode, size_t index, spinNodeHandle* phFeature);
+    SPINNAKERC_API spinCategoryGetFeatureByIndex(spinNodeHandle hCategoryNode, size_t index, spinNodeHandle* phFeature);
     /*@}*/
+
+    /**
+     * Releases the feature node from the category node.
+     * Make sure node handle is cleaned up properly by setting it to NULL after the node is released
+     * If this function is not explicitly called, the handle will be released upon the release of the
+     * camera handle.
+     * @see spinCameraRelease
+     * @see spinError
+     *
+     * @param hCategoryNode The category node handle from which the feature node is retrieved
+     * @param hFeature The feature node handle to be released
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinCategoryReleaseNode(spinNodeHandle hCategoryNode, spinNodeHandle hFeature);
 
     /**
      * @defgroup CIRegister IRegister Access
@@ -1003,6 +1048,7 @@ extern "C"
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
     SPINNAKERC_API spinRegisterSetReference(spinNodeHandle hNode, spinNodeHandle hRef);
+
     /*@}*/
 
 #ifdef __cplusplus
@@ -1011,4 +1057,4 @@ extern "C"
 
 /*@}*/
 
-#endif /* PGR_SPINNAKER_GENAPI_C_H_ */
+#endif /* FLIR_SPINNAKER_GENAPI_C_H_ */

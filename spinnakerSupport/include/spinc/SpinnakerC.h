@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -338,6 +338,7 @@ extern "C"
     /**
      * Unregisters a device arrival event handler from the system
      * @see spinError
+     * @see spinDeviceArrivalEventHandler
      *
      * @param hSystem The system, from which the device arrival event handler is unregistered
      * @param hDeviceArrivalEventHandler The device arrival event handler to unregister from the system
@@ -351,6 +352,7 @@ extern "C"
     /**
      * Unregisters a device removal event handler from the system
      * @see spinError
+     * @see spinDeviceRemovalEventHandler
      *
      * @param hSystem The system, from which the device removal event handler is unregistered
      * @param hDeviceRemovalEventHandler The device removal event handler to unregister from the system
@@ -367,6 +369,7 @@ extern "C"
      * If new interfaces are detected by the system after spinSystemRegisterInterfaceEventHandler() is called, those
      * interfaces will be automatically registered with this event.
      * @see spinError
+     * @see spinInterfaceEventHandler
      *
      * @param hSystem The system, on which the interface event handler is registered
      * @param hInterfaceEventHandler The interface event handler (device arrival and device removal) to register on the
@@ -381,6 +384,7 @@ extern "C"
     /**
      * Unregisters an interface event handler from the system
      * @see spinError
+     * @see spinInterfaceEventHandler
      *
      * @param hSystem The system, from which the interface event handler is unregistered
      * @param hInterfaceEventHandler The interface event handler (device arrival and device removal) to unregister from
@@ -1199,6 +1203,37 @@ extern "C"
         void* pData);
 
     /**
+    * Creates an image with some set properties;
+    * images created this way must be destroyed
+    *
+    * @see spinError
+    * @see spinImageGetTLPayloadType
+    *
+    * @param phImage The image handle pointer in which the image is returned
+    * @param width The width to set
+    * @param height The height to set
+    * @param offsetX The offset along the X axis to set
+    * @param offsetY The offset along the Y axis to set
+    * @param pixelFormat The pixel format to set
+    * @param pData The image data to set; can be set to null
+    * @param dataPayloadType The payload type of the data.
+       This value can be retrieved from an existing image by using the spinImageGetTLPayloadType() function call.
+    * @param dataSize The size of the provided data in bytes
+    *
+    * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+    */
+    SPINNAKERC_API spinImageCreateEx2(
+        spinImage* phImage,
+        size_t width,
+        size_t height,
+        size_t offsetX,
+        size_t offsetY,
+        spinPixelFormatEnums pixelFormat,
+        void* pData,
+        spinPayloadTypeInfoIDs dataPayloadType,
+        size_t dataSize);
+
+    /**
      * Destroys an image
      * @see spinError
      *
@@ -1238,6 +1273,31 @@ extern "C"
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
     SPINNAKERC_API spinImageGetColorProcessing(spinImage hImage, spinColorProcessingAlgorithm* pAlgorithm);
+
+    /**
+     * Sets the default number of threads used for image decompression during
+     * spinImageConvert(). The number of threads used is defaulted to be equal
+     * to one less than the number of concurrent threads supported by the
+     * system.
+     *
+     * @param numThreads Number of parallel image decompression threads set to run
+     *
+     * @see spinImageConvert()
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageSetNumDecompressionThreads(unsigned int numThreads);
+
+    /**
+     * Gets the number of threads used for image decompression during Convert().
+     *
+     * @param pNumThreads The pointer indicating the number of parallel image decompression threads set to run
+     *
+     * @see spinImageSetNumDecompressionThreads()
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageGetNumDecompressionThreads(unsigned int* pNumThreads);
 
     /**
      * Converts the pixel format of one image into a new image

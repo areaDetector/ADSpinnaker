@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -14,7 +14,7 @@
 // SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
-   
+
 /* Auto-generated file. Do not modify. */
 
 #ifndef FLIR_SPINNAKER_ICHUNKDATA_H
@@ -51,6 +51,8 @@ namespace Spinnaker
         virtual float64_t GetBlackLevel() const = 0;
         virtual int64_t GetFrameID() const = 0;
         virtual float64_t GetExposureTime() const = 0;
+        virtual int64_t GetCompressionMode() const = 0;
+        virtual float64_t GetCompressionRatio() const = 0;
         virtual int64_t GetTimestamp() const = 0;
         virtual int64_t GetExposureEndLineStatusAll() const = 0;
         virtual int64_t GetWidth() const = 0;

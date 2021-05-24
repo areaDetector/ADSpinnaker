@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -87,6 +87,14 @@
 #include "SystemEventHandler.h"
 #include "LoggingEventHandler.h"
 #include "LoggingEventDataPtr.h"
+
+/**
+ * Spinnaker Utility Class Includes
+ */
+#include "DeviceEventUtility.h"
+#include "ImageUtility.h"
+#include "ImageUtilityHeatmap.h"
+#include "ImageUtilityPolarization.h"
 
 /*@}*/
 

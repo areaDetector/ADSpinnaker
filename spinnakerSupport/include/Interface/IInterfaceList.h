@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -22,6 +22,8 @@
 
 namespace Spinnaker
 {
+    class InterfaceList;
+
     /**
      * @defgroup SpinnakerClasses Spinnaker Classes
      */
@@ -46,8 +48,10 @@ namespace Spinnaker
         virtual unsigned int GetSize() const = 0;
         virtual InterfacePtr GetByIndex(unsigned int index) const = 0;
         virtual void Clear() = 0;
+        virtual void Append(const InterfaceList* list) = 0;
 
       protected:
+        friend class InterfaceListImpl;
         struct InterfaceListData; // Forward declaration
         InterfaceListData* m_pInterfaceListData;
 

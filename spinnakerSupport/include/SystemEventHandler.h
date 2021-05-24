@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -33,7 +33,8 @@ namespace Spinnaker
     /*@{*/
 
     /**
-     * @brief A handler to interface arrival and removal events on the system.
+     * @brief A handler to interface arrival and removal events on the system. Note that only GEV interface arrivals and
+     * removals are currently handled.
      */
 
     class SPINNAKER_API SystemEventHandler : public ISystemEventHandler
@@ -50,14 +51,14 @@ namespace Spinnaker
         virtual ~SystemEventHandler();
 
         /**
-         * Interface arrival event callback.
+         * Interface arrival event callback. Note that only GEV interface arrivals are currently handled.
          *
          * @param interfaceID The ID of the arrived interface
          */
         virtual void OnInterfaceArrival(std::string interfaceID) = 0;
 
         /**
-         * Interface removal event callback.
+         * Interface removal event callback. Note that only GEV interface removals are currently handled.
          *
          * @param interfaceID The ID of the removed interface
          */

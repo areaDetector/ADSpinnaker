@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -20,6 +20,7 @@
 
 #include <memory.h>
 #include <stdint.h>
+#include <string>
 #include "SpinnakerPlatform.h"
 
 namespace Spinnaker
@@ -173,7 +174,7 @@ namespace Spinnaker
         HQ_LINEAR,
         /** Multi-threaded with similar results to edge sensing. */
         IPP,
-        /** Best quality but much faster than rigorous. */
+        /** Best quality but much faster than rigorous. More memory intensive than other color processing algorithms. */
         DIRECTIONAL_FILTER,
         /** Slowest but produces good results. */
         RIGOROUS,
@@ -204,17 +205,27 @@ namespace Spinnaker
         IMAGE_NO_ERROR = 0,         /**< Image is returned from GetNextImage() call without any errors. */
         IMAGE_CRC_CHECK_FAILED = 1, /**< Image failed CRC check. */
         IMAGE_DATA_OVERFLOW = 2,    /**< Received more data than the size of the image. */
-        IMAGE_MISSING_PACKETS = 3,  /**< Image has missing packets */
-        IMAGE_LEADER_BUFFER_SIZE_INCONSISTENT = 4,  /**< Image leader is incomplete. */
-        IMAGE_TRAILER_BUFFER_SIZE_INCONSISTENT = 5, /**< Image trailer is incomplete. */
-        IMAGE_PACKETID_INCONSISTENT = 6,            /**< Image has an inconsistent packet id. */
-        IMAGE_MISSING_LEADER = 7,                   /**< Image leader is missing. */
-        IMAGE_MISSING_TRAILER = 8,                  /**< Image trailer is missing. */
-        IMAGE_DATA_INCOMPLETE = 9,                  /**< Image data is incomplete. */
-        IMAGE_INFO_INCONSISTENT = 10,               /**< Image info is corrupted. */
-        IMAGE_CHUNK_DATA_INVALID = 11,              /**< Image chunk data is invalid */
-        IMAGE_NO_SYSTEM_RESOURCES = 12              /**< Image cannot be processed due to lack of system
-                                                    resources. */
+        IMAGE_MISSING_PACKETS =
+            3, /**< Image has missing packets. Potential fixes include enabling
+               jumbo packets and adjusting packet size/delay. For more information see
+               https://www.flir.com/support-center/iis/machine-vision/application-note/troubleshooting-image-consistency-errors/
+             */
+        IMAGE_LEADER_BUFFER_SIZE_INCONSISTENT =
+            4, /**< Image leader is incomplete. Could be caused by missing packet(s). See link above.*/
+        IMAGE_TRAILER_BUFFER_SIZE_INCONSISTENT =
+            5, /**< Image trailer is incomplete. Could be caused by missing packet(s). See link above.*/
+        IMAGE_PACKETID_INCONSISTENT =
+            6, /**< Image has an inconsistent packet id. Could be caused by missing packet(s). See link above.*/
+        IMAGE_MISSING_LEADER = 7, /**< Image leader is missing. Could be caused by missing packet(s). See link above.*/
+        IMAGE_MISSING_TRAILER =
+            8, /**< Image trailer is missing. Could be caused by missing packet(s). See link above.*/
+        IMAGE_DATA_INCOMPLETE =
+            9, /**< Image data is incomplete. Could be caused by missing packet(s). See link above.*/
+        IMAGE_INFO_INCONSISTENT =
+            10, /**< Image info is corrupted. Could be caused by missing packet(s). See link above.*/
+        IMAGE_CHUNK_DATA_INVALID = 11, /**< Image chunk data is invalid */
+        IMAGE_NO_SYSTEM_RESOURCES = 12 /**< Image cannot be processed due to lack of system
+                                       resources. */
     };
 
     /** Options for saving PNG images. */
@@ -421,7 +432,12 @@ namespace Spinnaker
         PAYLOAD_TYPE_MULTI_PART = 10,     /* GenTL v1.5 */
 
         PAYLOAD_TYPE_CUSTOM_ID = 1000, /* Starting value for GenTL Producer custom IDs. */
-        PAYLOAD_TYPE_EXTENDED_CHUNK = 1001
+        PAYLOAD_TYPE_EXTENDED_CHUNK = 1001,
+        PAYLOAD_TYPE_LOSSLESS_COMPRESSED = 1002,
+        PAYLOAD_TYPE_LOSSY_COMPRESSED = 1003,
+        PAYLOAD_TYPE_JPEG_LOSSLESS_COMPRESSED = 1004,
+        PAYLOAD_TYPE_CHUNK_DATA_LOSSLESS_COMPRESSED = 1005,
+        PAYLOAD_TYPE_CHUNK_DATA_LOSSY_COMPRESSED = 1006
     };
 
     /** Possible Status Codes Returned from Action Command. */
@@ -470,6 +486,60 @@ namespace Spinnaker
     {
         BUFFER_OWNERSHIP_SYSTEM, /* Buffers are owned and managed by the library */
         BUFFER_OWNERSHIP_USER    /* Buffers are owned and managed by the user */
+    };
+
+    enum CCMColorTemperature
+    {
+        TUNGSTEN_2800K,
+        WARM_FLUORESCENT_3000K,
+        COOL_FLUORESCENT_4000K,
+        SUNNY_5000K,
+        CLOUDY_6500K,
+        SHADE_8000K
+    };
+
+    enum CCMType
+    {
+        LINEAR_3X3,
+        POLYNOMIAL_9X3
+    };
+
+    enum CCMSensor
+    {
+        IMX250 /* The only sensor that currently supports host-side color correction */
+    };
+
+    struct CCMSettings
+    {
+        CCMColorTemperature ColorTemperature; /* Determines the tone of the color correction to be applied.
+                                                 Ignored when CustomCCMCode is not empty. */
+        CCMType Type;                         /* The type of CCM affects the color accuracy and conversion speed.
+                                                 Ignored when CustomCCMCode is not empty. */
+        CCMSensor Sensor;                     /* Informs Spinnaker to use the CCM calibrated for this sensor.
+                                                 Ignored when CustomCCMCode is not empty. */
+        std::string CustomCCMCode;            /* Custom encrypted CCM provided by FLIR. */
+
+        CCMSettings()
+        {
+            ColorTemperature = CCMColorTemperature::TUNGSTEN_2800K;
+            Type = CCMType::POLYNOMIAL_9X3;
+            Sensor = CCMSensor::IMX250;
+            CustomCCMCode = "";
+        }
+    };
+
+    /**  Data Fields for Device Event payload for EventInference */
+    struct DeviceEventInferenceData
+    {
+        uint32_t result;  /* inference classification result of the Inference Event */
+        float confidence; /* inference confidence result of the Inference Event */
+        uint64_t frameID; /* frame ID associated with the inference result of the Inference Event */
+    };
+
+    /**  Data Fields for Device Event payload for EventExposureEnd */
+    struct DeviceEventExposureEndData
+    {
+        uint64_t frameID; /* frame ID associated with the Exposure End Event */
     };
 
     /*@}*/

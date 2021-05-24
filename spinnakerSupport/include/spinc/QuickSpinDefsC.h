@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -14,7 +14,7 @@
 // SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
-   
+
 /* Auto-generated file. Do not modify. */
 
 #ifndef FLIR_SPINNAKER_QUICKSPINDEFS_C_H
@@ -265,6 +265,8 @@ typedef struct _quickSpin
     quickSpinIntegerNode ChunkFrameID;
     quickSpinStringNode ChunkSerialData;
     quickSpinFloatNode ChunkExposureTime;
+    quickSpinIntegerNode ChunkCompressionMode;
+    quickSpinFloatNode ChunkCompressionRatio;
     quickSpinBooleanNode ChunkSerialReceiveOverflow;
     quickSpinIntegerNode ChunkTimestamp;
     quickSpinBooleanNode ChunkModeActive;
@@ -300,6 +302,7 @@ typedef struct _quickSpin
     quickSpinIntegerNode Width;
     quickSpinEnumerationNode TestPatternGeneratorSelector;
     quickSpinFloatNode CompressionRatio;
+    quickSpinEnumerationNode CompressionSaturationPriority;
     quickSpinBooleanNode ReverseX;
     quickSpinBooleanNode ReverseY;
     quickSpinEnumerationNode TestPattern;

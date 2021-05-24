@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -14,7 +14,7 @@
 // SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
-   
+
 /* Auto-generated file. Do not modify. */
 
 #ifndef FLIR_SPINNAKER_CHUNKDATA_H
@@ -66,6 +66,18 @@ namespace Spinnaker
          * Visibility: 
          */
         float64_t GetExposureTime() const;
+
+        /**
+         * Description: Returns the compression mode of the last image payload.
+         * Visibility: 
+         */
+        int64_t GetCompressionMode() const;
+
+        /**
+         * Description: Returns the compression ratio of the last image payload.
+         * Visibility: 
+         */
+        float64_t GetCompressionRatio() const;
 
         /**
          * Description: Returns the Timestamp of the image.
@@ -281,6 +293,8 @@ namespace Spinnaker
         float64_t m_blackLevel;
         int64_t m_frameID;
         float64_t m_exposureTime;
+        int64_t m_compressionMode;
+        float64_t m_compressionRatio;
         int64_t m_timestamp;
         int64_t m_exposureEndLineStatusAll;
         int64_t m_width;

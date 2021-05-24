@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -48,7 +48,9 @@ namespace Spinnaker
 
         /**
          * Init
-         * Connect to camera, retrieve XML and generate node map.
+         * Connects to camera with read and write access, retrieves remote
+         * device and GUI XML and generates node map references.
+         *
          * This function needs to be called before any camera related
          * API calls such as BeginAcquisition(), EndAcquisition(),
          * GetNodeMap(), GetNextImage().
@@ -62,12 +64,14 @@ namespace Spinnaker
 
         /**
          * DeInit
-         * Disconnect camera port and free GenICam node map and
-         * GUI XML. Do not call more functions that access the remote
-         * device such as WritePort/ReadPort after calling DeInit();
-         * Events should also be unregistered before calling camera DeInit().
-         * Otherwise an exception will be thrown in the DeInit() call and require
-         * the user to unregister events before the camera can be re-initialized again.
+         * Disconnects camera port, resets camera back to read access and frees
+         * GenICam node map and GUI XML.
+         *
+         * Do not call more functions that access the remote device such as
+         * WritePort/ReadPort after calling DeInit(). Events should also be
+         * unregistered before calling camera DeInit(). Otherwise an exception
+         * will be thrown in the DeInit() call and require the user to unregister
+         * events before the camera can be re-initialized again.
          *
          * @see Init()
          * @see UnregisterEventHandler(EventHandler & evtHandlerToUnregister)

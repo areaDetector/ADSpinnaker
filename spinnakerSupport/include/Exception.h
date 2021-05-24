@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -65,12 +65,7 @@ namespace Spinnaker
          * @param errMsg A pointer to the exception message string
          * @param err Error code
          */
-        Exception(
-            int line,
-            const char* fileName,
-            const char* funcName,
-            const char* errMsg,
-            Error err);
+        Exception(int line, const char* fileName, const char* funcName, const char* errMsg, Error err);
 
         /**
          * Message constructor.

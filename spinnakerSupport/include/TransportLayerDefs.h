@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -14,7 +14,7 @@
 // SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
-   
+
 /* Auto-generated file. Do not modify. */
 
 #ifndef FLIR_SPINNAKER_TRANSPORTLAYERDEFS_H
@@ -47,7 +47,7 @@ namespace Spinnaker
 		NUMSTREAMTYPE
 	};
 
-	enum StreamBufferCountModeEnum	/*!< Controls access to setting the number of buffers used for the stream. Locked to Manual mode on 32-bit Windows due to memory constraints.*/
+	enum StreamBufferCountModeEnum	/*!< Controls access to setting the number of buffers used for the stream.*/
 	{
 		StreamBufferCountMode_Manual,	/*!< The number of buffers used for the stream are set by the user.*/
 		StreamBufferCountMode_Auto,	/*!< DEPRECATED. The number of buffers used for the stream is automatically calculated based on the device frame rate.*/

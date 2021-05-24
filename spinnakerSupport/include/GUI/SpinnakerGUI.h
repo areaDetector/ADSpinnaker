@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -17,12 +17,7 @@
 
 #pragma once
 
-#ifdef GUIFrame_GTK
-#include "GUI/SpinnakerGUI_GTKmm.h"
-#else
 #include "GUI/SpinnakerGUI_WPF.h"
-#endif
-
 #include "ViewerDlg.h"
 #include "PropertyGridDlg.h"
 #include "CameraSelectionDlg.h"
@@ -162,13 +157,9 @@ namespace Spinnaker
             static ViewerDlg* m_pViewer;
             static PropertyGridDlg* m_pPropertyGridDialog;
 
-#ifdef GUIFrame_GTK
-            // GTK GUI API
-            Spinnaker::GUI_GTKmm::GUIFactory* m_pGTKGUIAPI;
-#else
             // WPF GUI API
             Spinnaker::GUI_WPF::GUIFactory* m_pWPFGUIFactory;
-#endif
+
             bool m_bisConnected;
             //		CameraControlProxy* m_pCameraControlProxy;
         };

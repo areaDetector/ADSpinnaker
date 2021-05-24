@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -87,6 +87,12 @@ namespace Spinnaker
         //! Underlying raw pointer.
         PointerData* m_pT;
     };
+
+    //! Pointer equal
+    template <class T, class B> inline bool operator==(const std::nullptr_t, const BasePtr<T, B>& rhs)
+    {
+        return rhs == nullptr;
+    }
 
     /** @}*/
 

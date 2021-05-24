@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -77,6 +77,15 @@ namespace Spinnaker
             size_t offsetY,
             PixelFormatEnums pixelFormat,
             void* pData) = 0;
+        virtual void ResetImage(
+            size_t width,
+            size_t height,
+            size_t offsetX,
+            size_t offsetY,
+            PixelFormatEnums pixelFormat,
+            void* pData,
+            PayloadTypeInfoIDs dataPayloadType,
+            size_t dataSize) = 0;
         virtual void Release() = 0;
         virtual uint64_t GetID() const = 0;
         virtual void* GetData() const = 0;
@@ -106,14 +115,14 @@ namespace Spinnaker
         virtual size_t GetValidPayloadSize() const = 0;
         virtual uint64_t GetChunkLayoutId() const = 0;
         virtual uint64_t GetTimeStamp() const = 0;
-        virtual void Save(const char* pFilename, ImageFileFormat format = FROM_FILE_EXT) = 0;
-        virtual void Save(const char* pFilename, PNGOption& pOption) = 0;
-        virtual void Save(const char* pFilename, PPMOption& pOption) = 0;
-        virtual void Save(const char* pFilename, PGMOption& pOption) = 0;
-        virtual void Save(const char* pFilename, TIFFOption& pOption) = 0;
-        virtual void Save(const char* pFilename, JPEGOption& pOption) = 0;
-        virtual void Save(const char* pFilename, JPG2Option& pOption) = 0;
-        virtual void Save(const char* pFilename, BMPOption& pOption) = 0;
+        virtual void Save(const char* pFilename, ImageFileFormat format = FROM_FILE_EXT) const = 0;
+        virtual void Save(const char* pFilename, PNGOption& pOption) const = 0;
+        virtual void Save(const char* pFilename, PPMOption& pOption) const = 0;
+        virtual void Save(const char* pFilename, PGMOption& pOption) const = 0;
+        virtual void Save(const char* pFilename, TIFFOption& pOption) const = 0;
+        virtual void Save(const char* pFilename, JPEGOption& pOption) const = 0;
+        virtual void Save(const char* pFilename, JPG2Option& pOption) const = 0;
+        virtual void Save(const char* pFilename, BMPOption& pOption) const = 0;
         virtual const ChunkData& GetChunkData() const = 0;
         virtual void CalculateStatistics(ImageStatistics& pStatistics) = 0;
         virtual bool HasCRC() const = 0;
@@ -121,6 +130,7 @@ namespace Spinnaker
         virtual size_t GetImageSize() const = 0;
         virtual bool IsInUse() = 0;
         virtual ImageStatus GetImageStatus() const = 0;
+        virtual bool IsCompressed() const = 0;
 
       protected:
         friend class Stream;

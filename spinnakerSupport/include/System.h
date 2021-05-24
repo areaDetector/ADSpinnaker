@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -23,15 +23,16 @@
 namespace Spinnaker
 {
     // Forward declaration of implementation class
-    class SystemImpl;
+    class ProducerImpl;
     class SystemPtr;
     class LoggingEventHandler;
+    class ISystemImpl;
 
     // Define macros for getting Spinnaker library version
 #define FLIR_SPINNAKER_VERSION_MAJOR 2
-#define FLIR_SPINNAKER_VERSION_MINOR 0
+#define FLIR_SPINNAKER_VERSION_MINOR 4
 #define FLIR_SPINNAKER_VERSION_TYPE  0
-#define FLIR_SPINNAKER_VERSION_BUILD 147
+#define FLIR_SPINNAKER_VERSION_BUILD 143
 
     /**
      * @defgroup SpinnakerClasses Spinnaker Classes
@@ -68,11 +69,11 @@ namespace Spinnaker
         virtual ~System();
 
         /**
-         * This call releases the instance of the System Singleton for
-         * this process.  After successfully releasing the System instance
-         * the pointer returned by GetInstance() will be invalid.  Calling
-         * ReleaseInstance while a camera reference is still held will throw
-         * an error of type SPINNAKER_ERR_RESOURCE_IN_USE.
+         * This call releases the referenced instance of the System Singleton.
+         * After successfully releasing the System instance, the pointer returned by GetInstance() will be invalid.
+         * Once the final System instance is released, all remaining Spinnaker resources will be released.
+         * If the final System instance is released while an interface or camera reference is still held,
+         * this function will throw an error of type SPINNAKER_ERR_RESOURCE_IN_USE.
          *
          * @see Error
          * @see GetInstance()
@@ -93,6 +94,14 @@ namespace Spinnaker
          * @return An InterfaceList object that contains a list of all interfaces.
          */
         virtual InterfaceList GetInterfaces(bool updateInterface = true);
+
+        /**
+         * Updates the list of interfaces on the system. If desired, local copies
+         * of InterfaceList should be updated by calling GetInterfaces.
+         *
+         * @see GetInterfaces()
+         */
+        virtual void UpdateInterfaceList();
 
         /**
          * Returns a list of cameras that are available on the system.  This call
@@ -133,15 +142,9 @@ namespace Spinnaker
         virtual bool UpdateCameras(bool updateInterfaces = true);
 
         /**
-         * Updates the list of interfaces on the system. If desired, local copies
-         * of InterfaceList should be updated by calling GetInterfaces.
-         *
-         * @see GetInterfaces()
-         */
-        virtual void UpdateInterfaceList();
-
-        /**
          * Registers an event handler for the system
+         *
+         * @see SystemEventHandler
          *
          * @param evtHandlerToRegister The event handler to register for the system
          *
@@ -151,6 +154,8 @@ namespace Spinnaker
         /**
          * Unregisters an event handler for the system
          *
+         * @see SystemEventHandler
+         *
          * @param evtHandlerToUnregister The event handler to unregister from the system
          *
          */
@@ -158,8 +163,11 @@ namespace Spinnaker
 
         /**
          * Registers event handlers for all available interfaces that are found on the system
-         * If new interfaces are detected by the system after RegisterInterfaceEventHandler() is called, those interfaces will
-         * be automatically registered with this event.
+         * If new interfaces are detected by the system after RegisterInterfaceEventHandler() is called, those
+         * interfaces will be automatically registered with this event. Note that only GEV interface arrivals and
+         * removals are currently handled.
+         *
+         * @see InterfaceEventHandler
          *
          * @param evtHandlerToRegister The event handler to register for the available interfaces
          * @param updateInterface Determines whether or not UpdateInterfaceList() is called before registering event for
@@ -169,6 +177,8 @@ namespace Spinnaker
 
         /**
          * Unregisters event handlers for all available interfaces that are found on the system
+         *
+         * @see InterfaceEventHandler
          *
          * @param evtHandlerToUnregister The event handler to unregister from the available interfaces
          */
@@ -295,6 +305,11 @@ namespace Spinnaker
          * Assignment operator.
          */
         System& operator=(const System&);
+
+        /**
+         * Internal use only.
+         */
+        ISystemImpl* m_pSystemImpl;
     };
 
     /*@}*/

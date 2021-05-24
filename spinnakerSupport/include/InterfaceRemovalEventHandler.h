@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -35,7 +35,8 @@ namespace Spinnaker
     /*@{*/
 
     /**
-     * @brief An event handler for capturing the interface removal event.
+     * @brief An event handler for capturing the interface removal event. Note that only GEV interface removals are
+     * currently handled.
      */
 
     class SPINNAKER_API InterfaceRemovalEventHandler : public IInterfaceRemovalEventHandler
@@ -52,7 +53,7 @@ namespace Spinnaker
         virtual ~InterfaceRemovalEventHandler();
 
         /**
-         * Interface removal event callback.
+         * Interface removal event callback. Note that only GEV interface removals are currently handled.
          *
          * @param interfaceID The ID of the interface removed
          */

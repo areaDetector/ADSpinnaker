@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2020 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -14,7 +14,7 @@
 // SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
-   
+
 /* Auto-generated file. Do not modify. */
 
 #ifndef FLIR_SPINNAKER_CAMERA_H
@@ -1706,6 +1706,18 @@ namespace Spinnaker
         GenApi::IFloat &ChunkExposureTime;
 
         /**
+         * Description: Returns the compression mode of the last image payload.
+         * Visibility: 
+         */
+        GenApi::IInteger &ChunkCompressionMode;
+
+        /**
+         * Description: Returns the compression ratio of the last image payload.
+         * Visibility: 
+         */
+        GenApi::IFloat &ChunkCompressionRatio;
+
+        /**
          * Description: Returns the status of the chunk serial receive overflow.
          * Visibility: 
          */
@@ -1940,6 +1952,12 @@ namespace Spinnaker
          * Visibility: 
          */
         GenApi::IFloat &CompressionRatio;
+
+        /**
+         * Description: When FrameRate is enabled, camera drops frames if datarate is saturated. If FrameRate is disabled, camera adjusts the framerate to match the maximum achievable datarate.
+         * Visibility: 
+         */
+        GenApi::IEnumerationT<CompressionSaturationPriorityEnums> &CompressionSaturationPriority;
 
         /**
          * Description: 
@@ -2236,7 +2254,7 @@ namespace Spinnaker
         GenApi::IFloat &LineFilterWidth;
 
         /**
-         * Description: Selects the activation mode of the trigger to start the Counter.
+         * Description: Selects the activation mode of the trigger to start the counter.
          * Visibility: 
          */
         GenApi::IEnumerationT<CounterTriggerActivationEnums> &CounterTriggerActivation;
@@ -2260,7 +2278,7 @@ namespace Spinnaker
         GenApi::IInteger &CounterValueAtReset;
 
         /**
-         * Description: Returns the current status of the Counter.
+         * Description: Returns the current status of the counter.
          * Visibility: 
          */
         GenApi::IEnumerationT<CounterStatusEnums> &CounterStatus;
@@ -2278,7 +2296,7 @@ namespace Spinnaker
         GenApi::IInteger &CounterDelay;
 
         /**
-         * Description: Selects the signal that will be the source to reset the Counter.
+         * Description: Selects the signal that will be the source to reset the counter.
          * Visibility: 
          */
         GenApi::IEnumerationT<CounterResetSourceEnums> &CounterResetSource;

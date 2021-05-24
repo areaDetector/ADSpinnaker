@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -361,21 +361,28 @@ typedef enum _spinPixelFormatNamespaceID
 /** Status of images returned from spinImageGetStatus() call. */
 typedef enum _spinImageStatus
 {
-    IMAGE_UNKNOWN_ERROR = -1,                   /**< Image has an unknown error. */
-    IMAGE_NO_ERROR = 0,                         /**< Image is returned from GetNextImage() call without any errors. */
-    IMAGE_CRC_CHECK_FAILED = 1,                 /**< Image failed CRC check. */
-    IMAGE_DATA_OVERFLOW = 2,                    /**< Received more data than the size of the image. */
-    IMAGE_MISSING_PACKETS = 3,                  /**< Image has missing packets */
-    IMAGE_LEADER_BUFFER_SIZE_INCONSISTENT = 4,  /**< Image leader is incomplete. */
-    IMAGE_TRAILER_BUFFER_SIZE_INCONSISTENT = 5, /**< Image trailer is incomplete. */
-    IMAGE_PACKETID_INCONSISTENT = 6,            /**< Image has an inconsistent packet id. */
-    IMAGE_MISSING_LEADER = 7,                   /**< Image leader is missing. */
-    IMAGE_MISSING_TRAILER = 8,                  /**< Image trailer is missing. */
-    IMAGE_DATA_INCOMPLETE = 9,                  /**< Image data is incomplete. */
-    IMAGE_INFO_INCONSISTENT = 10,               /**< Image info is corrupted. */
-    IMAGE_CHUNK_DATA_INVALID = 11,              /**< Image chunk data is invalid */
-    IMAGE_NO_SYSTEM_RESOURCES = 12              /**< Image cannot be processed due to lack of system
-                                                resources. */
+    IMAGE_UNKNOWN_ERROR = -1,   /**< Image has an unknown error. */
+    IMAGE_NO_ERROR = 0,         /**< Image is returned from GetNextImage() call without any errors. */
+    IMAGE_CRC_CHECK_FAILED = 1, /**< Image failed CRC check. */
+    IMAGE_DATA_OVERFLOW = 2,    /**< Received more data than the size of the image. */
+    IMAGE_MISSING_PACKETS =
+        3, /**< Image has missing packets. Potential fixes include enabling
+           jumbo packets and adjusting packet size/delay. For more information see
+           https://www.flir.com/support-center/iis/machine-vision/application-note/troubleshooting-image-consistency-errors/
+         */
+    IMAGE_LEADER_BUFFER_SIZE_INCONSISTENT =
+        4, /**< Image leader is incomplete. Could be caused by missing packet(s). See link above.*/
+    IMAGE_TRAILER_BUFFER_SIZE_INCONSISTENT =
+        5, /**< Image trailer is incomplete. Could be caused by missing packet(s). See link above.*/
+    IMAGE_PACKETID_INCONSISTENT =
+        6, /**< Image has an inconsistent packet id. Could be caused by missing packet(s). See link above.*/
+    IMAGE_MISSING_LEADER = 7,     /**< Image leader is missing. Could be caused by missing packet(s). See link above.*/
+    IMAGE_MISSING_TRAILER = 8,    /**< Image trailer is missing. Could be caused by missing packet(s). See link above.*/
+    IMAGE_DATA_INCOMPLETE = 9,    /**< Image data is incomplete. Could be caused by missing packet(s). See link above.*/
+    IMAGE_INFO_INCONSISTENT = 10, /**< Image info is corrupted. Could be caused by missing packet(s). See link above.*/
+    IMAGE_CHUNK_DATA_INVALID = 11, /**< Image chunk data is invalid */
+    IMAGE_NO_SYSTEM_RESOURCES = 12 /**< Image cannot be processed due to lack of system
+                                   resources. */
 } spinImageStatus;
 
 /** log levels */
@@ -411,7 +418,12 @@ typedef enum _spinPayloadTypeInfoIDs
     PAYLOAD_TYPE_MULTI_PART = 10,     /* GenTL v1.5 */
 
     PAYLOAD_TYPE_CUSTOM_ID = 1000, /* Starting value for GenTL Producer custom IDs. */
-    PAYLOAD_TYPE_EXTENDED_CHUNK = 1001
+    PAYLOAD_TYPE_EXTENDED_CHUNK = 1001,
+    PAYLOAD_TYPE_LOSSLESS_COMPRESSED = 1002,
+    PAYLOAD_TYPE_LOSSY_COMPRESSED = 1003,
+    PAYLOAD_TYPE_JPEG_LOSSLESS_COMPRESSED = 1004,
+    PAYLOAD_TYPE_CHUNK_DATA_LOSSLESS_COMPRESSED = 1005,
+    PAYLOAD_TYPE_CHUNK_DATA_LOSSY_COMPRESSED = 1006
 } spinPayloadTypeInfoIDs;
 
 /*@}*/
