@@ -18,7 +18,7 @@ LIB_INSTALLS    += ../os/win32-x86/Spinnakerd_v140.lib
 else ifeq (linux-x86_64, $(findstring linux-x86_64, $(T_A)))
 LIB_INSTALLS    += ../os/linux-x86_64/libSpinnaker.so
 LIB_INSTALLS    += ../os/linux-x86_64/libSpinnaker.so.2
-LIB_INSTALLS    += ../os/linux-x86_64/libSpinnaker.so.2.0.0.147
+LIB_INSTALLS    += ../os/linux-x86_64/libSpinnaker.so.2.4.0.143
 LIB_INSTALLS    += ../os/linux-x86_64/libGenApi_gcc540_v3_0.so
 LIB_INSTALLS    += ../os/linux-x86_64/libGCBase_gcc540_v3_0.so
 LIB_INSTALLS    += ../os/linux-x86_64/libLog_gcc540_v3_0.so
@@ -26,15 +26,7 @@ LIB_INSTALLS    += ../os/linux-x86_64/libMathParser_gcc540_v3_0.so
 LIB_INSTALLS    += ../os/linux-x86_64/libNodeMapData_gcc540_v3_0.so
 LIB_INSTALLS    += ../os/linux-x86_64/libXmlParser_gcc540_v3_0.so
 
-LIB_INSTALLS    +=  ../os/linux-x86_64/SFNC_GenTLDataStream_GigE_Version_1_0_0_Schema_1_1.xml
-LIB_INSTALLS    +=  ../os/linux-x86_64/SFNC_GenTLDataStream_Usb3_Version_1_0_0_Schema_1_1.xml
-LIB_INSTALLS    +=  ../os/linux-x86_64/SFNC_GenTLDevice_GigE_Version_1_0_0_Schema_1_1.xml
-LIB_INSTALLS    +=  ../os/linux-x86_64/SFNC_GenTLDevice_Reference_Version_1_0_0_Schema_1_1.xml
-LIB_INSTALLS    +=  ../os/linux-x86_64/SFNC_GenTLDevice_Usb3_Version_1_0_0_Schema_1_1.xml
-LIB_INSTALLS    +=  ../os/linux-x86_64/SFNC_GenTLInterface_GigE_Version_1_0_0_Schema_1_1.xml
-LIB_INSTALLS    +=  ../os/linux-x86_64/SFNC_GenTLInterface_Reference_Version_1_0_0_Schema_1_1.xml
-LIB_INSTALLS    +=  ../os/linux-x86_64/SFNC_GenTLInterface_Usb3_Version_1_0_0_Schema_1_1.xml
-LIB_INSTALLS    +=  ../os/linux-x86_64/SFNC_GenTLSystem_Version_1_0_0_Schema_1_1.xml
+LIB_INSTALLS    +=  ../os/linux-x86_64/FLIR_GenTL.cti
 
 else ifeq (linux-x86, $(findstring linux-x86, $(T_A)))
 
