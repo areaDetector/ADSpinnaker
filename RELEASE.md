@@ -18,6 +18,12 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-2 (May 26, 2021)
+-------------------
+* Updated Spinnaker version from 2.0.0.147 to 2.4.0.147.
+  Windows users will need to update their local install of Spinnaker to this version. 
+  Linux users do not need to do anything, since all required files are included with ADSpinnaker.
+
 R3-1 (October 2, 2020)
 ------------------------
 * Changed the arguments passed to the constructor and to the ADSpinnakerConfig() command.
