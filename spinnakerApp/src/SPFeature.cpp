@@ -53,17 +53,17 @@ epicsInt64 SPFeature::readInteger() {
 
 epicsInt64 SPFeature::readIntegerMin() {
     CIntegerPtr pNode = (CIntegerPtr)mPBase;
-    return (int)pNode->GetMin();
+    return pNode->GetMin();
 }
 
 epicsInt64 SPFeature::readIntegerMax() {
     CIntegerPtr pNode = (CIntegerPtr)mPBase;
-    return (int)pNode->GetMax();
+    return pNode->GetMax();
 }
 
 epicsInt64 SPFeature::readIncrement() { 
     CIntegerPtr pNode = (CIntegerPtr)mPBase;
-    return (int)pNode->GetInc();
+    return pNode->GetInc();
 }
 
 void SPFeature::writeInteger(epicsInt64 value) { 
