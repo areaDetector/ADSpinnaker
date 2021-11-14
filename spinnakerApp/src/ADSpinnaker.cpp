@@ -41,7 +41,7 @@ using namespace std;
 #include "ADSpinnaker.h"
 
 #define DRIVER_VERSION      3
-#define DRIVER_REVISION     2
+#define DRIVER_REVISION     3
 #define DRIVER_MODIFICATION 0
 
 static const char *driverName = "ADSpinnaker";
