@@ -18,6 +18,13 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-3 (November 14, 2021)
+-------------------
+* Fixed a problem reading Integer GenICam feature values, and their min and max.
+  The values were being cast from Int64 to Int32.  This was not correct.
+  This was a problem, for example, with values whose maximum was 2^32-1, because the maximum was read as -1.
+  This resulted in not being able to set the value, since the allowed maximum was less than the allowed minimum.
+
 R3-2 (May 26, 2021)
 -------------------
 * Updated Spinnaker version from 2.0.0.147 to 2.4.0.147.
