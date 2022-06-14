@@ -123,7 +123,6 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int numSPBuffers,
     //pasynTrace->setTraceMask(pasynUserSelf, ASYN_TRACE_ERROR | ASYN_TRACE_WARNING | ASYN_TRACEIO_DRIVER);
     
     if (numSPBuffers_ == 0) numSPBuffers_ = 100;
-    if (numSPBuffers_ < 10) numSPBuffers_ = 10;
 
     // Retrieve singleton reference to system object
     system_ = System::GetInstance();
