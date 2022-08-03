@@ -471,6 +471,9 @@ asynStatus ADSpinnaker::grabImage()
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s error GetImageStatus returned %d\n",
                 driverName, functionName, imageStatus);
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s error GetImageStatusDescription:  %s\n",
+                driverName, functionName,Image::GetImageStatusDescription(imageStatus));
             pImage->Release();
             return asynError;
         } 
