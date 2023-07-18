@@ -27,12 +27,12 @@ PROD_LIBS += ADGenICam
 # We use PROD_SYS_LIBS even though libflycapture.so is in the ADSpinnaker tree 
 # because we are doing static build but the file is a .so file, not a .a file.
 PROD_SYS_LIBS_Linux += Spinnaker
-PROD_SYS_LIBS_Linux += GCBase_gcc540_v3_0
-PROD_SYS_LIBS_Linux += GenApi_gcc540_v3_0
-PROD_SYS_LIBS_Linux += NodeMapData_gcc540_v3_0
-PROD_SYS_LIBS_Linux += MathParser_gcc540_v3_0
-PROD_SYS_LIBS_Linux += XmlParser_gcc540_v3_0
-PROD_SYS_LIBS_Linux += Log_gcc540_v3_0
+PROD_SYS_LIBS_Linux += GCBase_gcc11_v3_0
+PROD_SYS_LIBS_Linux += GenApi_gcc11_v3_0
+PROD_SYS_LIBS_Linux += NodeMapData_gcc11_v3_0
+PROD_SYS_LIBS_Linux += MathParser_gcc11_v3_0
+PROD_SYS_LIBS_Linux += XmlParser_gcc11_v3_0
+PROD_SYS_LIBS_Linux += Log_gcc11_v3_0
 
 include $(ADCORE)/ADApp/commonDriverMakefile
 
