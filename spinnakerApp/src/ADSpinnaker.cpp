@@ -138,17 +138,21 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int numSPBuffers,
         return;
     }
 
-    createParam(SPConvertPixelFormatString,     asynParamInt32,   &SPConvertPixelFormat);
-    createParam(SPDeliveredFrameCountString,    asynParamInt32,   &SPDeliveredFrameCount);
-    createParam(SPLostFrameCountString,         asynParamInt32,   &SPLostFrameCount);
-    createParam(SPInputBufferCountString,       asynParamInt32,   &SPInputBufferCount);
-    createParam(SPOutputBufferCountString,      asynParamInt32,   &SPOutputBufferCount);
-    createParam(SPFailedBufferCountString,      asynParamInt32,   &SPFailedBufferCount);
-    createParam(SPTotalPacketCountString,       asynParamInt32,   &SPTotalPacketCount);
-    createParam(SPResendPacketCountString,      asynParamInt32,   &SPResendPacketCount);
-    createParam(SPFailedPacketCountString,      asynParamInt32,   &SPFailedPacketCount);
-    createParam(SPTimeStampModeString,          asynParamInt32,   &SPTimeStampMode);
-    createParam(SPUniqueIdModeString,           asynParamInt32,   &SPUniqueIdMode);
+    createParam(SPConvertPixelFormatString,         asynParamInt32,   &SPConvertPixelFormat);
+    createParam(SPStartedFrameCountString,          asynParamInt32,   &SPStartedFrameCount);
+    createParam(SPDeliveredFrameCountString,        asynParamInt32,   &SPDeliveredFrameCount);
+    createParam(SPReceivedFrameCountString,         asynParamInt32,   &SPReceivedFrameCount);
+    createParam(SPIncompleteFrameCountString,       asynParamInt32,   &SPIncompleteFrameCount);
+    createParam(SPLostFrameCountString,             asynParamInt32,   &SPLostFrameCount);
+    createParam(SPDroppedFrameCountString,          asynParamInt32,   &SPDroppedFrameCount);
+    createParam(SPInputBufferCountString,           asynParamInt32,   &SPInputBufferCount);
+    createParam(SPOutputBufferCountString,          asynParamInt32,   &SPOutputBufferCount);
+    createParam(SPReceivedPacketCountString,        asynParamInt32,   &SPReceivedPacketCount);
+    createParam(SPMissedPacketCountString,          asynParamInt32,   &SPMissedPacketCount);
+    createParam(SPResendRequestedPacketCountString, asynParamInt32,   &SPResendRequestedPacketCount);
+    createParam(SPResendReceivedPacketCountString,  asynParamInt32,   &SPResendReceivedPacketCount);
+    createParam(SPTimeStampModeString,              asynParamInt32,   &SPTimeStampMode);
+    createParam(SPUniqueIdModeString,               asynParamInt32,   &SPUniqueIdMode);
 
     /* Set initial values of some parameters */
     setIntegerParam(NDDataType, NDUInt8);
@@ -407,16 +411,18 @@ void ADSpinnaker::imageGrabTask()
         try {
             const TransportLayerStream& streamStats = pCamera_->TLStream;
             pTLStreamNodeMap_->InvalidateNodes();
-            setIntegerParam(SPDeliveredFrameCount, (int)streamStats.StreamDeliveredFrameCount.GetValue());
-            setIntegerParam(SPLostFrameCount,      (int)streamStats.StreamLostFrameCount.GetValue());
-            setIntegerParam(SPFailedBufferCount,   (int)streamStats.StreamFailedBufferCount.GetValue());
-            setIntegerParam(SPInputBufferCount,    (int)streamStats.StreamInputBufferCount.GetValue());
-            setIntegerParam(SPOutputBufferCount,   (int)streamStats.StreamOutputBufferCount.GetValue());
-            if (streamStats.StreamType.GetIntValue() == StreamType_GigEVision) {
-                setIntegerParam(SPTotalPacketCount,  (int)streamStats.GevTotalPacketCount.GetValue());
-                setIntegerParam(SPFailedPacketCount, (int)streamStats.GevFailedPacketCount.GetValue());
-                setIntegerParam(SPResendPacketCount, (int)streamStats.GevResendPacketCount.GetValue());
-            }
+            setIntegerParam(SPStartedFrameCount,          (int)streamStats.StreamStartedFrameCount.GetValue());
+            setIntegerParam(SPDeliveredFrameCount,        (int)streamStats.StreamDeliveredFrameCount.GetValue());
+            setIntegerParam(SPReceivedFrameCount,         (int)streamStats.StreamReceivedFrameCount.GetValue());
+            setIntegerParam(SPIncompleteFrameCount,       (int)streamStats.StreamIncompleteFrameCount.GetValue());
+            setIntegerParam(SPLostFrameCount,             (int)streamStats.StreamLostFrameCount.GetValue());
+            setIntegerParam(SPDroppedFrameCount,          (int)streamStats.StreamDroppedFrameCount.GetValue());
+            setIntegerParam(SPInputBufferCount,           (int)streamStats.StreamInputBufferCount.GetValue());
+            setIntegerParam(SPOutputBufferCount,          (int)streamStats.StreamOutputBufferCount.GetValue());
+            setIntegerParam(SPReceivedPacketCount,        (int)streamStats.StreamReceivedPacketCount.GetValue());
+            setIntegerParam(SPMissedPacketCount,          (int)streamStats.StreamMissedPacketCount.GetValue());
+            setIntegerParam(SPResendRequestedPacketCount, (int)streamStats.StreamPacketResendRequestedPacketCount.GetValue());
+            setIntegerParam(SPResendReceivedPacketCount,  (int)streamStats.StreamPacketResendReceivedPacketCount.GetValue());
         }
         catch (Spinnaker::Exception &e) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
@@ -467,7 +473,7 @@ asynStatus ADSpinnaker::grabImage()
         // Delete the ImagePtr that was passed to us
         delete imagePtrAddr;
         imageStatus = pImage->GetImageStatus();
-        if (imageStatus != IMAGE_NO_ERROR) {
+        if (imageStatus != SPINNAKER_IMAGE_STATUS_NO_ERROR) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s error GetImageStatus  %d, description:  %s\n",
                 driverName, functionName, imageStatus, Image::GetImageStatusDescription(imageStatus));
@@ -516,11 +522,12 @@ asynStatus ADSpinnaker::grabImage()
             }
     
             pixelFormat = pImage->GetPixelFormat();
+            ImageProcessor processor; 
             unlock();
             try {
                 //epicsTimeStamp tstart, tend;
                 //epicsTimeGetCurrent(&tstart);
-                pImage  = pImage->Convert(convertedFormat);
+                pImage  = processor.Convert(pImage, convertedFormat);
                 //epicsTimeGetCurrent(&tend);
                 //asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s time for pImage->convert=%f\n", 
                 //    driverName, functionName, epicsTimeDiffInSeconds(&tend, &tstart));
