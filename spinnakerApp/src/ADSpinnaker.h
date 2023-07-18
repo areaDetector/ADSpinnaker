@@ -11,17 +11,21 @@ using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 
-#define SPConvertPixelFormatString  "SP_CONVERT_PIXEL_FORMAT"   // asynParamInt32, R/W
-#define SPDeliveredFrameCountString "SP_DELIVERED_FRAME_COUNT"  // asynParamInt32, R/O
-#define SPLostFrameCountString      "SP_LOST_FRAME_COUNT"       // asynParamInt32, R/O
-#define SPInputBufferCountString    "SP_INPUT_BUFFER_COUNT"     // asynParamInt32, R/O
-#define SPOutputBufferCountString   "SP_OUTPUT_BUFFER_COUNT"    // asynParamInt32, R/O
-#define SPFailedBufferCountString   "SP_FAILED_BUFFER_COUNT"    // asynParamInt32, R/O
-#define SPTotalPacketCountString    "SP_TOTAL_PACKET_COUNT"     // asynParamInt32, R/O
-#define SPResendPacketCountString   "SP_RESEND_PACKET_COUNT"    // asynParamInt32, R/O
-#define SPFailedPacketCountString   "SP_FAILED_PACKET_COUNT"    // asynParamInt32, R/O
-#define SPTimeStampModeString       "SP_TIME_STAMP_MODE"        // asynParamInt32, R/O
-#define SPUniqueIdModeString        "SP_UNIQUE_ID_MODE"         // asynParamInt32, R/O
+#define SPConvertPixelFormatString          "SP_CONVERT_PIXEL_FORMAT"           // asynParamInt32, R/W
+#define SPStartedFrameCountString           "SP_STARTED_FRAME_COUNT"            // asynParamInt32, R/O
+#define SPDeliveredFrameCountString         "SP_DELIVERED_FRAME_COUNT"          // asynParamInt32, R/O
+#define SPReceivedFrameCountString          "SP_RECEIVED_FRAME_COUNT"           // asynParamInt32, R/O
+#define SPIncompleteFrameCountString        "SP_INCOMPLETE_FRAME_COUNT"         // asynParamInt32, R/O
+#define SPLostFrameCountString              "SP_LOST_FRAME_COUNT"               // asynParamInt32, R/O
+#define SPDroppedFrameCountString           "SP_DROPPED_FRAME_COUNT"            // asynParamInt32, R/O
+#define SPInputBufferCountString            "SP_INPUT_BUFFER_COUNT"             // asynParamInt32, R/O
+#define SPOutputBufferCountString           "SP_OUTPUT_BUFFER_COUNT"            // asynParamInt32, R/O
+#define SPReceivedPacketCountString         "SP_RECEIVED_PACKET_COUNT"          // asynParamInt32, R/O
+#define SPMissedPacketCountString           "SP_MISSED_PACKET_COUNT"            // asynParamInt32, R/O
+#define SPResendRequestedPacketCountString  "SP_RESEND_REQUESTED_PACKET_COUNT"  // asynParamInt32, R/O
+#define SPResendReceivedPacketCountString   "SP_RESEND_RECEIVED_PACKET_COUNT"   // asynParamInt32, R/O
+#define SPTimeStampModeString               "SP_TIME_STAMP_MODE"                // asynParamInt32, R/O
+#define SPUniqueIdModeString                "SP_UNIQUE_ID_MODE"                 // asynParamInt32, R/O
 
 class ADSpinnakerImageEventHandler : public ImageEventHandler
 {
@@ -73,14 +77,18 @@ public:
 private:
     int SPConvertPixelFormat;
 #define FIRST_SP_PARAM SPConvertPixelFormat
+    int SPStartedFrameCount;
     int SPDeliveredFrameCount;
+    int SPReceivedFrameCount;
+    int SPIncompleteFrameCount;
     int SPLostFrameCount;
+    int SPDroppedFrameCount;
     int SPInputBufferCount;
     int SPOutputBufferCount;
-    int SPFailedBufferCount;
-    int SPTotalPacketCount;
-    int SPResendPacketCount;
-    int SPFailedPacketCount;
+    int SPReceivedPacketCount;
+    int SPMissedPacketCount;
+    int SPResendRequestedPacketCount;
+    int SPResendReceivedPacketCount;
     int SPTimeStampMode;
     int SPUniqueIdMode;
     int SPFrameRateEnable;
