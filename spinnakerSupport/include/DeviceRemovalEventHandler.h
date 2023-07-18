@@ -54,9 +54,9 @@ namespace Spinnaker
         /**
          * Device removal event callback.
          *
-         * @param serialNumber The serial number of the device removed
+         * @param pCamera Reference tracked CameraPtr object of the camera removed from the system
          */
-        virtual void OnDeviceRemoval(uint64_t serialNumber) = 0;
+        virtual void OnDeviceRemoval(CameraPtr pCamera) = 0;
 
       protected:
         /**

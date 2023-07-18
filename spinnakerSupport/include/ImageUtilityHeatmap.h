@@ -19,6 +19,7 @@
 #define FLIR_SPINNAKER_IMAGE_UTILITY_HEATMAP_H
 
 #include "SpinnakerPlatform.h"
+#include "SpinnakerDefs.h"
 
 namespace Spinnaker
 {
@@ -41,20 +42,6 @@ namespace Spinnaker
     class SPINNAKER_API ImageUtilityHeatmap
     {
       public:
-        /**
-         * Color specifiers for the heatmap color gradient.
-         */
-        enum HeatmapColor
-        {
-            HEATMAP_BLACK = 1,
-            HEATMAP_BLUE = 2,
-            HEATMAP_CYAN = 3,
-            HEATMAP_GREEN = 4,
-            HEATMAP_YELLOW = 5,
-            HEATMAP_RED = 6,
-            HEATMAP_WHITE = 7
-        };
-
         /**
          * Computes a heatmap image.
          * A heatmap image reinterprets monochrome data by mapping the luminosity of each pixel

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2022 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -19,10 +19,13 @@
 #define FLIR_SPINNAKER_CAMERABASE_H
 
 #include "Interface/ICameraBase.h"
+#include "Interface/IImageList.h"
 
 namespace Spinnaker
 {
     class ImagePtr;
+    class DeviceEventHandler;
+    class ImageEventHandler;
 
     /**
      *  @defgroup SpinnakerClasses Spinnaker Classes
@@ -53,12 +56,13 @@ namespace Spinnaker
          *
          * This function needs to be called before any camera related
          * API calls such as BeginAcquisition(), EndAcquisition(),
-         * GetNodeMap(), GetNextImage().
+         * GetNodeMap(), GetNextImage() and GetNextImageSync().
          *
          * @see BeginAcquisition()
          * @see EndAcquisition()
          * @see GetNodeMap()
          * @see GetNextImage()
+         * @see GetNextImageSync()
          */
         void Init();
 
@@ -126,9 +130,11 @@ namespace Spinnaker
          * XML file for the GenTL Stream module.  The camera does not need to be
          * initialized before acquiring this node map.
          *
+         * @param streamIndex The index of the stream to grab the image from
+         *
          * @return  A reference to the INodeMap.
          */
-        GenApi::INodeMap& GetTLStreamNodeMap() const;
+        GenApi::INodeMap& GetTLStreamNodeMap(uint64_t streamIndex = 0) const;
 
         /**
          * GetAccessMode
@@ -189,13 +195,15 @@ namespace Spinnaker
          * Stops the image acquisition engine.  If EndAcquisition() is called
          * without a prior call to BeginAcquisition() an error message
          * "Camera is not started" will be thrown. All Images that were
-         * acquired using GetNextImage() need to be released first using image->Release()
-         * before calling EndAcquisition().  All buffers in the input pool and
-         * output queue will be discarded when EndAcquisition() is called.
+         * acquired using GetNextImage() or GetNextImageSync() need to be released
+         * first using image->Release() or imageList->Release() before calling
+         * EndAcquisition().  All buffers in the input pool and output queue will be
+         * discarded when EndAcquisition() is called.
          *
          * @see Init()
          * @see BeginAcquisition()
          * @see GetNextImage( grabTimeout )
+         * @see GetNextImageSync( grabTimeout )
          * @see Image::Release()
          */
         void EndAcquisition();
@@ -319,19 +327,34 @@ namespace Spinnaker
         /**
          * GetNextImage
          * Gets the next image that was received by the transport layer.  This function
-         * will block indefinitely until an image arrives. Most cameras support one stream
-         * so the default streamID is 0 but if a camera supports multiple streams
-         * the user can input the streamID to select from which stream to grab images
+         * will block for the specified timeout period until an image arrives. Most cameras
+         * support one stream so the default streamIndex is 0, but if a camera supports multiple
+         * streams the user can input the streamIndex to select from which stream to grab images.
          *
          * @see Init()
          * @see BeginAcquisition()
          * @see EndAcquisition()
          *
-         * @param grabTimeout a 64bit value that represents a timeout in milliseconds
-         * @param streamID The stream to grab the image.
+         * @param grabTimeout A 64bit value that represents a timeout in milliseconds
+         * @param streamIndex The index of the stream to grab the image from
          * @return pointer to an Image object
          */
-        ImagePtr GetNextImage(uint64_t grabTimeout = EVENT_TIMEOUT_INFINITE, uint64_t streamID = 0);
+        ImagePtr GetNextImage(uint64_t grabTimeout = EVENT_TIMEOUT_INFINITE, uint64_t streamIndex = 0);
+
+        /**
+         * GetNextImageSync
+         * If a camera supports one or more streams, this function gets one image from each
+         * of the camera's streams, and returns the image(s) in a list.  This function
+         * will block for the specified timeout period until an image arrives on all the streams.
+         *
+         * @see Init()
+         * @see BeginAcquisition()
+         * @see EndAcquisition()
+         *
+         * @param grabTimeout A 64bit value that represents a timeout in milliseconds
+         * @return a list containing the Image objects
+         */
+        ImageList GetNextImageSync(uint64_t grabTimeout = EVENT_TIMEOUT_INFINITE);
 
         /**
          * GetUniqueID
@@ -362,34 +385,54 @@ namespace Spinnaker
 
         /**
          * RegisterEventHandler(EventHandler &)
-         * Registers a specific event handler for the camera.  The camera has to be initialized first
-         * with a call to Init() before registering handlers for events.
+         * Registers a generic device, image or image list event handler for the camera. The camera has to
+         * be initialized first with a call to Init() before registering handlers for events.
          *
          * @see Init()
+         * @see UnregisterEventHandler()
+         * @see DeviceEventHandler
+         * @see ImageEventHandler
+         * @see ImageListEventHandler
          *
          * @param evtHandlerToRegister The event handler to register for the camera
          */
         void RegisterEventHandler(EventHandler& evtHandlerToRegister);
 
         /**
-         * RegisterEventHandler(EventHandler &, const GenICam::gcstring&)
-         * Registers a specific event handler for the camera
+         * RegisterEventHandler(DeviceEventHandler &, const GenICam::gcstring &)
+         * Registers a specific device event handler for the camera given a device event name. The camera
+         * has to be initialized first with a call to Init() before registering handlers for events.
          *
          * @see Init()
+         * @see UnregisterEventHandler()
          *
          * @param evtHandlerToRegister The event handler to register for the camera
          * @param eventName The event name to register
          */
-        void RegisterEventHandler(EventHandler& evtHandlerToRegister, const GenICam::gcstring& eventName);
+        void RegisterEventHandler(DeviceEventHandler& evtHandlerToRegister, const GenICam::gcstring& eventName);
+
+        /**
+         * RegisterEventHandler(ImageEventHandler &, uint64_t)
+         * Registers a specific stream handler for the camera given a stream index. The camera has to be
+         * initialized first with a call to Init() before registering handlers for events.
+         *
+         * @see Init()
+         * @see UnregisterEventHandler()
+         *
+         * @param evtHandlerToRegister The event handler to register for the camera
+         * @param streamIndex The index of the stream of where this handler will be registered to
+         */
+        void RegisterEventHandler(ImageEventHandler& evtHandlerToRegister, uint64_t streamIndex);
 
         /**
          * UnregisterEventHandler
-         * Unregisters an event handler for the camera
+         * Unregisters any type of event handler for the camera.
          * Event handlers should be unregistered first before calling camera DeInit().
          * Otherwise an exception will be thrown in the DeInit() call and require
          * the user to unregister event handlers before the camera can be re-initialized again.
          *
          * @see DeInit()
+         * @see RegisterEventHandler()
          *
          * @param evtHandlerToUnregister The event handler to unregister from the camera
          */
@@ -444,6 +487,17 @@ namespace Spinnaker
         CameraBase& operator=(const CameraBase& /*cam*/);
 
         friend class InterfaceImpl;
+
+      private:
+        /**
+         * IsValidEventHandlerType(EventType)
+         * Validate the type of the event handler
+         * 
+         * @param type The type of the handler
+         * 
+         * @return True if the type is valid, otherwise false
+         */
+        bool IsValidEventHandlerType(EventType type);
     };
 
     /*@}*/

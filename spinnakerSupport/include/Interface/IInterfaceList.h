@@ -48,6 +48,8 @@ namespace Spinnaker
         virtual unsigned int GetSize() const = 0;
         virtual InterfacePtr GetByIndex(unsigned int index) const = 0;
         virtual void Clear() = 0;
+        virtual void Add(InterfacePtr iface) = 0;
+        virtual void Remove(InterfacePtr iface) = 0;
         virtual void Append(const InterfaceList* list) = 0;
 
       protected:

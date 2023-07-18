@@ -79,9 +79,11 @@ namespace Spinnaker
       protected:
         EventHandler();
         EventHandler& operator=(const EventHandler&);
+        friend class CallbackHandlerInternal;
         friend class EventProcessor;
         friend class IDataStream;
         friend class Stream;
+        friend class ImageSetInspector;
         struct EventData;
         EventData* m_pEventData;
         void SetEventPayload(uint8_t* offset, size_t length);

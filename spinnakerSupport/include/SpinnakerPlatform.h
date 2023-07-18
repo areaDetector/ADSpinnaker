@@ -38,12 +38,20 @@
 // Windows 32-bit and 64-bit
 #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64)
 
+#if _MSC_VER >= 1900
+#define SPINNAKER_DEPRECATED_API 
+#elif _MSC_VER == 1800
+#define SPINNAKER_DEPRECATED_API __declspec(deprecated("Spinnaker support for Visual Studio 2013 is deprecated, please upgrade to Visual Studio 2015 instead"))
+#elif _MSC_VER == 1600
+#define SPINNAKER_DEPRECATED_API __declspec(deprecated("Spinnaker support for Visual Studio 2010 is deprecated, please upgrade to Visual Studio 2015 instead"))
+#endif
+
 #ifdef SPINNAKER_EXPORT
-#define SPINNAKER_API __declspec(dllexport)
+#define SPINNAKER_API __declspec(dllexport) SPINNAKER_DEPRECATED_API
 #elif defined(Spinnaker_STATIC)
 #define SPINNAKER_API
 #else
-#define SPINNAKER_API __declspec(dllimport)
+#define SPINNAKER_API __declspec(dllimport) SPINNAKER_DEPRECATED_API
 #endif
 
 #if _MSC_VER > 1000

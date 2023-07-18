@@ -90,6 +90,8 @@ namespace Spinnaker
      */
     class SPINNAKER_API InferenceBoundingBoxResult
     {
+        friend class ChunkDataImpl;
+
       public:
         /**
          * Default Constructor

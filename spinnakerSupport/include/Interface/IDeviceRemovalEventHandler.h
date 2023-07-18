@@ -23,11 +23,11 @@
 
 namespace Spinnaker
 {
-    class IDeviceRemovalEventHandler : public virtual EventHandler
+    class SPINNAKER_API IDeviceRemovalEventHandler : public virtual EventHandler
     {
       public:
         virtual ~IDeviceRemovalEventHandler(){};
-        virtual void OnDeviceRemoval(uint64_t serialNumber) = 0;
+        virtual void OnDeviceRemoval(CameraPtr pCamera) = 0;
 
       protected:
         IDeviceRemovalEventHandler(){};

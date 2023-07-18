@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -289,47 +289,7 @@ namespace Spinnaker
          */
         InferenceBoundingBoxResult GetInferenceBoundingBoxResult() const;
 
-    private:
-        float64_t m_blackLevel;
-        int64_t m_frameID;
-        float64_t m_exposureTime;
-        int64_t m_compressionMode;
-        float64_t m_compressionRatio;
-        int64_t m_timestamp;
-        int64_t m_exposureEndLineStatusAll;
-        int64_t m_width;
-        int64_t m_image;
-        int64_t m_height;
-        float64_t m_gain;
-        int64_t m_sequencerSetActive;
-        int64_t m_cRC;
-        int64_t m_offsetX;
-        int64_t m_offsetY;
-        int64_t m_serialDataLength;
-        int64_t m_partSelector;
-        int64_t m_pixelDynamicRangeMin;
-        int64_t m_pixelDynamicRangeMax;
-        int64_t m_timestampLatchValue;
-        int64_t m_lineStatusAll;
-        int64_t m_counterValue;
-        float64_t m_timerValue;
-        int64_t m_scanLineSelector;
-        int64_t m_encoderValue;
-        int64_t m_linePitch;
-        int64_t m_transferBlockID;
-        int64_t m_transferQueueCurrentBlockCount;
-        int64_t m_streamChannelID;
-        float64_t m_scan3dCoordinateScale;
-        float64_t m_scan3dCoordinateOffset;
-        float64_t m_scan3dInvalidDataValue;
-        float64_t m_scan3dAxisMin;
-        float64_t m_scan3dAxisMax;
-        float64_t m_scan3dTransformValue;
-        float64_t m_scan3dCoordinateReferenceValue;
-        int64_t m_inferenceFrameId;
-        int64_t m_inferenceResult;
-        float64_t m_inferenceConfidence;
-        InferenceBoundingBoxResult m_inferenceBoundingBoxResult;
+        friend class ChunkDataImpl;
 
     };
     /*@}*/

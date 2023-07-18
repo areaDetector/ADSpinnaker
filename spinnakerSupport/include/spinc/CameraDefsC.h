@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -298,7 +298,7 @@ typedef enum _spinColorTransformationValueSelectorEnums    /*!<
     NUM_COLORTRANSFORMATIONVALUESELECTOR
 } spinColorTransformationValueSelectorEnums;
 
-typedef enum _spinDeviceRegistersEndiannessEnums    /*!< Endianess of the registers of the device.*/
+typedef enum _spinDeviceRegistersEndiannessEnums    /*!< Endianness of the registers of the device.*/
 {
     DeviceRegistersEndianness_Little,    /*!< */
     DeviceRegistersEndianness_Big,    /*!< */
@@ -1196,6 +1196,8 @@ typedef enum _spinPixelFormatEnums    /*!<
     PixelFormat_GR12_Jpeg,    /*!< Green Red 12-bit JPEG.*/
     PixelFormat_GB12_Jpeg,    /*!< Green Blue 12-bit JPEG.*/
     PixelFormat_B12_Jpeg,    /*!< Blue 12-bit packed JPEG.*/
+    PixelFormat_GR12,    /*!< Green-Red (single) channel from Bayer pattern 12-bit.*/
+    PixelFormat_GB12,    /*!< Green-Blue (single) channel from Bayer pattern 12-bit.*/
     UNKNOWN_PIXELFORMAT,
     NUM_PIXELFORMAT
 } spinPixelFormatEnums;
@@ -1439,7 +1441,7 @@ typedef enum _spinDeviceStreamChannelTypeEnums    /*!< Reports the type of the s
     NUM_DEVICESTREAMCHANNELTYPE
 } spinDeviceStreamChannelTypeEnums;
 
-typedef enum _spinDeviceStreamChannelEndiannessEnums    /*!< Endianess of multi-byte pixel data for this stream.*/
+typedef enum _spinDeviceStreamChannelEndiannessEnums    /*!< Endianness of multi-byte pixel data for this stream.*/
 {
     DeviceStreamChannelEndianness_Big,    /*!< Stream channel data is big Endian.*/
     DeviceStreamChannelEndianness_Little,    /*!< Stream channel data is little Endian.*/

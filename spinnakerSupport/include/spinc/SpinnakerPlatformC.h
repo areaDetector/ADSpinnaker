@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2022 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -43,12 +43,20 @@ typedef __int64 int64_t;
 /* Function declaration modifiers */
 #if defined(_WIN32) || defined(_WIN64)
 
+#if _MSC_VER >= 1900
+#define SPINNAKER_DEPRECATED_API 
+#elif _MSC_VER == 1800
+#define SPINNAKER_DEPRECATED_API __declspec(deprecated("Spinnaker support for Visual Studio 2013 is deprecated, please upgrade to Visual Studio 2015 instead"))
+#elif _MSC_VER == 1600
+#define SPINNAKER_DEPRECATED_API __declspec(deprecated("Spinnaker support for Visual Studio 2010 is deprecated, please upgrade to Visual Studio 2015 instead"))
+#endif
+
 // Windows 32-bit and 64-bit
 #ifndef SPINC_NO_DECLSPEC_STATEMENTS
 #ifdef SPINCDLL
-#define SPINC_IMPORT_EXPORT __declspec(dllexport)
+#define SPINC_IMPORT_EXPORT __declspec(dllexport) SPINNAKER_DEPRECATED_API
 #else
-#define SPINC_IMPORT_EXPORT __declspec(dllimport)
+#define SPINC_IMPORT_EXPORT __declspec(dllimport) SPINNAKER_DEPRECATED_API
 #endif
 #else
 #define SPINC_IMPORT_EXPORT
@@ -105,9 +113,11 @@ typedef __int64 int64_t;
 #ifdef __GNUC__
 #define SPINNAKERC_API_DEPRECATED(msg, func)                                                                           \
     SPINC_IMPORT_EXPORT spinError SPINC_CALLTYPE func __attribute__((deprecated(msg)))
+#define SPINNAKERC_STRUCT_DEPRECATED(msg) struct __attribute__((deprecated(msg)))
 #elif defined(_MSC_VER)
 #define SPINNAKERC_API_DEPRECATED(msg, func)                                                                           \
     __declspec(deprecated(msg)) SPINC_IMPORT_EXPORT spinError SPINC_CALLTYPE func
+#define SPINNAKERC_STRUCT_DEPRECATED(msg) __declspec(deprecated(msg)) struct
 #endif
 #endif
 

@@ -23,11 +23,11 @@
 
 namespace Spinnaker
 {
-    class IInterfaceArrivalEventHandler : public virtual EventHandler
+    class SPINNAKER_API IInterfaceArrivalEventHandler : public virtual EventHandler
     {
       public:
         virtual ~IInterfaceArrivalEventHandler(){};
-        virtual void OnInterfaceArrival(std::string interfaceID) = 0;
+        virtual void OnInterfaceArrival(InterfacePtr pInterface) = 0;
 
       protected:
         IInterfaceArrivalEventHandler(){};

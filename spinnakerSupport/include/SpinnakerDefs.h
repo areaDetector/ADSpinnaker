@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2022 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -83,16 +83,16 @@ namespace Spinnaker
         SPINNAKER_ERR_OUT_OF_MEMORY = -1021,
         SPINNAKER_ERR_BUSY = -1022,
 
-        GENICAM_ERR_INVALID_ARGUMENT = -2001,
-        GENICAM_ERR_OUT_OF_RANGE = -2002,
-        GENICAM_ERR_PROPERTY = -2003,
-        GENICAM_ERR_RUN_TIME = -2004,
-        GENICAM_ERR_LOGICAL = -2005,
-        GENICAM_ERR_ACCESS = -2006,
-        GENICAM_ERR_TIMEOUT = -2007,
-        GENICAM_ERR_DYNAMIC_CAST = -2008,
-        GENICAM_ERR_GENERIC = -2009,
-        GENICAM_ERR_BAD_ALLOCATION = -2010,
+        SPINNAKER_ERR_GENICAM_INVALID_ARGUMENT = -2001,
+        SPINNAKER_ERR_GENICAM_OUT_OF_RANGE = -2002,
+        SPINNAKER_ERR_GENICAM_PROPERTY = -2003,
+        SPINNAKER_ERR_GENICAM_RUN_TIME = -2004,
+        SPINNAKER_ERR_GENICAM_LOGICAL = -2005,
+        SPINNAKER_ERR_GENICAM_ACCESS = -2006,
+        SPINNAKER_ERR_GENICAM_TIMEOUT = -2007,
+        SPINNAKER_ERR_GENICAM_DYNAMIC_CAST = -2008,
+        SPINNAKER_ERR_GENICAM_GENERIC = -2009,
+        SPINNAKER_ERR_GENICAM_BAD_ALLOCATION = -2010,
 
         SPINNAKER_ERR_IM_CONVERT = -3001,
         SPINNAKER_ERR_IM_COPY = -3002,
@@ -118,9 +118,10 @@ namespace Spinnaker
         SPINNAKER_EVENT_DEVICE,
         SPINNAKER_EVENT_DEVICE_SPECIFIC,
         SPINNAKER_EVENT_NEW_BUFFER,
+        SPINNAKER_EVENT_NEW_BUFFER_LIST,
         SPINNAKER_EVENT_LOGGING_EVENT,
+        SPINNAKER_EVENT_INTERFACE_ARRIVAL_REMOVAL,
         SPINNAKER_EVENT_UNKNOWN,
-        SPINNAKER_EVENT_INTERFACE_ARRIVAL_REMOVAL
     };
 
     /**
@@ -133,15 +134,15 @@ namespace Spinnaker
      *
      * @see Image::GetTLPixelFormatNamespace()
      */
-    enum PixelFormatNamespaceID
+    enum TLPixelFormatNamespace
     {
-        SPINNAKER_PIXELFORMAT_NAMESPACE_UNKNOWN = 0,    /* GenTL v1.2 */
-        SPINNAKER_PIXELFORMAT_NAMESPACE_GEV = 1,        /* GenTL v1.2 */
-        SPINNAKER_PIXELFORMAT_NAMESPACE_IIDC = 2,       /* GenTL v1.2 */
-        SPINNAKER_PIXELFORMAT_NAMESPACE_PFNC_16BIT = 3, /* GenTL v1.4 */
-        SPINNAKER_PIXELFORMAT_NAMESPACE_PFNC_32BIT = 4, /* GenTL v1.4 */
+        SPINNAKER_TLPIXELFORMAT_NAMESPACE_UNKNOWN = 0,    /* GenTL v1.2 */
+        SPINNAKER_TLPIXELFORMAT_NAMESPACE_GEV = 1,        /* GenTL v1.2 */
+        SPINNAKER_TLPIXELFORMAT_NAMESPACE_IIDC = 2,       /* GenTL v1.2 */
+        SPINNAKER_TLPIXELFORMAT_NAMESPACE_PFNC_16BIT = 3, /* GenTL v1.4 */
+        SPINNAKER_TLPIXELFORMAT_NAMESPACE_PFNC_32BIT = 4, /* GenTL v1.4 */
 
-        SPINNAKER_PIXELFORMAT_NAMESPACE_CUSTOM_ID = 1000
+        SPINNAKER_TLPIXELFORMAT_NAMESPACE_CUSTOM_ID = 1000
     };
 
     /**
@@ -152,81 +153,320 @@ namespace Spinnaker
      */
     enum ColorProcessingAlgorithm
     {
-        /** Default method. */
-        DEFAULT,
         /** No color processing. */
-        NO_COLOR_PROCESSING,
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_NONE,
         /**
          * Fastest but lowest quality. Equivalent to
          * FLYCAPTURE_NEAREST_NEIGHBOR_FAST in FlyCapture.
          */
-        NEAREST_NEIGHBOR,
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR,
         /**
          * Nearest Neighbor with averaged green pixels. Higher quality but slower
          * compared to nearest neighbor without averaging.
          */
-        NEAREST_NEIGHBOR_AVG,
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR_AVG,
         /** Weighted average of surrounding 4 pixels in a 2x2 neighborhood. */
-        BILINEAR,
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_BILINEAR,
         /** Weights surrounding pixels based on localized edge orientation. */
-        EDGE_SENSING,
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_EDGE_SENSING,
         /** Well-balanced speed and quality. */
-        HQ_LINEAR,
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR,
         /** Multi-threaded with similar results to edge sensing. */
-        IPP,
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_IPP,
         /** Best quality but much faster than rigorous. More memory intensive than other color processing algorithms. */
-        DIRECTIONAL_FILTER,
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_DIRECTIONAL_FILTER,
         /** Slowest but produces good results. */
-        RIGOROUS,
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_RIGOROUS,
         /** Weighted pixel average from different directions. */
-        WEIGHTED_DIRECTIONAL_FILTER
+        SPINNAKER_COLOR_PROCESSING_ALGORITHM_WEIGHTED_DIRECTIONAL_FILTER
     };
 
     /** File formats to be used for saving images to disk. */
     enum ImageFileFormat
     {
-        FROM_FILE_EXT = -1, /**< Determine file format from file extension. */
-        PGM,                /**< Portable gray map. */
-        PPM,                /**< Portable pixmap. */
-        BMP,                /**< Bitmap. */
-        JPEG,               /**< JPEG. */
-        JPEG2000,           /**< JPEG 2000. */
-        TIFF,               /**< Tagged image file format. */
-        PNG,                /**< Portable network graphics. */
-        RAW,                /**< Raw data. */
-        JPEG12_C,           /**< 12 bit compressed JPEG data. */
-        IMAGE_FILE_FORMAT_FORCE_32BITS = 0x7FFFFFFF
+        SPINNAKER_IMAGE_FILE_FORMAT_FROM_FILE_EXT = -1, /**< Determine file format from file extension. */
+        SPINNAKER_IMAGE_FILE_FORMAT_PGM,                /**< Portable gray map. */
+        SPINNAKER_IMAGE_FILE_FORMAT_PPM,                /**< Portable pixmap. */
+        SPINNAKER_IMAGE_FILE_FORMAT_BMP,                /**< Bitmap. */
+        SPINNAKER_IMAGE_FILE_FORMAT_JPEG,               /**< JPEG. */
+        SPINNAKER_IMAGE_FILE_FORMAT_JPEG2000,           /**< JPEG 2000. */
+        SPINNAKER_IMAGE_FILE_FORMAT_TIFF,               /**< Tagged image file format. */
+        SPINNAKER_IMAGE_FILE_FORMAT_PNG,                /**< Portable network graphics. */
+        SPINNAKER_IMAGE_FILE_FORMAT_RAW,                /**< Raw data. */
+        SPINNAKER_IMAGE_FILE_FORMAT_JPEG12_C,           /**< 12 bit compressed JPEG data. */
+        SPINNAKER_IMAGE_FILE_FORMAT_FORCE_32BITS = 0x7FFFFFFF
     };
 
-    /** Status of images returned from GetNextImage() call. */
+    /** Status of images returned from GetNextImage() or Convert() calls. */
     enum ImageStatus
     {
-        IMAGE_UNKNOWN_ERROR = -1,   /**< Image has an unknown error. */
-        IMAGE_NO_ERROR = 0,         /**< Image is returned from GetNextImage() call without any errors. */
-        IMAGE_CRC_CHECK_FAILED = 1, /**< Image failed CRC check. */
-        IMAGE_DATA_OVERFLOW = 2,    /**< Received more data than the size of the image. */
-        IMAGE_MISSING_PACKETS =
+        SPINNAKER_IMAGE_STATUS_UNKNOWN_ERROR = -1,   /**< Image has an unknown error. */
+        SPINNAKER_IMAGE_STATUS_NO_ERROR = 0,         /**< Image is returned from GetNextImage() or Convert() calls without any errors. */
+        SPINNAKER_IMAGE_STATUS_CRC_CHECK_FAILED = 1, /**< Image failed CRC check. */
+        SPINNAKER_IMAGE_STATUS_DATA_OVERFLOW = 2,    /**< Received more data than the size of the image. */
+        SPINNAKER_IMAGE_STATUS_MISSING_PACKETS =
             3, /**< Image has missing packets. Potential fixes include enabling
                jumbo packets and adjusting packet size/delay. For more information see
                https://www.flir.com/support-center/iis/machine-vision/application-note/troubleshooting-image-consistency-errors/
              */
-        IMAGE_LEADER_BUFFER_SIZE_INCONSISTENT =
+        SPINNAKER_IMAGE_STATUS_LEADER_BUFFER_SIZE_INCONSISTENT =
             4, /**< Image leader is incomplete. Could be caused by missing packet(s). See link above.*/
-        IMAGE_TRAILER_BUFFER_SIZE_INCONSISTENT =
+        SPINNAKER_IMAGE_STATUS_TRAILER_BUFFER_SIZE_INCONSISTENT =
             5, /**< Image trailer is incomplete. Could be caused by missing packet(s). See link above.*/
-        IMAGE_PACKETID_INCONSISTENT =
+        SPINNAKER_IMAGE_STATUS_PACKETID_INCONSISTENT =
             6, /**< Image has an inconsistent packet id. Could be caused by missing packet(s). See link above.*/
-        IMAGE_MISSING_LEADER = 7, /**< Image leader is missing. Could be caused by missing packet(s). See link above.*/
-        IMAGE_MISSING_TRAILER =
+        SPINNAKER_IMAGE_STATUS_MISSING_LEADER = 7, /**< Image leader is missing. Could be caused by missing packet(s). See link above.*/
+        SPINNAKER_IMAGE_STATUS_MISSING_TRAILER =
             8, /**< Image trailer is missing. Could be caused by missing packet(s). See link above.*/
-        IMAGE_DATA_INCOMPLETE =
-            9, /**< Image data is incomplete. Could be caused by missing packet(s). See link above.*/
-        IMAGE_INFO_INCONSISTENT =
+        SPINNAKER_IMAGE_STATUS_DATA_INCOMPLETE = 9, /**< Image data is incomplete. Could be caused by missing packet(s) or decompression
+                                      error. See link above.*/
+        SPINNAKER_IMAGE_STATUS_INFO_INCONSISTENT =
             10, /**< Image info is corrupted. Could be caused by missing packet(s). See link above.*/
-        IMAGE_CHUNK_DATA_INVALID = 11, /**< Image chunk data is invalid */
-        IMAGE_NO_SYSTEM_RESOURCES = 12 /**< Image cannot be processed due to lack of system
+        SPINNAKER_IMAGE_STATUS_CHUNK_DATA_INVALID = 11, /**< Image chunk data is invalid */
+        SPINNAKER_IMAGE_STATUS_NO_SYSTEM_RESOURCES = 12 /**< Image cannot be processed due to lack of system
                                        resources. */
     };
+
+    /**
+    * Channels that allow statistics to be calculated.
+    */
+    enum StatisticsChannel
+    {
+        SPINNAKER_STATISTICS_CHANNEL_GREY,
+        SPINNAKER_STATISTICS_CHANNEL_RED,
+        SPINNAKER_STATISTICS_CHANNEL_GREEN,
+        SPINNAKER_STATISTICS_CHANNEL_BLUE,
+        SPINNAKER_STATISTICS_CHANNEL_HUE,
+        SPINNAKER_STATISTICS_CHANNEL_SATURATION,
+        SPINNAKER_STATISTICS_CHANNEL_LIGHTNESS,
+        SPINNAKER_STATISTICS_CHANNEL_NUM_CHANNELS
+    };
+
+    /** Log levels */
+    enum SpinnakerLogLevel
+    {
+        SPINNAKER_LOG_LEVEL_OFF = -1,     // Logging is off.
+        SPINNAKER_LOG_LEVEL_FATAL = 0,    // Failures that are non-recoverable without user intervention.
+        SPINNAKER_LOG_LEVEL_ALERT = 100,  // Not used by Spinnaker.
+        SPINNAKER_LOG_LEVEL_CRIT = 200,   // Not used by Spinnaker.
+        SPINNAKER_LOG_LEVEL_ERROR = 300,  // Failures that may or may not be recoverable without user
+                                          // intervention (use case dependent).
+        SPINNAKER_LOG_LEVEL_WARN = 400,   // Failures that are recoverable without user intervention.
+        SPINNAKER_LOG_LEVEL_NOTICE = 500, // Events such as camera arrival and removal, initialization and deinitialization,
+                                          // starting and stopping image acquisition, and feature modification.
+        SPINNAKER_LOG_LEVEL_INFO = 600,   // Information about recurring events that are generated regularly such as information on
+                                          // individual images.
+        SPINNAKER_LOG_LEVEL_DEBUG = 700,  // Information that can be used to troubleshoot the system.
+        SPINNAKER_LOG_LEVEL_NOTSET = 800  // Logs everything.
+    };
+
+    /* Image payload types supported by the Spinnaker Image class*/
+    enum ImagePayloadType
+    {
+        SPINNAKER_IMAGE_PAYLOAD_TYPE_UNKNOWN = -1,
+        SPINNAKER_IMAGE_PAYLOAD_TYPE_IMAGE,
+        SPINNAKER_IMAGE_PAYLOAD_TYPE_EXTENDED_CHUNK,
+        SPINNAKER_IMAGE_PAYLOAD_TYPE_JPEG,
+        SPINNAKER_IMAGE_PAYLOAD_TYPE_LOSSLESS_COMPRESSED,
+        SPINNAKER_IMAGE_PAYLOAD_TYPE_LOSSY_COMPRESSED,
+        SPINNAKER_IMAGE_PAYLOAD_TYPE_JPEG_LOSSLESS_COMPRESSED
+    };
+
+    /* Enumeration of generic transport layer dependent payload types */
+    enum TLPayloadType
+    {
+        SPINNAKER_TLPAYLOAD_TYPE_UNKNOWN = 0,         /* GenTL v1.2 */
+        SPINNAKER_TLPAYLOAD_TYPE_IMAGE = 1,           /* GenTL v1.2 */
+        SPINNAKER_TLPAYLOAD_TYPE_RAW_DATA = 2,        /* GenTL v1.2 */
+        SPINNAKER_TLPAYLOAD_TYPE_FILE = 3,            /* GenTL v1.2 */
+        SPINNAKER_TLPAYLOAD_TYPE_CHUNK_DATA = 4,      /* GenTL v1.2, Deprecated in GenTL 1.5*/
+        SPINNAKER_TLPAYLOAD_TYPE_JPEG = 5,            /* GenTL v1.4 */
+        SPINNAKER_TLPAYLOAD_TYPE_JPEG2000 = 6,        /* GenTL v1.4 */
+        SPINNAKER_TLPAYLOAD_TYPE_H264 = 7,            /* GenTL v1.4 */
+        SPINNAKER_TLPAYLOAD_TYPE_CHUNK_ONLY = 8,      /* GenTL v1.4 */
+        SPINNAKER_TLPAYLOAD_TYPE_DEVICE_SPECIFIC = 9, /* GenTL v1.4 */
+        SPINNAKER_TLPAYLOAD_TYPE_MULTI_PART = 10,     /* GenTL v1.5 */
+
+        SPINNAKER_TLPAYLOAD_TYPE_CUSTOM_ID = 1000, /* Starting value for GenTL Producer custom IDs*/
+        SPINNAKER_TLPAYLOAD_TYPE_LOSSLESS_COMPRESSED = SPINNAKER_TLPAYLOAD_TYPE_CUSTOM_ID + 1,
+        SPINNAKER_TLPAYLOAD_TYPE_LOSSY_COMPRESSED = SPINNAKER_TLPAYLOAD_TYPE_CUSTOM_ID + 2,
+        SPINNAKER_TLPAYLOAD_TYPE_JPEG_LOSSLESS_COMPRESSED = SPINNAKER_TLPAYLOAD_TYPE_CUSTOM_ID + 3
+    };
+
+    /** Possible Status Codes Returned from Action Command. */
+    enum ActionCommandStatus
+    {
+        SPINNAKER_ACTION_COMMAND_STATUS_OK = 0, /* The device acknowledged the command.*/
+        SPINNAKER_ACTION_COMMAND_STATUS_NO_REF_TIME =
+        0x8013, /* The device is not synchronized to a master clock to be used as time reference. Typically used
+                when scheduled action commands cannot be scheduled for a future time since the reference time
+                coming from IEEE 1588 is not locked. */
+        SPINNAKER_ACTION_COMMAND_STATUS_OVERFLOW = 0x8015, /* Returned when the scheduled action commands queue is full and the
+                                                           device cannot accept the additional request. */
+        SPINNAKER_ACTION_COMMAND_STATUS_ACTION_LATE =
+        0x8016, /* The requested scheduled action command was requested at a point in time that is in the past. */
+        SPINNAKER_ACTION_COMMAND_STATUS_ERROR =
+        0x8FFF /* Generic Error. Try enabling the Extended Status Code 2.0 bit on gvcp configuration register in
+               order to receive more meaningful/detailed acknowledge messages from the device. */
+    };
+
+    /** Compression method to use for encoding TIFF images. */
+    enum TIFFCompressionMethod
+    {
+        SPINNAKER_TIFF_COMPRESS_METHOD_NONE = 1,      /**< Save without any compression. */
+        SPINNAKER_TIFF_COMPRESS_METHOD_PACKBITS,      /**< Save using PACKBITS compression. */
+        SPINNAKER_TIFF_COMPRESS_METHOD_DEFLATE,       /**< Save using DEFLATE compression (ZLIB compression). */
+        SPINNAKER_TIFF_COMPRESS_METHOD_ADOBE_DEFLATE, /**< Save using ADOBE DEFLATE compression */
+                                             /**
+                                             * Save using CCITT Group 3 fax encoding. This is only valid for
+                                             * 1-bit images only. Default to LZW for other bit depths.
+                                             */
+        SPINNAKER_TIFF_COMPRESS_METHOD_CCITTFAX3,
+        /**
+        * Save using CCITT Group 4 fax encoding. This is only valid for
+        * 1-bit images only. Default to LZW for other bit depths.
+        */
+        SPINNAKER_TIFF_COMPRESS_METHOD_CCITTFAX4,
+        SPINNAKER_TIFF_COMPRESS_METHOD_LZW, /**< Save using LZW compression. */
+                                   /**
+                                   * Save using JPEG compression. This is only valid for 8-bit
+                                   * greyscale and 24-bit only. Default to LZW for other bit depths.
+                                   */
+        SPINNAKER_TIFF_COMPRESS_METHOD_JPEG
+    };
+
+    /** Possible integer types and packing used in a pixel format. */
+    enum PixelFormatIntType
+    {
+        SPINNAKER_INT_TYPE_UINT8,   /* Unsigned 8-bit integer. */
+        SPINNAKER_INT_TYPE_INT8,    /* Signed 8-bit integer. */
+        SPINNAKER_INT_TYPE_UINT10,  /* Unsigned 10-bit integer. */
+        SPINNAKER_INT_TYPE_UINT10p, /* LSB packed unsigned 10-bit integer. */
+        SPINNAKER_INT_TYPE_UINT10P, /* MSB packed unsigned 10-bit integer. */
+        SPINNAKER_INT_TYPE_UINT12,  /* Unsigned 12-bit integer (unpacked). */
+        SPINNAKER_INT_TYPE_UINT12p, /* LSB packed unsigned 12-bit integer. */
+        SPINNAKER_INT_TYPE_UINT12P, /* MSB packed unsigned 12-bit integer. */
+        SPINNAKER_INT_TYPE_UINT14,  /* Unsigned 14-bit integer (unpacked). */
+        SPINNAKER_INT_TYPE_UINT16,  /* Unsigned 16-bit integer (unpacked). */
+        SPINNAKER_INT_TYPE_INT16,   /* Signed 16-bit integer (unpacked). */
+        SPINNAKER_INT_TYPE_FLOAT32, /* 32-bit float. */
+        SPINNAKER_INT_TYPE_UNKNOWN
+    };
+
+    enum BufferOwnership
+    {
+        SPINNAKER_BUFFER_OWNERSHIP_SYSTEM, /* Buffers are owned and managed by the library */
+        SPINNAKER_BUFFER_OWNERSHIP_USER    /* Buffers are owned and managed by the user */
+    };
+
+    /**
+    * Image scaling algorithms.
+    */
+    enum ImageScalingAlgorithm
+    {
+        /*
+        * Uses copies of the nearest source pixels to compute a scaled image.
+        * The scaling factor used with this algorithm will be rounded to the
+        * nearest integer (upscaling) or inverse integer (downscaling).
+        * eg. 1.3 will be rounded to 1 and 0.3 will be rounded to (1 / 3).
+        */
+        SPINNAKER_IMAGE_SCALING_ALGORITHM_NEAREST_NEIGHBOR
+    };
+
+    /**
+    * Image normalization source data options.
+    * Options to normalize the source data based on the max and min values present in the specific
+    * image (image data) or the theoretical abosolute max and min image data values for the image type (absolute
+    * data). By default the abosolute max and min values for an image are the max and min values allowable for the
+    * image's pixel format. An exception to this is for some computed image data formats such as AoLP, DoLP and
+    * Stokes, where the absolute max and min are dependant on the algorithm used.
+    *
+    * For a given pixel, normalization is done by:
+    * NormalizedValue = ((maxDest - minDest) * (PixelValue - minSrc) / (maxSrc - minSrc)) + minDest
+    */
+    enum SourceDataRange
+    {
+        /** Normalize based on the actual max and min values for the source image. */
+        SPINNAKER_SOURCE_DATA_RANGE_IMAGE_DATA_RANGE,
+        /** Normalize based on the theoretical max and min values for the source image. */
+        SPINNAKER_SOURCE_DATA_RANGE_ABSOLUTE_DATA_RANGE,
+        /** Normalize based on the actual min and theoretical max values for the source image. */
+        SPINNAKER_SOURCE_DATA_RANGE_IMAGE_MIN_ABSOLUTE_MAX,
+        /** Normalize based on the theoretical min and actual max values for the source image. */
+        SPINNAKER_SOURCE_DATA_RANGE_ABSOLUTE_MIN_IMAGE_MAX
+    };
+
+    /**
+    * Color specifiers for the heatmap color gradient.
+    */
+    enum HeatmapColor
+    {
+        SPINNAKER_HEATMAP_COLOR_BLACK = 1,
+        SPINNAKER_HEATMAP_COLOR_BLUE = 2,
+        SPINNAKER_HEATMAP_COLOR_CYAN = 3,
+        SPINNAKER_HEATMAP_COLOR_GREEN = 4,
+        SPINNAKER_HEATMAP_COLOR_YELLOW = 5,
+        SPINNAKER_HEATMAP_COLOR_RED = 6,
+        SPINNAKER_HEATMAP_COLOR_WHITE = 7
+    };
+
+    /**
+    * Polarization quadrant specifiers describing the four orientations of linear polarizing
+    * filters on polarized cameras
+    */
+    enum PolarizationQuadrant
+    {
+        /** The 0 degree of polarization. */
+        SPINNAKER_POLARIZATION_QUADRANT_I0,
+        /** The 45 degree of polarization. */
+        SPINNAKER_POLARIZATION_QUADRANT_I45,
+        /** The 90 degree of polarization. */
+        SPINNAKER_POLARIZATION_QUADRANT_I90,
+        /** The 135 degree of polarization. */
+        SPINNAKER_POLARIZATION_QUADRANT_I135
+    };
+
+    enum CCMColorTemperature
+    {
+        SPINNAKER_CCM_COLOR_TEMP_TUNGSTEN_2800K,
+        SPINNAKER_CCM_COLOR_TEMP_WARM_FLUORESCENT_3000K,
+        SPINNAKER_CCM_COLOR_TEMP_COOL_FLUORESCENT_4000K,
+        SPINNAKER_CCM_COLOR_TEMP_SUNNY_5000K,
+        SPINNAKER_CCM_COLOR_TEMP_CLOUDY_6500K,
+        SPINNAKER_CCM_COLOR_TEMP_SHADE_8000K,
+        SPINNAKER_CCM_COLOR_TEMP_GENERAL
+    };
+
+    enum CCMType
+    {
+        SPINNAKER_CCM_TYPE_LINEAR,
+        SPINNAKER_CCM_TYPE_ADVANCED
+    };
+
+    enum CCMSensor
+    {
+        SPINNAKER_CCM_SENSOR_IMX250 /* The only sensor that currently supports host-side color correction */
+    };
+
+    enum CCMColorSpace
+    {
+        SPINNAKER_CCM_COLOR_SPACE_OFF,
+        SPINNAKER_CCM_COLOR_SPACE_SRGB
+    };
+
+    enum CCMApplication
+    {
+        SPINNAKER_CCM_APPLICATION_GENERIC,
+        SPINNAKER_CCM_APPLICATION_MICROSCOPY
+    };
+
+    /*@}*/
+
+    /*@{*/
+
+    /**
+    * @brief Spinnaker struct definitions.
+    */
 
     /** Options for saving PNG images. */
     struct PNGOption
@@ -279,38 +519,14 @@ namespace Spinnaker
     /** Options for saving TIFF images. */
     struct TIFFOption
     {
-        enum CompressionMethod
-        {
-            NONE = 1,      /**< Save without any compression. */
-            PACKBITS,      /**< Save using PACKBITS compression. */
-            DEFLATE,       /**< Save using DEFLATE compression (ZLIB compression). */
-            ADOBE_DEFLATE, /**< Save using ADOBE DEFLATE compression */
-            /**
-             * Save using CCITT Group 3 fax encoding. This is only valid for
-             * 1-bit images only. Default to LZW for other bit depths.
-             */
-            CCITTFAX3,
-            /**
-             * Save using CCITT Group 4 fax encoding. This is only valid for
-             * 1-bit images only. Default to LZW for other bit depths.
-             */
-            CCITTFAX4,
-            LZW, /**< Save using LZW compression. */
-            /**
-             * Save using JPEG compression. This is only valid for 8-bit
-             * greyscale and 24-bit only. Default to LZW for other bit depths.
-             */
-            JPEG
-        };
-
         /** Compression method to use for encoding TIFF images. */
-        CompressionMethod compression;
+        TIFFCompressionMethod compression;
         /** Reserved for future use. */
         unsigned int reserved[16];
 
         TIFFOption()
         {
-            compression = LZW;
+            compression = SPINNAKER_TIFF_COMPRESS_METHOD_LZW;
             memset(reserved, 0, sizeof(reserved));
         }
     };
@@ -368,6 +584,18 @@ namespace Spinnaker
         }
     };
 
+    /** Options for saving Spinnaker image. */
+    struct SIOption
+    {
+        /** Reserved for future use. */
+        unsigned int reserved[16];
+
+        SIOption()
+        {
+            memset(reserved, 0, sizeof(reserved));
+        }
+    };
+
     /** Provides easier access to the current version of Spinnaker. **/
     struct LibraryVersion
     {
@@ -384,129 +612,11 @@ namespace Spinnaker
         unsigned int build;
     };
 
-    /**
-     * Channels that allow statistics to be calculated.
-     */
-    enum StatisticsChannel
-    {
-        GREY,
-        RED,
-        GREEN,
-        BLUE,
-        HUE,
-        SATURATION,
-        LIGHTNESS,
-        NUM_STATISTICS_CHANNELS
-    };
-
-    /** log levels */
-    enum SpinnakerLogLevel
-    {
-        LOG_LEVEL_OFF = -1,     // Logging is off.
-        LOG_LEVEL_FATAL = 0,    // Not used by Spinnaker.
-        LOG_LEVEL_ALERT = 100,  // Not used by Spinnaker.
-        LOG_LEVEL_CRIT = 200,   // Not used by Spinnaker.
-        LOG_LEVEL_ERROR = 300,  // Failures that are non-recoverable without user intervention.
-        LOG_LEVEL_WARN = 400,   // Failures that are recoverable without user intervention.
-        LOG_LEVEL_NOTICE = 500, // Events such as camera arrival and removal, initialization and deinitialization,
-                                // starting and stopping image acquisition, and feature modification.
-        LOG_LEVEL_INFO = 600,  // Information about recurring events that are generated regularly such as information on
-                               // individual images.
-        LOG_LEVEL_DEBUG = 700, // Information that can be used to troubleshoot the system.
-        LOG_LEVEL_NOTSET = 800 // Logs everything.
-    };
-
-    /* Enumeration of TLType dependent payload types. Introduced in GenTL v1.2 */
-    enum PayloadTypeInfoIDs
-    {
-        PAYLOAD_TYPE_UNKNOWN = 0,         /* GenTL v1.2 */
-        PAYLOAD_TYPE_IMAGE = 1,           /* GenTL v1.2 */
-        PAYLOAD_TYPE_RAW_DATA = 2,        /* GenTL v1.2 */
-        PAYLOAD_TYPE_FILE = 3,            /* GenTL v1.2 */
-        PAYLOAD_TYPE_CHUNK_DATA = 4,      /* GenTL v1.2, Deprecated in GenTL 1.5*/
-        PAYLOAD_TYPE_JPEG = 5,            /* GenTL v1.4 */
-        PAYLOAD_TYPE_JPEG2000 = 6,        /* GenTL v1.4 */
-        PAYLOAD_TYPE_H264 = 7,            /* GenTL v1.4 */
-        PAYLOAD_TYPE_CHUNK_ONLY = 8,      /* GenTL v1.4 */
-        PAYLOAD_TYPE_DEVICE_SPECIFIC = 9, /* GenTL v1.4 */
-        PAYLOAD_TYPE_MULTI_PART = 10,     /* GenTL v1.5 */
-
-        PAYLOAD_TYPE_CUSTOM_ID = 1000, /* Starting value for GenTL Producer custom IDs. */
-        PAYLOAD_TYPE_EXTENDED_CHUNK = 1001,
-        PAYLOAD_TYPE_LOSSLESS_COMPRESSED = 1002,
-        PAYLOAD_TYPE_LOSSY_COMPRESSED = 1003,
-        PAYLOAD_TYPE_JPEG_LOSSLESS_COMPRESSED = 1004,
-        PAYLOAD_TYPE_CHUNK_DATA_LOSSLESS_COMPRESSED = 1005,
-        PAYLOAD_TYPE_CHUNK_DATA_LOSSY_COMPRESSED = 1006
-    };
-
-    /** Possible Status Codes Returned from Action Command. */
-    enum ActionCommandStatus
-    {
-        ACTION_COMMAND_STATUS_OK = 0, /* The device acknowledged the command.*/
-        ACTION_COMMAND_STATUS_NO_REF_TIME =
-            0x8013, /* The device is not synchronized to a master clock to be used as time reference. Typically used
-                       when scheduled action commands cannot be scheduled for a future time since the reference time
-                       coming from IEEE 1588 is not locked. */
-        ACTION_COMMAND_STATUS_OVERFLOW = 0x8015, /* Returned when the scheduled action commands queue is full and the
-                                                    device cannot accept the additional request. */
-        ACTION_COMMAND_STATUS_ACTION_LATE =
-            0x8016, /* The requested scheduled action command was requested at a point in time that is in the past. */
-        ACTION_COMMAND_STATUS_ERROR =
-            0x8FFF /* Generic Error. Try enabling the Extended Status Code 2.0 bit on gvcp configuration register in
-                      order to receive more meaningful/detailed acknowledge messages from the device. */
-    };
-
     /** Action Command Result */
     struct ActionCommandResult
     {
         unsigned int DeviceAddress; /* IP Address of device that responded to Action Command. */
         ActionCommandStatus Status; /* Action Command status return from device. */
-    };
-
-    /** Possible integer types and packing used in a pixel format. */
-    enum PixelFormatIntType
-    {
-        IntType_UINT8,   /* Unsigned 8-bit integer. */
-        IntType_INT8,    /* Signed 8-bit integer. */
-        IntType_UINT10,  /* Unsigned 10-bit integer. */
-        IntType_UINT10p, /* LSB packed unsigned 10-bit integer. */
-        IntType_UINT10P, /* MSB packed unsigned 10-bit integer. */
-        IntType_UINT12,  /* Unsigned 12-bit integer (unpacked). */
-        IntType_UINT12p, /* LSB packed unsigned 12-bit integer. */
-        IntType_UINT12P, /* MSB packed unsigned 12-bit integer. */
-        IntType_UINT14,  /* Unsigned 14-bit integer (unpacked). */
-        IntType_UINT16,  /* Unsigned 16-bit integer (unpacked). */
-        IntType_INT16,   /* Signed 16-bit integer (unpacked). */
-        IntType_FLOAT32, /* 32-bit float. */
-        IntType_UNKNOWN
-    };
-
-    enum BufferOwnership
-    {
-        BUFFER_OWNERSHIP_SYSTEM, /* Buffers are owned and managed by the library */
-        BUFFER_OWNERSHIP_USER    /* Buffers are owned and managed by the user */
-    };
-
-    enum CCMColorTemperature
-    {
-        TUNGSTEN_2800K,
-        WARM_FLUORESCENT_3000K,
-        COOL_FLUORESCENT_4000K,
-        SUNNY_5000K,
-        CLOUDY_6500K,
-        SHADE_8000K
-    };
-
-    enum CCMType
-    {
-        LINEAR_3X3,
-        POLYNOMIAL_9X3
-    };
-
-    enum CCMSensor
-    {
-        IMX250 /* The only sensor that currently supports host-side color correction */
     };
 
     struct CCMSettings
@@ -519,16 +629,22 @@ namespace Spinnaker
                                                  Ignored when CustomCCMCode is not empty. */
         std::string CustomCCMCode;            /* Custom encrypted CCM provided by FLIR. */
 
+        CCMColorSpace ColorSpace;
+
+        CCMApplication Application;
+
         CCMSettings()
         {
-            ColorTemperature = CCMColorTemperature::TUNGSTEN_2800K;
-            Type = CCMType::POLYNOMIAL_9X3;
-            Sensor = CCMSensor::IMX250;
+            ColorTemperature = SPINNAKER_CCM_COLOR_TEMP_GENERAL;
+            Type = SPINNAKER_CCM_TYPE_ADVANCED;
+            Sensor = SPINNAKER_CCM_SENSOR_IMX250;
+            ColorSpace = SPINNAKER_CCM_COLOR_SPACE_SRGB;
+            Application = SPINNAKER_CCM_APPLICATION_GENERIC;
             CustomCCMCode = "";
         }
     };
 
-    /**  Data Fields for Device Event payload for EventInference */
+    /**  Data fields for Device Event payload for EventInference */
     struct DeviceEventInferenceData
     {
         uint32_t result;  /* inference classification result of the Inference Event */

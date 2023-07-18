@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2022 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -20,20 +20,22 @@
 
 #include "EventHandler.h"
 #include "Spinnaker.h"
-#include "SpinnakerPlatform.h"
 
 namespace Spinnaker
 {
-    class IImageEventHandler : public virtual EventHandler
+    class SPINNAKER_API IImageEventHandler : public virtual EventHandler
     {
+        friend class Stream;
+
       public:
         virtual ~IImageEventHandler(){};
-        virtual void OnImageEvent(ImagePtr image) = 0;
 
       protected:
         IImageEventHandler(){};
         IImageEventHandler(const IImageEventHandler&){};
         IImageEventHandler& operator=(const IImageEventHandler&);
+
+        virtual void OnImageEvent(ImagePtr image) = 0;
     };
 } // namespace Spinnaker
 

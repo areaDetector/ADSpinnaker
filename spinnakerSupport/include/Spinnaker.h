@@ -70,8 +70,10 @@
 #include "Camera.h"
 #include "CameraPtr.h"
 #include "Image.h"
+#include "ImageProcessor.h"
 #include "ImagePtr.h"
 #include "ImageStatistics.h"
+#include "ImageList.h"
 
 /**
  * Spinnaker EventHandler Class Includes
@@ -82,6 +84,7 @@
 #include "DeviceRemovalEventHandler.h"
 #include "DeviceEventHandler.h"
 #include "ImageEventHandler.h"
+#include "ImageListEventHandler.h"
 #include "InterfaceArrivalEventHandler.h"
 #include "InterfaceRemovalEventHandler.h"
 #include "SystemEventHandler.h"
@@ -93,6 +96,7 @@
  */
 #include "DeviceEventUtility.h"
 #include "ImageUtility.h"
+#include "ImageUtilityCCM.h"
 #include "ImageUtilityHeatmap.h"
 #include "ImageUtilityPolarization.h"
 

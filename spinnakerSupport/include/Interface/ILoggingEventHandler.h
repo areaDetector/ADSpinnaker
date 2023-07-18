@@ -27,7 +27,7 @@ namespace Spinnaker
 {
     class LoggingEventDataPtr;
 
-    class ILoggingEventHandler : public virtual EventHandler
+    class SPINNAKER_API ILoggingEventHandler : public virtual EventHandler
     {
       public:
         virtual ~ILoggingEventHandler(){};

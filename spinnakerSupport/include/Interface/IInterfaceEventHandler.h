@@ -30,8 +30,8 @@ namespace Spinnaker
     {
       public:
         virtual ~IInterfaceEventHandler(){};
-        virtual void OnDeviceArrival(uint64_t serialNumber) = 0;
-        virtual void OnDeviceRemoval(uint64_t serialNumber) = 0;
+        virtual void OnDeviceArrival(CameraPtr pCamera) = 0;
+        virtual void OnDeviceRemoval(CameraPtr pCamera) = 0;
 
       protected:
         IInterfaceEventHandler(){};

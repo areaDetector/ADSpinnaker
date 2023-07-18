@@ -18,6 +18,7 @@
 #ifndef FLIR_SPINNAKER_IMAGE_UTILITY_POLARIZATION_H
 #define FLIR_SPINNAKER_IMAGE_UTILITY_POLARIZATION_H
 
+#include "SpinnakerPlatform.h"
 #include "SpinnakerDefs.h"
 
 namespace Spinnaker
@@ -42,22 +43,6 @@ namespace Spinnaker
     class SPINNAKER_API ImageUtilityPolarization
     {
       public:
-        /**
-         * Polarization quadrant specifiers describing the four orientations of linear polarizing
-         * filters on polarized cameras
-         */
-        enum PolarizationQuadrant
-        {
-            /** The 0 degree of polarization. */
-            QUADRANT_I0,
-            /** The 45 degree of polarization. */
-            QUADRANT_I45,
-            /** The 90 degree of polarization. */
-            QUADRANT_I90,
-            /** The 135 degree of polarization. */
-            QUADRANT_I135
-        };
-
         /**
          * Extracts all pixels of a specified degree of linear polarization into a new image object.
          * The source image pixel format must be Polarized8 or BayerRGPolarized8.
@@ -124,7 +109,7 @@ namespace Spinnaker
          */
         static ImagePtr CreateStokesS0(
             const ImagePtr& srcImage,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
 
         /**
          * Computes an image representing the overall intensity of light from a polarized image.
@@ -139,7 +124,7 @@ namespace Spinnaker
         static void CreateStokesS0(
             const ImagePtr& srcImage,
             ImagePtr& destStokesS0Image,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
 
         /**
          * Computes an image representing the difference in intensity accepted through the polarizers
@@ -155,7 +140,7 @@ namespace Spinnaker
          */
         static ImagePtr CreateStokesS1(
             const ImagePtr& srcImage,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
 
         /**
          * Computes an image representing the difference in intensity accepted through the polarizers
@@ -171,7 +156,7 @@ namespace Spinnaker
         static void CreateStokesS1(
             const ImagePtr& srcImage,
             ImagePtr& destStokesS1Image,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
 
         /**
          * Computes an image representing the difference in intensity accepted through the polarizers
@@ -187,7 +172,7 @@ namespace Spinnaker
          */
         static ImagePtr CreateStokesS2(
             const ImagePtr& srcImage,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
 
         /**
          * Computes an image representing the difference in intensity accepted through the polarizers.
@@ -203,7 +188,7 @@ namespace Spinnaker
         static void CreateStokesS2(
             const ImagePtr& srcImage,
             ImagePtr& destStokesS2Image,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
 
         /**
          * Computes an image representing the fraction of incident light intensity in the linear
@@ -219,7 +204,7 @@ namespace Spinnaker
          */
         static ImagePtr CreateDolp(
             const ImagePtr& srcImage,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
 
         /**
          * Computes an image representing the fraction of incident light intensity in the linear
@@ -236,7 +221,7 @@ namespace Spinnaker
         static void CreateDolp(
             const ImagePtr& srcImage,
             ImagePtr& destDolpImage,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
 
         /**
          * Computes an image representing the angle at which linearly polarized light oscillates with respect
@@ -252,7 +237,7 @@ namespace Spinnaker
          */
         static ImagePtr CreateAolp(
             const ImagePtr& srcImage,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
 
         /**
          * Computes an image representing the angle at which linearly polarized light oscillates with respect
@@ -269,7 +254,7 @@ namespace Spinnaker
         static void CreateAolp(
             const ImagePtr& srcImage,
             ImagePtr& destAolpImg,
-            const ColorProcessingAlgorithm colorProcessingAlg = DEFAULT);
+            const ColorProcessingAlgorithm colorProcessingAlg = SPINNAKER_COLOR_PROCESSING_ALGORITHM_NEAREST_NEIGHBOR);
     };
 
     /*@}*/

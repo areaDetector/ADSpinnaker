@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -32,25 +32,26 @@ typedef struct _quickSpinTLDevice
 {
 	quickSpinStringNode DeviceID;
 	quickSpinStringNode DeviceSerialNumber;
+	quickSpinStringNode DeviceUserID;
 	quickSpinStringNode DeviceVendorName;
 	quickSpinStringNode DeviceModelName;
+	quickSpinStringNode DeviceVersion;
+	quickSpinIntegerNode DeviceBootloaderVersion;
 	quickSpinEnumerationNode DeviceType;
 	quickSpinStringNode DeviceDisplayName;
 	quickSpinEnumerationNode DeviceAccessStatus;
-	quickSpinStringNode DeviceVersion;
-	quickSpinStringNode DeviceUserID;
+	quickSpinIntegerNode DeviceLinkSpeed;
 	quickSpinStringNode DeviceDriverVersion;
 	quickSpinBooleanNode DeviceIsUpdater;
-	quickSpinEnumerationNode GevCCP;
-	quickSpinEnumerationNode GUIXMLLocation;
-	quickSpinStringNode GUIXMLPath;
 	quickSpinEnumerationNode GenICamXMLLocation;
 	quickSpinStringNode GenICamXMLPath;
+	quickSpinEnumerationNode GUIXMLLocation;
+	quickSpinStringNode GUIXMLPath;
+	quickSpinEnumerationNode GevCCP;
+	quickSpinIntegerNode GevDeviceMACAddress;
 	quickSpinIntegerNode GevDeviceIPAddress;
 	quickSpinIntegerNode GevDeviceSubnetMask;
-	quickSpinIntegerNode GevDeviceMACAddress;
 	quickSpinIntegerNode GevDeviceGateway;
-	quickSpinIntegerNode DeviceLinkSpeed;
 	quickSpinIntegerNode GevVersionMajor;
 	quickSpinIntegerNode GevVersionMinor;
 	quickSpinBooleanNode GevDeviceModeIsBigEndian;
@@ -67,6 +68,7 @@ typedef struct _quickSpinTLDevice
 	quickSpinIntegerNode GevDeviceForceGateway;
 	quickSpinBooleanNode DeviceMulticastMonitorMode;
 	quickSpinEnumerationNode DeviceEndianessMechanism;
+	quickSpinCommandNode DeviceReset;
 	quickSpinStringNode DeviceInstanceId;
 	quickSpinStringNode DeviceLocation;
 	quickSpinEnumerationNode DeviceCurrentSpeed;

@@ -19,6 +19,7 @@
 #define FLIR_SPINNAKER_IMAGE_UTILITY_H
 
 #include "SpinnakerPlatform.h"
+#include "SpinnakerDefs.h"
 #include "CameraDefs.h"
 
 namespace Spinnaker
@@ -42,43 +43,6 @@ namespace Spinnaker
     class SPINNAKER_API ImageUtility
     {
       public:
-        /**
-         * Image scaling algorithms.
-         */
-        enum ImageScalingAlgorithm
-        {
-            /*
-             * Uses copies of the nearest source pixels to compute a scaled image.
-             * The scaling factor used with this algorithm will be rounded to the
-             * nearest integer (upscaling) or inverse integer (downscaling).
-             * eg. 1.3 will be rounded to 1 and 0.3 will be rounded to (1 / 3).
-             */
-            NEAREST_NEIGHBOR
-        };
-
-        /**
-         * Image normalization source data options.
-         * Options to normalize the source data based on the max and min values present in the specific
-         * image (image data) or the theoretical abosolute max and min image data values for the image type (absolute
-         * data). By default the abosolute max and min values for an image are the max and min values allowable for the
-         * image's pixel format. An exception to this is for some computed image data formats such as AoLP, DoLP and
-         * Stokes, where the absolute max and min are dependant on the algorithm used.
-         *
-         * For a given pixel, normalization is done by:
-         * NormalizedValue = ((maxDest - minDest) * (PixelValue - minSrc) / (maxSrc - minSrc)) + minDest
-         */
-        enum SourceDataRange
-        {
-            /** Normalize based on the actual max and min values for the source image. */
-            IMAGE_DATA_RANGE,
-            /** Normalize based on the theoretical max and min values for the source image. */
-            ABSOLUTE_DATA_RANGE,
-            /** Normalize based on the actual min and theoretical max values for the source image. */
-            IMAGE_MIN_ABSOLUTE_MAX,
-            /** Normalize based on the theoretical min and actual max values for the source image. */
-            ABSOLUTE_MIN_IMAGE_MAX
-        };
-
         /**
          * Computes a scaled image using the specified parameters.
          * Does not support scaling of raw bayer images.
@@ -124,7 +88,7 @@ namespace Spinnaker
         static ImagePtr CreateNormalized(
             const ImagePtr& srcImage,
             const PixelFormatEnums destPixelFormat,
-            SourceDataRange srcDataRange = IMAGE_DATA_RANGE);
+            SourceDataRange srcDataRange = SPINNAKER_SOURCE_DATA_RANGE_IMAGE_DATA_RANGE);
 
         /**
          * Computes a normalized image.
@@ -142,7 +106,7 @@ namespace Spinnaker
             const ImagePtr& srcImage,
             const double min,
             const double max,
-            SourceDataRange srcDataRange = IMAGE_DATA_RANGE);
+            SourceDataRange srcDataRange = SPINNAKER_SOURCE_DATA_RANGE_IMAGE_DATA_RANGE);
 
         /**
          * Computes a normalized image.
@@ -162,7 +126,7 @@ namespace Spinnaker
             const double min,
             const double max,
             const PixelFormatEnums destPixelFormat,
-            SourceDataRange srcDataRange = IMAGE_DATA_RANGE);
+            SourceDataRange srcDataRange = SPINNAKER_SOURCE_DATA_RANGE_IMAGE_DATA_RANGE);
 
         /**
          * Computes a normalized image.
@@ -178,7 +142,7 @@ namespace Spinnaker
         static void CreateNormalized(
             const ImagePtr& srcImage,
             ImagePtr& destImage,
-            SourceDataRange srcDataRange = IMAGE_DATA_RANGE);
+            SourceDataRange srcDataRange = SPINNAKER_SOURCE_DATA_RANGE_IMAGE_DATA_RANGE);
 
         /**
          * Computes a normalized image.
@@ -197,7 +161,7 @@ namespace Spinnaker
             ImagePtr& destImage,
             const double min,
             const double max,
-            SourceDataRange srcDataRange = IMAGE_DATA_RANGE);
+            SourceDataRange srcDataRange = SPINNAKER_SOURCE_DATA_RANGE_IMAGE_DATA_RANGE);
     };
 
     /*@}*/

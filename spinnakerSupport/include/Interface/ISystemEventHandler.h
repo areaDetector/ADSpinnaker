@@ -30,8 +30,8 @@ namespace Spinnaker
     {
       public:
         virtual ~ISystemEventHandler(){};
-        virtual void OnInterfaceArrival(std::string interfaceID) = 0;
-        virtual void OnInterfaceRemoval(std::string interfaceID) = 0;
+        virtual void OnInterfaceArrival(InterfacePtr pInterface) = 0;
+        virtual void OnInterfaceRemoval(InterfacePtr pInterface) = 0;
 
       protected:
         ISystemEventHandler(){};

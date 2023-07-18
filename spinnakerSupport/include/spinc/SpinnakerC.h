@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2022 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -634,12 +634,165 @@ extern "C"
      * Removes a camera from a camera list using its serial number
      * @see spinError
      *
-     * @param hCameraList The camera of the camera to remove
+     * @param hCameraList The camera list of the camera to remove
      * @param pSerial The serial number of the camera to remove
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
     SPINNAKERC_API spinCameraListRemoveBySerial(spinCameraList hCameraList, const char* pSerial);
+    /*@}*/
+
+    /**
+     * @defgroup CImageList ImageList Access
+     *
+     * @brief The functions in this section provide access to information,
+     * objects, and functionality of image lists. This includes updating,
+     * size and image retrieval, and clearance.
+     */
+    /*@{*/
+
+    /**
+     * Creates an empty image list (image lists created this way must be destroyed)
+     * @see spinError
+     *
+     * @param phImageList The image list handle pointer in which the empty image list is returned
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListCreateEmpty(spinImageList* phImageList);
+
+    /**
+     * Destroys a image list
+     * @see spinError
+     *
+     * @param hImageList The image list to destroy
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListDestroy(spinImageList hImageList);
+
+    /**
+     * Retrieves the number of images in an image list
+     * @see spinError
+     *
+     * @param hImageList The image list where the images to be counted are
+     * @param pSize The unsigned integer pointer in which the number of images is returned
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListGetSize(spinImageList hImageList, size_t* pSize);
+
+    /**
+     * Retrieves a image from a image list using an index. This function will return
+     * a SPINNAKER_ERR_INVALID_PARAMETER error if the input index is out of range.
+     * @see spinError
+     *
+     * @param hImageList The image list of the image to retrieve
+     * @param index The index of the image
+     * @param phImage The image handle pointer in which the image is returned
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListGet(spinImageList hImageList, size_t index, spinImage* phImage);
+
+    /**
+     * Clears a image list
+     * @see spinError
+     *
+     * @param hImageList The image list to clear
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListClear(spinImageList hImageList);
+
+    /**
+     * Removes a image from a image list using its index
+     * @see spinError
+     *
+     * @param hImageList The image list of the camera to remove
+     * @param index The index of the image to remove
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListRemove(spinImageList hImageList, size_t index);
+
+    /**
+     * Appends all the images from one image list to another
+     * @see spinError
+     *
+     * @param hImageListBase The image list to receive the other
+     * @param hImageListToAppend The image list to add to the other
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListAppend(spinImageList hImageListBase, spinImageList hImageListToAppend);
+
+    /**
+     * Retrieves a image from a image list given its pixel format. This
+     * function will return a NULL spinImage pointer if no matching image
+     * pixel format is found.
+     * @see spinError
+     *
+     * @param hImageList The image list of the image to retrieve
+     * @param pixelFormat The pixel format of the image to retrieve
+     * @param phImage The image handle pointer in which the image is returned
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListGetByPixelFormat(
+        spinImageList hImageList,
+        spinPixelFormatEnums pixelFormat,
+        spinImage* phImage);
+
+    /**
+     * Removes a image from a image list using its pixel format
+     * @see spinError
+     *
+     * @param hImageList The image list of the image to remove
+     * @param pixelFormat The pixel format of the image to remove
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListRemoveByPixelFormat(spinImageList hImageList, spinPixelFormatEnums pixelFormat);
+
+    /*
+     * Releases all the images that were acquired calling spinCameraGetNextImageSync().
+     * @see spinCameraInit()
+     * @see spinCameraGetNextImageSync(grabTimeout)
+     * @see spinImageRelease(spinImage hImage)
+     * @see spinError
+     *
+     * @param hImageList The image list of the image to remove
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListRelease(spinImageList hImageList);
+
+    /**
+     * Saves an image list as an object to a file.
+     * @see spinImageListLoad()
+     * @see spinError
+     *
+     * @param hImageList The image list of the image to remove
+     * @param fileName Name of the file to save the current image list object to.
+     *                 It is recommended to use the file extension 'sil'.
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListSave(spinImageList hImageList, const char* fileName);
+
+    /**
+     * Creates an image list object from file.
+     * @see spinImageListSave()
+     * @see spinError
+     *
+     * @param phImageList The image list handle pointer in which the empty image list is returned
+     * @param fileName Name of the file to load an image object from.
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListLoad(spinImageList* phImageList, const char* fileName);
+
     /*@}*/
 
     /**
@@ -984,12 +1137,28 @@ extern "C"
      * @see spinError
      *
      * @param hCamera The camera of the image to retrieve
-     * @param grabTimeout The timeout value for returned an image
+     * @param grabTimeout A 64bit value that represents a timeout in milliseconds
      * @param phImage The image handle pointer in which the image is returned
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
     SPINNAKERC_API spinCameraGetNextImageEx(spinCamera hCamera, uint64_t grabTimeout, spinImage* phImage);
+
+    /**
+     * If a camera supports one or more streams, this function gets one image from each
+     * of the camera's streams, and returns the images in a list.  This function
+     * will block for the specified timeout period until an image arrives on all the streams.
+     *
+     * @see spinCameraInit()
+     * @see spinCameraBeginAcquisition()
+     * @see spinCameraEndAcquisition()
+     *
+     * @param hCamera The camera of the image to retrieve
+     * @param grabTimeout A 64bit value that represents a timeout in milliseconds
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinCameraGetNextImageSync(spinCamera hCamera, uint64_t grabTimeout, spinImageList* phImageList);
 
     /**
      * Retrieves a unique identifier for a camera
@@ -1079,6 +1248,23 @@ extern "C"
     SPINNAKERC_API spinCameraRegisterImageEventHandler(spinCamera hCamera, spinImageEventHandler hImageEventHandler);
 
     /**
+     * Registers an image event handler to a camera
+     * Registers a specific stream handler for the camera given a stream index. The camera has to be
+     * initialized first with a call to spinCameraInit() before registering handlers for events.
+     * @see spinError
+     *
+     * @param hCamera The camera on which to register the image event handler
+     * @param hImageEventHandler The image event handler to register
+     * @param streamIndex The index of the stream of where this handler will be registered to
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinCameraRegisterImageEventHandlerEx(
+        spinCamera hCamera,
+        spinImageEventHandler hImageEventHandler,
+        uint64_t streamIndex);
+
+    /**
      * Unregisters an image event handler from a camera
      * @see spinError
      *
@@ -1088,6 +1274,32 @@ extern "C"
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
     SPINNAKERC_API spinCameraUnregisterImageEventHandler(spinCamera hCamera, spinImageEventHandler hImageEventHandler);
+
+    /**
+     * Registers an image list event handler to a camera
+     * @see spinError
+     *
+     * @param hCamera The camera on which to register the image event handler
+     * @param hImageListEventHandler The image list event handler to register
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinCameraRegisterImageListEventHandler(
+        spinCamera hCamera,
+        spinImageListEventHandler hImageListEventHandler);
+
+    /**
+     * Unregisters an image list event handler from a camera
+     * @see spinError
+     *
+     * @param hCamera The camera from which to unregister the image event handler
+     * @param hImageEventHandler The image event handler to unregister
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinCameraUnregisterImageListEventHandler(
+        spinCamera hCamera,
+        spinImageListEventHandler hImageListEventHandler);
 
     /**
      * Releases a camera
@@ -1230,7 +1442,7 @@ extern "C"
         size_t offsetY,
         spinPixelFormatEnums pixelFormat,
         void* pData,
-        spinPayloadTypeInfoIDs dataPayloadType,
+        spinTLPayloadType dataPayloadType,
         size_t dataSize);
 
     /**
@@ -1244,89 +1456,16 @@ extern "C"
     SPINNAKERC_API spinImageDestroy(spinImage hImage);
 
     /**
-     * Sets the default color processing algorithm of all images (if not otherwise set)
-     * @see spinError
-     *
-     * @param algorithm The color processing algorithm used by default
-     *
-     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
-     */
-    SPINNAKERC_API spinImageSetDefaultColorProcessing(spinColorProcessingAlgorithm algorithm);
-
-    /**
-     * Retrieves the default color processing algorithm
-     * @see spinError
-     *
-     * @param pAlgorithm The color processing algorithm enum pointer in which the color processing algorithm is returned
-     *
-     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
-     */
-    SPINNAKERC_API spinImageGetDefaultColorProcessing(spinColorProcessingAlgorithm* pAlgorithm);
-
-    /**
-     * Retrieves the color processing algorithm of a specific image
-     * @see spinError
-     *
-     * @param hImage The image of the color processing algorithm to retrieve
-     * @param pAlgorithm The color processing algorithm pointer in which the color processing algorithm is returned
-     *
-     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
-     */
+    * Retrieves the color processing algorithm of a specific image
+    * @see spinError
+    *
+    * @param hImage The image of the color processing algorithm to retrieve
+    * @param pAlgorithm The color processing algorithm pointer in which the color processing algorithm is returned
+    *
+    * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+    */
     SPINNAKERC_API spinImageGetColorProcessing(spinImage hImage, spinColorProcessingAlgorithm* pAlgorithm);
 
-    /**
-     * Sets the default number of threads used for image decompression during
-     * spinImageConvert(). The number of threads used is defaulted to be equal
-     * to one less than the number of concurrent threads supported by the
-     * system.
-     *
-     * @param numThreads Number of parallel image decompression threads set to run
-     *
-     * @see spinImageConvert()
-     *
-     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
-     */
-    SPINNAKERC_API spinImageSetNumDecompressionThreads(unsigned int numThreads);
-
-    /**
-     * Gets the number of threads used for image decompression during Convert().
-     *
-     * @param pNumThreads The pointer indicating the number of parallel image decompression threads set to run
-     *
-     * @see spinImageSetNumDecompressionThreads()
-     *
-     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
-     */
-    SPINNAKERC_API spinImageGetNumDecompressionThreads(unsigned int* pNumThreads);
-
-    /**
-     * Converts the pixel format of one image into a new image
-     * @see spinError
-     *
-     * @param hSrcImage The image to be converted
-     * @param pixelFormat The pixel format to be converted to
-     * @param hDestImage The image handle pointer in which the converted image is returned
-     *
-     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
-     */
-    SPINNAKERC_API spinImageConvert(spinImage hSrcImage, spinPixelFormatEnums pixelFormat, spinImage hDestImage);
-
-    /**
-     * Converts the pixel format and color processing algorithm of one image into a new image
-     * @see spinError
-     *
-     * @param hSrcImage The image to be converted
-     * @param pixelFormat The pixel format to be converted to
-     * @param algorithm The color processing algorithm to use for conversion
-     * @param hDestImage The image handle pointer in which the converted image is returned
-     *
-     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
-     */
-    SPINNAKERC_API spinImageConvertEx(
-        spinImage hSrcImage,
-        spinPixelFormatEnums pixelFormat,
-        spinColorProcessingAlgorithm algorithm,
-        spinImage hDestImage);
 
     /**
      * Resets an image with some set properties
@@ -1537,7 +1676,7 @@ extern "C"
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinImageGetTLPayloadType(spinImage hImage, spinPayloadTypeInfoIDs* pPayloadType);
+    SPINNAKERC_API spinImageGetTLPayloadType(spinImage hImage, spinTLPayloadType* pPayloadType);
 
     /**
      * Retrieves the pixel format of an image (as an enum, spinPixelFormatEnums)
@@ -1574,7 +1713,7 @@ extern "C"
      */
     SPINNAKERC_API spinImageGetTLPixelFormatNamespace(
         spinImage hImage,
-        spinPixelFormatNamespaceID* pPixelFormatNamespace);
+        spinTLPixelFormatNamespace* pPixelFormatNamespace);
 
     /**
      * Retrieves the pixel format of an image (as a symbolic)
@@ -1833,6 +1972,290 @@ extern "C"
     /*@}*/
 
     /**
+     * @defgroup CImageProcessor Image Processor Access
+     *
+     * @brief The functions in this section provide access to information
+     * and functionality of image processor. This includes image processor creation,
+     * deletion, image conversion, image decompression and image post processing methods.
+     *
+     * All supported input image pixel formats can be converted to supported
+     * output image pixel formats. If the input pixel format is a compressed
+     * format, the decompression will occur before converting to the output
+     * pixel format.
+     *
+     * List of supported input image pixel formats:
+     *
+     * <ul>
+     * <li> PixelFormat_Mono8
+     * <li> PixelFormat_Mono16
+     * <li> PixelFormat_BayerGR8
+     * <li> PixelFormat_BayerRG8
+     * <li> PixelFormat_BayerGB8
+     * <li> PixelFormat_BayerBG8
+     * <li> PixelFormat_BayerGR16
+     * <li> PixelFormat_BayerRG16
+     * <li> PixelFormat_BayerGB16
+     * <li> PixelFormat_BayerBG16
+     * <li> PixelFormat_Mono12Packed
+     * <li> PixelFormat_BayerGR12Packed
+     * <li> PixelFormat_BayerRG12Packed
+     * <li> PixelFormat_BayerGB12Packed
+     * <li> PixelFormat_BayerBG12Packed
+     * <li> PixelFormat_YUV411Packed
+     * <li> PixelFormat_YUV422Packed
+     * <li> PixelFormat_YUV444Packed
+     * <li> PixelFormat_Mono12p
+     * <li> PixelFormat_BayerGR12p
+     * <li> PixelFormat_BayerRG12p
+     * <li> PixelFormat_BayerGB12p
+     * <li> PixelFormat_BayerBG12p
+     * <li> PixelFormat_YCbCr8
+     * <li> PixelFormat_YCbCr422_8
+     * <li> PixelFormat_YCbCr411_8
+     * <li> PixelFormat_BGR8
+     * <li> PixelFormat_BGRa8
+     * <li> PixelFormat_Mono10Packed
+     * <li> PixelFormat_BayerGR10Packed
+     * <li> PixelFormat_BayerRG10Packed
+     * <li> PixelFormat_BayerGB10Packed
+     * <li> PixelFormat_BayerBG10Packed
+     * <li> PixelFormat_Mono10p
+     * <li> PixelFormat_BayerGR10p
+     * <li> PixelFormat_BayerRG10p
+     * <li> PixelFormat_BayerGB10p
+     * <li> PixelFormat_BayerBG10p
+     * <li> PixelFormat_Mono10
+     * <li> PixelFormat_Mono12
+     * <li> PixelFormat_Mono14
+     * <li> PixelFormat_BayerBG10
+     * <li> PixelFormat_BayerBG12
+     * <li> PixelFormat_BayerGB10
+     * <li> PixelFormat_BayerGB12
+     * <li> PixelFormat_BayerGR10
+     * <li> PixelFormat_BayerGR12
+     * <li> PixelFormat_BayerRG10
+     * <li> PixelFormat_BayerRG12
+     * <li> PixelFormat_RGBa8
+     * <li> PixelFormat_RGB8
+     * <li> PixelFormat_BGR16
+     * <li> PixelFormat_R12
+     * <li> PixelFormat_G12
+     * <li> PixelFormat_B12
+     * <li> PixelFormat_YUV8_UYV
+     * <li> PixelFormat_YUV411_8_UYYVYY
+     * <li> PixelFormat_YUV422_8
+     * <li> PixelFormat_Polarized8
+     * <li> PixelFormat_Polarized10p
+     * <li> PixelFormat_Polarized12p
+     * <li> PixelFormat_Polarized16
+     * <li> PixelFormat_BayerRGPolarized8
+     * <li> PixelFormat_BayerRGPolarized10p
+     * <li> PixelFormat_BayerRGPolarized12p
+     * <li> PixelFormat_BayerRGPolarized16
+     * <li> PixelFormat_LLCMono8
+     * <li> PixelFormat_LLCBayerRG8
+     * <li> PixelFormat_JPEGMono8
+     * <li> PixelFormat_JPEGColor8
+     * <li> PixelFormat_Raw16
+     * <li> PixelFormat_Raw8
+     * <li> PixelFormat_R12_Jpeg
+     * <li> PixelFormat_GR12_Jpeg
+     * <li> PixelFormat_GB12_Jpeg
+     * <li> PixelFormat_B12_Jpeg
+     * </ul>
+     *
+     * List of supported output image pixel formats
+     *
+     * <ul>
+     * <li> PixelFormat_Mono8
+     * <li> PixelFormat_Mono16
+     * <li> PixelFormat_BayerBG8
+     * <li> PixelFormat_BayerGB8
+     * <li> PixelFormat_BayerRG8
+     * <li> PixelFormat_BayerGR8
+     * <li> PixelFormat_BayerBG16
+     * <li> PixelFormat_BayerGB16
+     * <li> PixelFormat_BayerRG16
+     * <li> PixelFormat_BayerGR16
+     * <li> PixelFormat_BGR8
+     * <li> PixelFormat_BGRa8
+     * <li> PixelFormat_RGB8
+     * <li> PixelFormat_RGBa8
+     * <li> PixelFormat_BGR16
+     * <li> PixelFormat_RGB16
+     * <li> PixelFormat_R12
+     * <li> PixelFormat_G12
+     * <li> PixelFormat_B12
+     * </ul>
+     */
+    /*@{*/
+
+    /**
+     * Creates an image processor
+     * @see spinError
+     *
+     * @param phImageProcessor The image processor handle pointer in which the image processor context is returned
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageProcessorCreate(spinImageProcessor* phImageProcessor);
+
+    /**
+     * Destroys a image list
+     * @see spinError
+     *
+     * @param hImageProcessor The image processor context to destroy
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageProcessorDestroy(spinImageProcessor hImageProcessor);
+
+    /**
+     * Sets the color processing algorithm used at the time of the spinImageProcessorConvert()
+     * call, therefore the most recent execution of this function will take precedence. The
+     * DEFAULT algorithm is deprecated and should not be used in the ImageProcessor class.
+     *
+     * @param hImageProcessor The image processor context
+     * @param colorAlgorithm The color processing algorithm to set.
+     *
+     * @see spinImageProcessorGetColorProcessing()
+     */
+    SPINNAKERC_API spinImageProcessorSetColorProcessing(
+        spinImageProcessor hImageProcessor,
+        spinColorProcessingAlgorithm colorAlgorithm);
+
+    /**
+     * Gets the default color processing algorithm.
+     *
+     * @param hImageProcessor The image processor context
+     * @param pColorAlgorithm The color processing algorithm pointer in which the color processing algorithm is returned
+     *
+     * @see spinImageProcessorSetColorProcessing()
+     */
+    SPINNAKERC_API spinImageProcessorGetColorProcessing(
+        spinImageProcessor hImageProcessor,
+        spinColorProcessingAlgorithm* pColorAlgorithm);
+
+    /**
+     * Sets the default number of threads used for image decompression during
+     * spinImageProcessorConvert(). The number of threads used is defaulted to be equal
+     * to one less than the number of concurrent threads supported by the system.
+     *
+     * @param hImageProcessor The image processor context
+     * @param numThreads Number of parallel image decompression threads set to run
+     *
+     * @see spinImageProcessorConvert()
+     */
+    SPINNAKERC_API spinImageProcessorSetNumDecompressionThreads(
+        spinImageProcessor hImageProcessor,
+        unsigned int numThreads);
+
+    /**
+     * Gets the number of threads used for image decompression during spinImageProcessorConvert().
+     *
+     * @param hImageProcessor The image processor context
+     * @param pNumThreads The unsigned integer pointer in which the number of parallel image decompression threads is
+     * returned
+     *
+     * @see spinImageProcessorSetNumDecompressionThreads()
+     */
+    SPINNAKERC_API spinImageProcessorGetNumDecompressionThreads(
+        spinImageProcessor hImageProcessor,
+        unsigned int* pNumThreads);
+
+    /**
+     * Converts the source image buffer to the specified destination pixel format and
+     * stores the result in the destination image. The destination image needs to be
+     * configured to have the correct buffer size before calling this function. See
+     * spinImageReset() to setup the correct buffer size according to specified pixel format.
+     *
+     * Note that compressed images are decompressed before any further color processing
+     * or conversion during this call. Decompression is multi-threaded and defaults to
+     * utilizing one less than the number of concurrent threads supported by the
+     * system. The default number of decompression threads can be set with
+     * spinImageProcessorSetNumDecompressionThreads().
+     *
+     * @see spinPixelFormatEnums
+     * @see spinImageReset
+     * @see spinImageProcessorSetNumDecompressionThreads
+     *
+     * @param hImageProcessor The image processor context
+     * @param srcImage The source image from which to convert the image from.
+     * @param destImage The destination image in which the converted image data will be stored.
+     * @param destFormat Output format of the converted image.
+     */
+    SPINNAKERC_API spinImageProcessorConvert(
+        spinImageProcessor hImageProcessor,
+        spinImage hSrcImage,
+        spinImage hDestImage,
+        spinPixelFormatEnums destFormat);
+
+    /**
+     * Converts the source list of image buffers to the specified output pixel format
+     * and returns the result in a new image. The conversion could encompasses decompression,
+     * interleaving and conversion of image data depending on the source pixel format of
+     * images in the source image list. The destination image needs to be configured to
+     * have the correct buffer size before calling this function. See spinImageReset() to
+     * setup the correct buffer size according to specified pixel format.
+     *
+     * Note that compressed images are decompressed before any further color processing,
+     * interleaving or conversion is performed. Decompression is multi-threaded and
+     * defaults to utilizing one less than the number of concurrent threads supported by
+     * the system. The default number of decompression threads can be set with
+     * SetNumDecompressionThreads().
+     *
+     * Note not all the supported image pixel formats described in the class description
+     * are supported in this function.
+     *
+     * List of supported image pixel formats for the source image list:
+     *
+     * <ul>
+     * <li> PixelFormat_R12
+     * <li> PixelFormat_GR12
+     * <li> PixelFormat_GB12
+     * <li> PixelFormat_B12
+     * <li> PixelFormat_R12_Jpeg
+     * <li> PixelFormat_GR12_Jpeg
+     * <li> PixelFormat_GB12_Jpeg
+     * <li> PixelFormat_B12_Jpeg
+     * </ul>
+     *
+     * @see spinPixelFormatEnums
+     * @see spinImageReset
+     * @see spinImageProcessorSetNumDecompressionThreads
+     *
+     * @param hImageProcessor The image processor context
+     * @param hSrcImageList List of images from which to convert the images from.
+     * @param hDestImage The destination image in which the converted image data will be stored.
+     * @param destFormat Output format of the converted image.
+     */
+    SPINNAKERC_API spinImageProcessorConvertImageList(
+        spinImageProcessor hImageProcessor,
+        spinImageList hSrcImageList,
+        spinImage hDestImage,
+        spinPixelFormatEnums destFormat);
+
+    /**
+     * Applies gamma correction to the source image and stores the result in the destination image.
+     *
+     * @param hImageProcessor The image processor context
+     * @param hSrcImage The source image from which to apply gamma on.
+     * @param hDestImage The destination image in which the gamma applied image data will be stored.
+     * @param gamma Gamma value to apply. A value between 0.5 and 4 is acceptable. (Default assuming
+     * image-to-screen)
+     * @param applyGammaInverse Converts a gamma corrected source image back to the original image using the inverse
+     * of the gamma value (used for applying screen-to-image gamma)
+     */
+    SPINNAKERC_API spinImageProcessorApplyGamma(
+        spinImageProcessor hImageProcessor,
+        spinImage hSrcImage,
+        spinImage hDestImage,
+        float gamma,
+        bool8_t applyGammaInverse);
+
+    /*@}*/
+
+    /**
      * @defgroup CEvent Event Access
      *
      * @brief The functions in this section allow for the creation and
@@ -1891,6 +2314,33 @@ extern "C"
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
     SPINNAKERC_API spinImageEventHandlerDestroy(spinImageEventHandler hImageEventHandler);
+
+    /**
+     * Creates an image list event handler
+     * @see spinError
+     *
+     * @param phImageListEventHandler The image list event handler pointer in which the image list event context is
+     * created
+     * @param pFunction The function to be called at image list event occurrences; signature to match:
+     * void(*spinImageListEventFunction)(const spinListImage hImage, void* pUserData)
+     * @param pUserData Properties that can be passed into the event function
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListEventHandlerCreate(
+        spinImageListEventHandler* phImageEventHandler,
+        spinImageListEventFunction pFunction,
+        void* pUserData);
+
+    /**
+     * Destroys an image list event handler
+     * @see spinError
+     *
+     * @param hImageListEventHandler The image list event handler to destroy
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API spinImageListEventHandlerDestroy(spinImageListEventHandler hImageListEventHandler);
 
     /**
      * Creates a device arrival event handler

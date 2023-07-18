@@ -110,7 +110,7 @@ namespace Spinnaker
                         __FILE__,
                         __FUNCTION__,
                         "LogicalErrorException NULL pointer dereferenced",
-                        GENICAM_ERR_LOGICAL);
+                        SPINNAKER_ERR_GENICAM_LOGICAL);
                 }
                 return m_pT;
             }
@@ -127,7 +127,7 @@ namespace Spinnaker
                         __FILE__,
                         __FUNCTION__,
                         "LogicalErrorException NULL pointer dereferenced",
-                        GENICAM_ERR_LOGICAL);
+                        SPINNAKER_ERR_GENICAM_LOGICAL);
                 }
                 return *m_pT;
             }
@@ -144,7 +144,7 @@ namespace Spinnaker
                         __FILE__,
                         __FUNCTION__,
                         "LogicalErrorException NULL pointer dereferenced",
-                        GENICAM_ERR_LOGICAL);
+                        SPINNAKER_ERR_GENICAM_LOGICAL);
                 }
                 return *m_pT;
             }
@@ -161,7 +161,7 @@ namespace Spinnaker
                         __FILE__,
                         __FUNCTION__,
                         "LogicalErrorException NULL pointer dereferenced",
-                        GENICAM_ERR_LOGICAL);
+                        SPINNAKER_ERR_GENICAM_LOGICAL);
                 }
                 return m_pT;
             }
@@ -210,7 +210,7 @@ namespace Spinnaker
                         __FILE__,
                         __FUNCTION__,
                         "LogicalErrorException argument must be NULL",
-                        GENICAM_ERR_LOGICAL);
+                        SPINNAKER_ERR_GENICAM_LOGICAL);
                 }
                 return NULL == m_pT;
             }
@@ -243,7 +243,7 @@ namespace Spinnaker
                         __FILE__,
                         __FUNCTION__,
                         "LogicalErrorException argument must be NULL",
-                        GENICAM_ERR_LOGICAL);
+                        SPINNAKER_ERR_GENICAM_LOGICAL);
                 }
                 return NULL != m_pT;
             }
@@ -260,7 +260,7 @@ namespace Spinnaker
                         __FILE__,
                         __FUNCTION__,
                         "LogicalErrorException argument must be NULL",
-                        GENICAM_ERR_LOGICAL);
+                        SPINNAKER_ERR_GENICAM_LOGICAL);
                 }
                 return NULL != m_pT;
             }
@@ -277,7 +277,7 @@ namespace Spinnaker
                         __FILE__,
                         __FUNCTION__,
                         "LogicalErrorException argument must be nullptr",
-                        GENICAM_ERR_LOGICAL);
+                        SPINNAKER_ERR_GENICAM_LOGICAL);
                 }
                 return m_pT != nullptr;
             }

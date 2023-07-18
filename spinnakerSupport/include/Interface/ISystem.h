@@ -54,10 +54,8 @@ namespace Spinnaker
         virtual void UpdateInterfaceList() = 0;
         virtual CameraList GetCameras(bool updateInterfaces = true, bool updateCameras = true) = 0;
         virtual bool UpdateCameras(bool updateInterfaces = true) = 0;
-        virtual void RegisterEventHandler(EventHandler& evtHandlerToRegister) = 0;
+        virtual void RegisterEventHandler(EventHandler& evtHandlerToRegister, bool updateInterface = false) = 0;
         virtual void UnregisterEventHandler(EventHandler& evtHandlerToUnregister) = 0;
-        virtual void RegisterInterfaceEventHandler(EventHandler& evtHandlerToRegister, bool updateInterface = true) = 0;
-        virtual void UnregisterInterfaceEventHandler(EventHandler& evtHandlerToUnregister) = 0;
         virtual void RegisterLoggingEventHandler(LoggingEventHandler& handler) = 0;
         virtual void UnregisterAllLoggingEventHandlers() = 0;
         virtual void UnregisterLoggingEventHandler(LoggingEventHandler& handler) = 0;

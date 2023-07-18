@@ -23,7 +23,7 @@
 
 namespace Spinnaker
 {
-    class IDeviceEventHandler : public virtual EventHandler
+    class SPINNAKER_API IDeviceEventHandler : public virtual EventHandler
     {
       public:
         virtual ~IDeviceEventHandler(){};

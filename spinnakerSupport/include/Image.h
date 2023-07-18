@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -32,6 +32,7 @@ namespace Spinnaker
 {
     class ImageStatistics;
     class ImagePtr;
+    class ImageList;
 
     /**
      *  @defgroup SpinnakerClasses Spinnaker Classes
@@ -108,9 +109,9 @@ namespace Spinnaker
             size_t height,
             size_t offsetX,
             size_t offsetY,
-            Spinnaker::PixelFormatEnums pixelFormat,
+            PixelFormatEnums pixelFormat,
             void* pData,
-            PayloadTypeInfoIDs dataPayloadType,
+            TLPayloadType dataPayloadType,
             size_t dataSize);
 
         /**
@@ -119,99 +120,13 @@ namespace Spinnaker
         virtual ~Image();
 
         /**
-         * Sets the default color processing algorithm.  This method will be
-         * used for any image with the DEFAULT algorithm set. The method used
-         * is determined at the time of the Convert() call, therefore the most
-         * recent execution of this function will take precedence. The default
-         * setting is shared within the current process.
-         *
-         * @param colorAlgorithm The color processing algorithm to set.
-         *
-         * @see GetDefaultColorProcessing()
-         */
-        static void SetDefaultColorProcessing(ColorProcessingAlgorithm colorAlgorithm);
-
-        /**
-         * Gets the default color processing algorithm.
-         *
-         * @see SetDefaultColorProcessing()
-         *
-         * @return The default color processing algorithm.
-         */
-        static ColorProcessingAlgorithm GetDefaultColorProcessing();
-
-        /**
          * Gets the color algorithm used to produce the image.
          *
-         * @see Convert()
+         * @see ImageProcessor::Convert()
          *
          * @return The color processing algorithm used to produce the image.
          */
         ColorProcessingAlgorithm GetColorProcessing() const;
-
-        /**
-         * Sets the default number of threads used for image decompression during
-         * Convert(). The number of threads used is defaulted to be equal to one
-         * less than the number of concurrent threads supported by the
-         * system.
-         *
-         * @param numThreads Number of parallel image decompression threads set to run
-         *
-         * @see Convert()
-         */
-        static void SetNumDecompressionThreads(unsigned int numThreads);
-
-        /**
-         * Gets the number of threads used for image decompression during Convert().
-         *
-         * @see SetNumDecompressionThreads()
-         *
-         * @return Number of parallel image decompression threads set to run.
-         */
-        static unsigned int GetNumDecompressionThreads();
-
-        /**
-         * Converts the current image buffer to the specified output pixel format and
-         * stores the result in the specified image. The destination image
-         * does not need to be configured in any way before the call is made. Note that
-         * compressed images are decompressed before any further color processing or
-         * conversion during this call. Decompression is multi-threaded and defaults to
-         * utilizing one less than the number of concurrent threads supported by the
-         * system. The default number of decompression threads can be set with
-         * SetNumDecompressionThreads().
-         *
-         * @see PixelFormatEnums
-         * @see SetNumDecompressionThreads(unsigned int numThreads)
-         *
-         * @param format Output format of the converted image.
-         * @param colorAlgorithm Optional color processing algorithm for producing the converted image
-         *
-         * @return The converted image.
-         */
-        ImagePtr Convert(Spinnaker::PixelFormatEnums format, ColorProcessingAlgorithm colorAlgorithm = DEFAULT) const;
-
-        /**
-         * Converts the current image buffer to the specified output pixel format and
-         * stores the result in the specified destination image. The destination image
-         * buffer size must be sufficient to store the converted image data. Note that
-         * compressed images are decompressed before any further color processing or
-         * conversion during this call. Decompression is multi-threaded and defaults to
-         * utilizing one less than the number of concurrent threads supported by the
-         * system. The default number of decompression threads can be set with
-         * SetNumDecompressionThreads().
-         *
-         * @see Create(size_t width, size_t height, size_t offsetX, size_t offsetY, Spinnaker::PixelFormatEnums
-         * pixelFormat, void* pData)
-         * @see SetNumDecompressionThreads(unsigned int numThreads)
-         *
-         * @param destinationImage Destination image where the converted output result will be stored.
-         * @param format Output format of the converted image.
-         * @param colorAlgorithm Optional color processing algorithm for producing the converted image.
-         */
-        void Convert(
-            ImagePtr destinationImage,
-            Spinnaker::PixelFormatEnums format,
-            ColorProcessingAlgorithm colorAlgorithm = DEFAULT) const;
 
         /**
          * Sets new dimensions of the image object and allocates memory.
@@ -271,7 +186,7 @@ namespace Spinnaker
             size_t offsetY,
             PixelFormatEnums pixelFormat,
             void* pData,
-            PayloadTypeInfoIDs dataPayloadType,
+            TLPayloadType dataPayloadType,
             size_t dataSize);
 
         /*
@@ -283,12 +198,22 @@ namespace Spinnaker
         void Release();
 
         /**
-         * Gets a unique ID for this image.  Each image in a steam will have
-         * a unique ID to help identify it.
+         * Gets a unique ID for this image that is associated with a stream.
+         * Note that an ID of 0 indicates that the image is no longer associated
+         * with a stream or is a copy of the original image.
+         *
+         * @see GetFrameID()
          *
          * @return The 64 bit unique id for this image.
          */
         uint64_t GetID() const;
+
+        /**
+         * Gets the stream channel index of where the image is received.
+         *
+         * @return The stream channel index of where this image is received.
+         */
+        uint64_t GetStreamIndex() const;
 
         /**
          * Gets a pointer to the data associated with the image. This function
@@ -334,6 +259,9 @@ namespace Spinnaker
          * For user created images, this function returns the size of the user provided data if the data size was
          * provided. If the data size was not provided, the buffer size is calculated based on the image dimensions and
          * pixel format.
+         *
+         * @see GetImageSize()
+         * @see GetValidPayloadSize()
          *
          * @return The size of the buffer, in bytes.
          */
@@ -456,7 +384,7 @@ namespace Spinnaker
          *
          * @return Transport Layer specific payload type.
          */
-        PayloadTypeInfoIDs GetTLPayloadType() const;
+        TLPayloadType GetTLPayloadType() const;
 
         /**
          * Gets the pixel format of the image.  This is a Transport Layer specific
@@ -482,7 +410,7 @@ namespace Spinnaker
          *
          * @return enum value representing the PixelFormatNamespace.
          */
-        PixelFormatNamespaceID GetTLPixelFormatNamespace() const;
+        TLPixelFormatNamespace GetTLPixelFormatNamespace() const;
 
         /**
          * Returns a string value that represents this image's pixel format. The string
@@ -497,9 +425,9 @@ namespace Spinnaker
          * Returns an enum value that represents the pixel format of this image.
          * The enum can be used with the easy access GenICam features available
          * through the Camera.h header file.  This easy access enum can also be
-         * used in the Convert() function.
+         * used in the ImageProcessor::Convert() function.
          *
-         * @see Convert()
+         * @see ImageProcessor::Convert()
          *
          * @return enum value representing the PixelFormat.
          */
@@ -524,11 +452,10 @@ namespace Spinnaker
 
         /**
          * Returns the size of valid data in the image payload.  This is the actual amount
-         * of data read from the device. A user created image has a payload size of zero.
-         * The value returned here can be equal to the value returned by GetImageSize() if
-         * image data is the only payload. Note that GetBufferSize() returns the total size
-         * of bytes allocated for the image and could be equal to or greater than the size
-         * returned by this function.
+         * of data read from the device.  The value returned here can be equal to the
+         * value returned by GetImageSize() if image data is the only payload. Note that
+         * GetBufferSize() returns the total size of bytes allocated for the image and could
+         * be equal to or greater than the size returned by this function.
          *
          * @see GetBufferSize()
          * @see GetImageSize()
@@ -562,7 +489,7 @@ namespace Spinnaker
          * @param pFilename Filename to save image with.
          * @param format File format to save in.
          */
-        void Save(const char* pFilename, ImageFileFormat format = FROM_FILE_EXT) const;
+        void Save(const char* pFilename, ImageFileFormat format = SPINNAKER_IMAGE_FILE_FORMAT_FROM_FILE_EXT) const;
 
         /**
          * Saves the image to the specified file name with the options specified.
@@ -621,6 +548,29 @@ namespace Spinnaker
         void Save(const char* pFilename, BMPOption& pOption) const;
 
         /**
+         * Saves the image to the specified file name with the options specified.
+         *
+         * @param pFilename Filename to save image with.
+         * @param pOption Options to use while saving image.
+         */
+        void Save(const char* pFilename, SIOption& option) const;
+
+        /**
+         * Loads the image from the specified file name with the options specified.
+         *
+         * @param pFilename Filename to load image with.
+         * @param pOption Options to use while loading image.
+         */
+        static ImagePtr Load(const char* pFilename, ImageFileFormat format = SPINNAKER_IMAGE_FILE_FORMAT_FROM_FILE_EXT);
+
+        /**
+        * Checks if the image contains chunk data
+        *
+        * @return Returns true if image contains chunk data and false otherwise.
+        */
+        bool HasChunkData() const;
+
+        /**
          * Returns a pointer to a chunk data interface.  No ownership is transfered,
          * the chunk data interface reference is valid until Image::Release()
          * is called on this image.
@@ -654,9 +604,14 @@ namespace Spinnaker
         /**
          * Returns the size of the image
          *
-         * For chunk images, only the size of chunk image portion is reported here. The entire chunk data
-         * payload can be queried by GetValidPayloadSize(). For compressed images, this value may be
-         * different than the image size once decompressed.
+         * For non-chunk images, the value returned by this function represents the size of the
+         * image based on its resolution and pixel size.
+         *
+         * For chunk images, only the size of chunk image portion is reported here.  If the chunk
+         * image is compressed, the value returned represents the size of the compressed image
+         * data in bytes.
+         *
+         * The entire chunk data payload can be queried by GetValidPayloadSize(). 
          *
          * @see GetBufferSize()
          * @see GetValidPayloadSize()
@@ -698,11 +653,14 @@ namespace Spinnaker
         friend class Stream;
         friend class ImageConverter;
         friend class ImageConverterIpp;
-
+        friend class ImageImpl;
+        friend class ImageListImpl;
         friend class ImageFiler;
+        friend class ImageProcessorImpl;
         friend class ImageStatsCalculator;
         friend class ImageUtilityImpl;
         friend class ImageUtilityPolarizationImpl;
+        friend class ImageUtilityPlanarImpl;
 
         ImageData* GetImageData() const;
 
@@ -714,15 +672,13 @@ namespace Spinnaker
             size_t height,
             size_t offsetX,
             size_t offsetY,
-            Spinnaker::PixelFormatEnums pixelFormat,
+            PixelFormatEnums pixelFormat,
             void* pData,
-            PayloadTypeInfoIDs payloadType,
+            TLPayloadType payloadType,
             size_t payloadSize);
 
         ImagePtr CreateShared() const;
         void DeepCopy(const Image& pSrcImage);
-        void Convert(PixelFormatEnums format, Image& pDestImage, ColorProcessingAlgorithm colorAlgorithm = DEFAULT)
-            const;
 
       private:
         ImageData* m_pImageData;

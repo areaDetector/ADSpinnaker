@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -486,7 +486,7 @@ namespace Spinnaker
         GenApi::IString &DeviceVendorName;
 
         /**
-         * Description: Endianess of the registers of the device.
+         * Description: Endianness of the registers of the device.
          * Visibility: 
          */
         GenApi::IEnumerationT<DeviceRegistersEndiannessEnums> &DeviceRegistersEndianness;
@@ -1159,7 +1159,7 @@ namespace Spinnaker
         GenApi::IInteger &GevMCRC;
 
         /**
-         * Description: Endianess of multi-byte pixel data for this stream.
+         * Description: Endianness of multi-byte pixel data for this stream.
          * Visibility: 
          */
         GenApi::IBoolean &GevSCPSBigEndian;
@@ -2494,7 +2494,7 @@ namespace Spinnaker
         GenApi::IInteger &DeviceStreamChannelLink;
 
         /**
-         * Description: Endianess of multi-byte pixel data for this stream.
+         * Description: Endianness of multi-byte pixel data for this stream.
          * Visibility: Guru
          */
         GenApi::IEnumerationT<DeviceStreamChannelEndiannessEnums> &DeviceStreamChannelEndianness;

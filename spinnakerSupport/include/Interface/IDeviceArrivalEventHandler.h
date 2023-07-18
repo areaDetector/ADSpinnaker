@@ -23,11 +23,11 @@
 
 namespace Spinnaker
 {
-    class IDeviceArrivalEventHandler : public virtual EventHandler
+    class SPINNAKER_API IDeviceArrivalEventHandler : public virtual EventHandler
     {
       public:
         virtual ~IDeviceArrivalEventHandler(){};
-        virtual void OnDeviceArrival(uint64_t serialNumber) = 0;
+        virtual void OnDeviceArrival(CameraPtr pCamera) = 0;
 
       protected:
         IDeviceArrivalEventHandler(){};

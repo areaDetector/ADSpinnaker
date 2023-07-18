@@ -22,13 +22,15 @@
 #include "TransportLayerDevice.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
 #include "SpinnakerPlatform.h"
-
 #include "EventHandler.h"
 #include "SpinnakerDefs.h"
 
 namespace Spinnaker
 {
     class ImagePtr;
+    class DeviceEventHandler;
+    class ImageEventHandler;
+
     /**
      *  @defgroup SpinnakerClasses Spinnaker Classes
      */
@@ -54,7 +56,7 @@ namespace Spinnaker
         virtual bool IsValid() = 0;
         virtual GenApi::INodeMap& GetNodeMap() const = 0;
         virtual GenApi::INodeMap& GetTLDeviceNodeMap() const = 0;
-        virtual GenApi::INodeMap& GetTLStreamNodeMap() const = 0;
+        virtual GenApi::INodeMap& GetTLStreamNodeMap(uint64_t streamIndex) const = 0;
         virtual GenApi::EAccessMode GetAccessMode() const = 0;
         virtual void ReadPort(uint64_t iAddress, void* pBuffer, size_t iSize) = 0;
         virtual void WritePort(uint64_t iAddress, const void* pBuffer, size_t iSize) = 0;
@@ -72,12 +74,15 @@ namespace Spinnaker
             const uint64_t bufferCount,
             const uint64_t bufferSize) = 0;
 
-        virtual ImagePtr GetNextImage(uint64_t grabTimeout = EVENT_TIMEOUT_INFINITE, uint64_t streamID = 0) = 0;
+        virtual ImagePtr GetNextImage(uint64_t grabTimeout = EVENT_TIMEOUT_INFINITE, uint64_t streamIndex = 0) = 0;
         virtual GenICam::gcstring GetUniqueID() = 0;
         virtual bool IsStreaming() const = 0;
         virtual GenICam::gcstring GetGuiXml() const = 0;
         virtual void RegisterEventHandler(EventHandler& evtHandlerToRegister) = 0;
-        virtual void RegisterEventHandler(EventHandler& evtHandlerToRegister, const GenICam::gcstring& eventName) = 0;
+        virtual void RegisterEventHandler(
+            DeviceEventHandler& evtHandlerToRegister,
+            const GenICam::gcstring& eventName) = 0;
+        virtual void RegisterEventHandler(ImageEventHandler& evtHandlerToRegister, uint64_t streamIndex) = 0;
         virtual void UnregisterEventHandler(EventHandler& evtHandlerToUnregister) = 0;
         virtual unsigned int GetNumImagesInUse() = 0;
         virtual unsigned int GetNumDataStreams() = 0;
@@ -96,7 +101,8 @@ namespace Spinnaker
          * Gets information about the stream data by connecting to
          * the camera's bootstrap registers.  These nodes also access
          * host software modules and the nodes can be used without
-         * having to call Init() on the camera.
+         * having to call Init() on the camera. In cameras with multiple streams,
+         * will always represent Stream channel 0.
          */
         TransportLayerStream TLStream;
 

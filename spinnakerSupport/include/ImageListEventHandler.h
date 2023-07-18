@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2022 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -15,10 +15,10 @@
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
 
-#ifndef FLIR_SPINNAKER_IMAGE_EVENT_HANDLER_H
-#define FLIR_SPINNAKER_IMAGE_EVENT_HANDLER_H
+#ifndef FLIR_SPINNAKER_IMAGE_LIST_EVENT_HANDLER_H
+#define FLIR_SPINNAKER_IMAGE_LIST_EVENT_HANDLER_H
 
-#include "Interface/IImageEventHandler.h"
+#include "Interface/IImageListEventHandler.h"
 
 namespace Spinnaker
 {
@@ -29,40 +29,40 @@ namespace Spinnaker
     /*@{*/
 
     /**
-     *  @defgroup ImageEventHandler_h ImageEventHandler Class
+     *  @defgroup ImageListEventHandler_h ImageListEventHandler Class
      */
 
     /*@{*/
 
     /**
-     * @brief A handler for capturing image arrival events.
+     * @brief A handler for capturing image list arrival events.
      */
 
-    class SPINNAKER_API ImageEventHandler : public IImageEventHandler
+    class SPINNAKER_API ImageListEventHandler : public IImageListEventHandler
     {
       public:
         /**
-         * Default image handler constructor.
+         * Default Constructor
          */
-        ImageEventHandler();
+        ImageListEventHandler();
 
         /**
          * Virtual Destructor
          */
-        virtual ~ImageEventHandler();
+        virtual ~ImageListEventHandler();
 
       protected:
         /**
          * Assignment operator.
          */
-        ImageEventHandler& operator=(const ImageEventHandler&);
+        ImageListEventHandler& operator=(const ImageListEventHandler&);
 
         /**
-         * Image event callback
+         * Image list event callback
          *
-         * @param image The ImagePtr object
+         * @param image The ImageList object
          */
-        virtual void OnImageEvent(ImagePtr image) = 0;
+        virtual void OnImageListEvent(ImageList imageList) = 0;
     };
 
     /*@}*/
@@ -70,4 +70,4 @@ namespace Spinnaker
     /*@}*/
 } // namespace Spinnaker
 
-#endif // FLIR_SPINNAKER_IMAGE_EVENT_HANDLER_H
+#endif // FLIR_SPINNAKER_IMAGE_LIST_EVENT_HANDLER_H

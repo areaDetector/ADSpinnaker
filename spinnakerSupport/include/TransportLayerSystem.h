@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -205,6 +205,12 @@ namespace Spinnaker
 		 * Visibility: Expert
 		 */
 		GenApi::IBoolean &EnumerateUSBInterfaces;
+
+		/**
+		 * Description: Enables or disables the enumeration of USB3 and GigE based Generation 2 cameras. This includes the CM3, FL3, GS3, and BFLY families.
+		 * Visibility: Expert
+		 */
+		GenApi::IBoolean &EnumerateGen2Cameras;
 
 
 	protected:

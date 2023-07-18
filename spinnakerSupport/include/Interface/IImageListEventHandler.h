@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2022 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -15,25 +15,31 @@
 // THIS SOFTWARE OR ITS DERIVATIVES.
 //=============================================================================
 
-#ifndef FLIR_SPINNAKER_IINTERFACE_REMOVAL_EVENT_HANDLER_H
-#define FLIR_SPINNAKER_IINTERFACE_REMOVAL_EVENT_HANDLER_H
+#ifndef FLIR_SPINNAKER_IIMAGELIST_EVENT_HANDLER_H
+#define FLIR_SPINNAKER_IIMAGELIST_EVENT_HANDLER_H
 
 #include "EventHandler.h"
-#include "SpinnakerPlatform.h"
+#include "Spinnaker.h"
 
 namespace Spinnaker
 {
-    class SPINNAKER_API IInterfaceRemovalEventHandler : public virtual EventHandler
+    class SPINNAKER_API IImageListEventHandler : public virtual EventHandler
     {
+        friend class EventCallbackInfo;
+
       public:
-        virtual ~IInterfaceRemovalEventHandler(){};
-        virtual void OnInterfaceRemoval(InterfacePtr pInterface) = 0;
+        virtual ~IImageListEventHandler(){};
 
       protected:
-        IInterfaceRemovalEventHandler(){};
-        IInterfaceRemovalEventHandler(const IInterfaceRemovalEventHandler&){};
-        IInterfaceRemovalEventHandler& operator=(const IInterfaceRemovalEventHandler&);
+        IImageListEventHandler()
+        {
+            SetEventType(SPINNAKER_EVENT_NEW_BUFFER_LIST);
+        };
+        IImageListEventHandler(const IImageListEventHandler&){};
+        IImageListEventHandler& operator=(const IImageListEventHandler&);
+
+        virtual void OnImageListEvent(ImageList imageList) = 0;
     };
 } // namespace Spinnaker
 
-#endif // FLIR_SPINNAKER_IINTERFACE_REMOVAL_EVENT_HANDLER_H
+#endif /* FLIR_SPINNAKER_IIMAGELIST_EVENT_HANDLER_H */

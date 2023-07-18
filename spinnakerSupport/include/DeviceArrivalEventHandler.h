@@ -52,8 +52,10 @@ namespace Spinnaker
 
         /**
          * Callback to the device arrival event.
+         * 
+         * @param pCamera Reference tracked CameraPtr object of the camera attached to the system
          */
-        virtual void OnDeviceArrival(uint64_t serialNumber) = 0;
+        virtual void OnDeviceArrival(CameraPtr pCamera) = 0;
 
       protected:
         /**

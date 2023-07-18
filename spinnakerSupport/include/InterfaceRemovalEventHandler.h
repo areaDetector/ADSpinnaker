@@ -55,9 +55,9 @@ namespace Spinnaker
         /**
          * Interface removal event callback. Note that only GEV interface removals are currently handled.
          *
-         * @param interfaceID The ID of the interface removed
+         * @param pInterface Reference tracked pointer to Interface object of the adapter removed from the system
          */
-        virtual void OnInterfaceRemoval(std::string interfaceID) = 0;
+        virtual void OnInterfaceRemoval(InterfacePtr pInterface) = 0;
 
       protected:
         /**

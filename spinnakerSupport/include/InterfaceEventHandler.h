@@ -51,15 +51,17 @@ namespace Spinnaker
 
         /**
          * Device arrival event callback.
+         * 
+         * @param pCamera Reference tracked pointer to Camera object of the device attached to the system
          */
-        virtual void OnDeviceArrival(uint64_t serialNumber) = 0;
+        virtual void OnDeviceArrival(CameraPtr pCamera) = 0;
 
         /**
          * Callback to the device removal event.
          *
-         * @param serialNumber The serial number of the removed device
+         * @param pCamera Reference tracked pointer to Camera object of the device removed from the system
          */
-        virtual void OnDeviceRemoval(uint64_t serialNumber) = 0;
+        virtual void OnDeviceRemoval(CameraPtr pCamera) = 0;
 
       protected:
         /**

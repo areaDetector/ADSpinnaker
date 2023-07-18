@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -69,6 +69,12 @@ namespace Spinnaker
 		GenApi::IString &DeviceSerialNumber;
 
 		/**
+		 * Description: User Defined Name.
+		 * Visibility: Expert
+		 */
+		GenApi::IString &DeviceUserID;
+
+		/**
 		 * Description: Name of the remote device vendor.
 		 * Visibility: Beginner
 		 */
@@ -79,6 +85,18 @@ namespace Spinnaker
 		 * Visibility: Beginner
 		 */
 		GenApi::IString &DeviceModelName;
+
+		/**
+		 * Description: Version of the device.
+		 * Visibility: Beginner
+		 */
+		GenApi::IString &DeviceVersion;
+
+		/**
+		 * Description: Bootloader version for FLIR devices.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &DeviceBootloaderVersion;
 
 		/**
 		 * Description: Transport layer type of the device.
@@ -99,16 +117,10 @@ namespace Spinnaker
 		GenApi::IEnumerationT<DeviceAccessStatusEnum> &DeviceAccessStatus;
 
 		/**
-		 * Description: Version of the device.
-		 * Visibility: Beginner
-		 */
-		GenApi::IString &DeviceVersion;
-
-		/**
-		 * Description: User Defined Name.
+		 * Description: Indicates the speed of transmission negotiated by the given network interface in Mbps.
 		 * Visibility: Expert
 		 */
-		GenApi::IString &DeviceUserID;
+		GenApi::IInteger &DeviceLinkSpeed;
 
 		/**
 		 * Description: Version of the device driver.
@@ -123,10 +135,16 @@ namespace Spinnaker
 		GenApi::IBoolean &DeviceIsUpdater;
 
 		/**
-		 * Description: Controls the device access privilege of an application.
+		 * Description: Sets the location to load GenICam XML.
 		 * Visibility: Beginner
 		 */
-		GenApi::IEnumerationT<GevCCPEnum> &GevCCP;
+		GenApi::IEnumerationT<GenICamXMLLocationEnum> &GenICamXMLLocation;
+
+		/**
+		 * Description: GenICam XML Path.
+		 * Visibility: Beginner
+		 */
+		GenApi::IString &GenICamXMLPath;
 
 		/**
 		 * Description: Sets the location to load GUI XML.
@@ -141,16 +159,16 @@ namespace Spinnaker
 		GenApi::IString &GUIXMLPath;
 
 		/**
-		 * Description: Sets the location to load GenICam XML.
+		 * Description: Controls the device access privilege of an application.
 		 * Visibility: Beginner
 		 */
-		GenApi::IEnumerationT<GenICamXMLLocationEnum> &GenICamXMLLocation;
+		GenApi::IEnumerationT<GevCCPEnum> &GevCCP;
 
 		/**
-		 * Description: GenICam XML Path.
-		 * Visibility: Beginner
+		 * Description: 48-bit MAC address of the GVCP interface of the selected remote device.
+		 * Visibility: Expert
 		 */
-		GenApi::IString &GenICamXMLPath;
+		GenApi::IInteger &GevDeviceMACAddress;
 
 		/**
 		 * Description: Current IP address of the GVCP interface of the selected remote device.
@@ -165,22 +183,10 @@ namespace Spinnaker
 		GenApi::IInteger &GevDeviceSubnetMask;
 
 		/**
-		 * Description: 48-bit MAC address of the GVCP interface of the selected remote device.
-		 * Visibility: Expert
-		 */
-		GenApi::IInteger &GevDeviceMACAddress;
-
-		/**
 		 * Description: Current gateway IP address of the GVCP interface of the remote device.
 		 * Visibility: Expert
 		 */
 		GenApi::IInteger &GevDeviceGateway;
-
-		/**
-		 * Description: Indicates the speed of transmission negotiated by the given network interface in Mbps.
-		 * Visibility: Expert
-		 */
-		GenApi::IInteger &DeviceLinkSpeed;
 
 		/**
 		 * Description:  Major version of the specification.
@@ -279,7 +285,13 @@ namespace Spinnaker
 		GenApi::IEnumerationT<DeviceEndianessMechanismEnum> &DeviceEndianessMechanism;
 
 		/**
-		 * Description: 
+		 * Description: Resets and reboots the device.
+		 * Visibility: Beginner
+		 */
+		GenApi::ICommand &DeviceReset;
+
+		/**
+		 * Description: Device Instance Id.
 		 * Visibility: Invisible
 		 */
 		GenApi::IString &DeviceInstanceId;

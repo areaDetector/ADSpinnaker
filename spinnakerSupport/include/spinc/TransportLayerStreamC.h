@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -32,6 +32,7 @@ typedef struct _quickSpinTLStream
 {
 	quickSpinStringNode StreamID;
 	quickSpinEnumerationNode StreamType;
+	quickSpinEnumerationNode StreamMode;
 	quickSpinIntegerNode StreamBufferCountManual;
 	quickSpinIntegerNode StreamBufferCountResult;
 	quickSpinIntegerNode StreamBufferCountMax;
@@ -41,22 +42,25 @@ typedef struct _quickSpinTLStream
 	quickSpinIntegerNode StreamAnnouncedBufferCount;
 	quickSpinIntegerNode StreamStartedFrameCount;
 	quickSpinIntegerNode StreamDeliveredFrameCount;
+	quickSpinIntegerNode StreamReceivedFrameCount;
+	quickSpinIntegerNode StreamIncompleteFrameCount;
 	quickSpinIntegerNode StreamLostFrameCount;
+	quickSpinIntegerNode StreamDroppedFrameCount;
 	quickSpinIntegerNode StreamInputBufferCount;
 	quickSpinIntegerNode StreamOutputBufferCount;
-	quickSpinBooleanNode StreamCRCCheckEnable;
-	quickSpinBooleanNode GevPacketResendMode;
-	quickSpinIntegerNode GevMaximumNumberResendRequests;
-	quickSpinIntegerNode GevPacketResendTimeout;
 	quickSpinBooleanNode StreamIsGrabbing;
 	quickSpinIntegerNode StreamChunkCountMaximum;
 	quickSpinIntegerNode StreamBufferAlignment;
-	quickSpinIntegerNode StreamDroppedFrameCount;
-	quickSpinIntegerNode GevTotalPacketCount;
-	quickSpinIntegerNode GevFailedPacketCount;
-	quickSpinIntegerNode GevResendPacketCount;
-	quickSpinIntegerNode StreamFailedBufferCount;
-	quickSpinIntegerNode GevResendRequestCount;
+	quickSpinBooleanNode StreamCRCCheckEnable;
+	quickSpinIntegerNode StreamReceivedPacketCount;
+	quickSpinIntegerNode StreamMissedPacketCount;
+	quickSpinBooleanNode StreamPacketResendEnable;
+	quickSpinIntegerNode StreamPacketResendTimeout;
+	quickSpinIntegerNode StreamPacketResendMaxRequests;
+	quickSpinIntegerNode StreamPacketResendRequestCount;
+	quickSpinIntegerNode StreamPacketResendRequestSuccessCount;
+	quickSpinIntegerNode StreamPacketResendRequestedPacketCount;
+	quickSpinIntegerNode StreamPacketResendReceivedPacketCount;
 	quickSpinIntegerNode StreamBlockTransferSize;
 } quickSpinTLStream;
 

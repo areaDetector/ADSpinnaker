@@ -73,6 +73,17 @@ namespace Spinnaker
             Spinnaker::CameraPtr* pCamera);
 
         /**
+         * IP configuration event callback function prototype. Defines the syntax of the
+         * IP configuration callback function that is passed into RegisterIPConfigStartingCallback()
+         * and RegisterIPConfigFinishedCallback().
+         *
+         * @param boolean indicating whether firmware update is starting.
+         * @param boolean indicating whether firmware update is finished.
+         * @param pointer to camera object being updated.
+         */
+        typedef void (*IPConfigEventCallback)(bool isStarting, bool isFinished, Spinnaker::CameraPtr* pCamera);
+
+        /**
          * Return type for ShowModal() method in CameraSelectionWindow
          */
         struct DeviceInformationStruct
@@ -201,6 +212,20 @@ namespace Spinnaker
             void RegisterDisconnectDeviceMenuCallback(ClickedEventCallback pCallBackFunc);
 
             /**
+             * Register callback function for IP configuration starting event in CameraSelectionWindow
+             *
+             * @param pCallBackFunc function pointer to IP configuration event
+             */
+            void RegisterIPConfigStartingCallback(IPConfigEventCallback pCallBackFunc);
+
+            /**
+             * Register callback function for IP configuration finished event in CameraSelectionWindow
+             *
+             * @param pCallBackFunc function pointer to IP configuration event
+             */
+            void RegisterIPConfigFinishedCallback(IPConfigEventCallback pCallBackFunc);
+
+            /**
              * Unregister callback function for double clicked event in CameraSelectionWindow
              *
              * @param pCallBackFunc function pointer to double clicked event
@@ -249,6 +274,20 @@ namespace Spinnaker
              * @param pCallBackFunc function pointer to disconnect event
              */
             void UnregisterDisconnectDeviceMenuCallback(ClickedEventCallback pCallBackFunc);
+
+            /**
+             * Unregister callback function for IP configuration starting event in CameraSelectionWindow
+             *
+             * @param pCallBackFunc function pointer to IP configuration event
+             */
+            void UnregisterIPConfigStartingCallback(IPConfigEventCallback pCallBackFunc);
+
+            /**
+             * Unregister callback function for IP configuration finished event in CameraSelectionWindow
+             *
+             * @param pCallBackFunc function pointer to IP configuration event
+             */
+            void UnregisterIPConfigFinishedCallback(IPConfigEventCallback pCallBackFunc);
 
           private:
             struct CamSelectionData; // Forward declaration

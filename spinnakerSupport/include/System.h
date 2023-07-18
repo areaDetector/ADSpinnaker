@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2022 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -29,10 +29,10 @@ namespace Spinnaker
     class ISystemImpl;
 
     // Define macros for getting Spinnaker library version
-#define FLIR_SPINNAKER_VERSION_MAJOR 2
-#define FLIR_SPINNAKER_VERSION_MINOR 4
+#define FLIR_SPINNAKER_VERSION_MAJOR 3
+#define FLIR_SPINNAKER_VERSION_MINOR 1
 #define FLIR_SPINNAKER_VERSION_TYPE  0
-#define FLIR_SPINNAKER_VERSION_BUILD 143
+#define FLIR_SPINNAKER_VERSION_BUILD 79
 
     /**
      * @defgroup SpinnakerClasses Spinnaker Classes
@@ -147,9 +147,11 @@ namespace Spinnaker
          * @see SystemEventHandler
          *
          * @param evtHandlerToRegister The event handler to register for the system
+         * @param updateInterface Determines whether or not UpdateInterfaceList() is called before registering event for
+         *        available interfaces on the system
          *
          */
-        void RegisterEventHandler(EventHandler& evtHandlerToRegister);
+        void RegisterEventHandler(EventHandler& evtHandlerToRegister, bool updateInterface = false);
 
         /**
          * Unregisters an event handler for the system
@@ -160,29 +162,6 @@ namespace Spinnaker
          *
          */
         void UnregisterEventHandler(EventHandler& evtHandlerToUnregister);
-
-        /**
-         * Registers event handlers for all available interfaces that are found on the system
-         * If new interfaces are detected by the system after RegisterInterfaceEventHandler() is called, those
-         * interfaces will be automatically registered with this event. Note that only GEV interface arrivals and
-         * removals are currently handled.
-         *
-         * @see InterfaceEventHandler
-         *
-         * @param evtHandlerToRegister The event handler to register for the available interfaces
-         * @param updateInterface Determines whether or not UpdateInterfaceList() is called before registering event for
-         *                        available interfaces on the system
-         */
-        virtual void RegisterInterfaceEventHandler(EventHandler& evtHandlerToRegister, bool updateInterface = true);
-
-        /**
-         * Unregisters event handlers for all available interfaces that are found on the system
-         *
-         * @see InterfaceEventHandler
-         *
-         * @param evtHandlerToUnregister The event handler to unregister from the available interfaces
-         */
-        void UnregisterInterfaceEventHandler(EventHandler& evtHandlerToUnregister);
 
         /**
          * Registers a logging event.
@@ -208,13 +187,16 @@ namespace Spinnaker
          * Sets a threshold priority level for logging event. Logging events
          * below such level will not trigger callbacks.
          *
-         * Spinnaker uses five levels of logging:
-         *	- Error		- failures that are non-recoverable without user intervention.
+         * Spinnaker uses multiple levels of logging:
+         *  - Fatal     - failures that are non-recoverable without user intervention.
+         *	- Error		- failures that may or may not be recoverable without user
+         *	              intervention (use case dependent).
          *	- Warning	- failures that are recoverable without user intervention.
-         *	- Notice	- information about events such as camera arrival and removal, initialization and
-         *                deinitialization, starting and stopping image acquisition, and feature modification.
-         *	- Info		- information about recurring events that are generated regularly such as information on
-         *                individual images.
+         *	- Notice	- information about events such as camera arrival and removal,
+         *	              initialization and deinitialization, starting and stopping image
+         *	              acquisition, and feature modification.
+         *	- Info		- information about recurring events that are generated regularly
+         *	              such as information on individual images.
          *	- Debug		- information that can be used to troubleshoot the system.
          *
          *
@@ -227,13 +209,16 @@ namespace Spinnaker
         /**
          * Retrieves the current logging event priority level.
          *
-         * Spinnaker uses five levels of logging:
-         *	- Error		- failures that are non-recoverable without user intervention.
+         * Spinnaker uses multiple levels of logging:
+         *  - Fatal     - failures that are non-recoverable without user intervention.
+         *	- Error		- failures that may or may not be recoverable without user
+         *	              intervention (use case dependent).
          *	- Warning	- failures that are recoverable without user intervention.
-         *	- Notice	- information about events such as camera arrival and removal, initialization and
-         *                deinitialization, starting and stopping image acquisition, and feature modification.
-         *	- Info		- information about recurring events that are generated regularly such as information on
-         *                individual images.
+         *	- Notice	- information about events such as camera arrival and removal,
+         *	              initialization and deinitialization, starting and stopping image
+         *	              acquisition, and feature modification.
+         *	- Info		- information about recurring events that are generated regularly
+         *	              such as information on individual images.
          *	- Debug		- information that can be used to troubleshoot the system.
          *
          * @see SpinnakerLogLevel

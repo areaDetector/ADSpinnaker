@@ -118,6 +118,23 @@ namespace Spinnaker
         void Clear();
 
         /**
+         * Adds a copy of an camera object.
+         *
+         * @param camera A camera object to be added to this list.
+         */
+        void Add(CameraPtr camera);
+
+        /**
+         * Removes all occurences of an camera that is pointed to by the input camera pointer
+         * and destroys its corresponding reference counted object. This function will throw
+         * a Spinnaker exception with SPINNAKER_ERR_NOT_AVAILABLEerror if no matching camera
+         * is found.
+         *
+         * @param camera Pointer to the camera that is to be removed
+         */
+        void Remove(CameraPtr camera);
+
+        /**
          * Removes a camera at "index" and destroys its corresponding reference counted
          * object. This function will throw a Spinnaker exception with
          * SPINNAKER_ERR_INVALID_PARAMETER error if the input index is out of range.

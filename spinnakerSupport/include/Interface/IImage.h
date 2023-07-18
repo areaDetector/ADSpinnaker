@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2022 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -38,7 +38,6 @@ namespace Spinnaker
     class ImageStatistics;
     class ImagePtr;
     enum PixelFormatEnums;
-
     /**
      *  @defgroup SpinnakerClasses Spinnaker Classes
      */
@@ -59,11 +58,6 @@ namespace Spinnaker
         virtual ~IImage(){};
 
         virtual ColorProcessingAlgorithm GetColorProcessing() const = 0;
-        virtual ImagePtr Convert(PixelFormatEnums format, ColorProcessingAlgorithm colorAlgorithm = DEFAULT) const = 0;
-        virtual void Convert(
-            ImagePtr destinationImage,
-            PixelFormatEnums format,
-            ColorProcessingAlgorithm colorAlgorithm = DEFAULT) const = 0;
         virtual void ResetImage(
             size_t width,
             size_t height,
@@ -84,10 +78,11 @@ namespace Spinnaker
             size_t offsetY,
             PixelFormatEnums pixelFormat,
             void* pData,
-            PayloadTypeInfoIDs dataPayloadType,
+            TLPayloadType dataPayloadType,
             size_t dataSize) = 0;
         virtual void Release() = 0;
         virtual uint64_t GetID() const = 0;
+        virtual uint64_t GetStreamIndex() const = 0;
         virtual void* GetData() const = 0;
         virtual void* GetPrivateData() const = 0;
         virtual float GetDataAbsoluteMax() const = 0;
@@ -105,9 +100,9 @@ namespace Spinnaker
         virtual size_t GetYPadding() const = 0;
         virtual uint64_t GetFrameID() const = 0;
         virtual size_t GetPayloadType() const = 0;
-        virtual PayloadTypeInfoIDs GetTLPayloadType() const = 0;
+        virtual TLPayloadType GetTLPayloadType() const = 0;
         virtual uint64_t GetTLPixelFormat() const = 0;
-        virtual PixelFormatNamespaceID GetTLPixelFormatNamespace() const = 0;
+        virtual TLPixelFormatNamespace GetTLPixelFormatNamespace() const = 0;
         virtual GenICam::gcstring GetPixelFormatName() const = 0;
         virtual PixelFormatEnums GetPixelFormat() const = 0;
         virtual PixelFormatIntType GetPixelFormatIntType() const = 0;
@@ -115,7 +110,7 @@ namespace Spinnaker
         virtual size_t GetValidPayloadSize() const = 0;
         virtual uint64_t GetChunkLayoutId() const = 0;
         virtual uint64_t GetTimeStamp() const = 0;
-        virtual void Save(const char* pFilename, ImageFileFormat format = FROM_FILE_EXT) const = 0;
+        virtual void Save(const char* pFilename, ImageFileFormat format = SPINNAKER_IMAGE_FILE_FORMAT_FROM_FILE_EXT) const = 0;
         virtual void Save(const char* pFilename, PNGOption& pOption) const = 0;
         virtual void Save(const char* pFilename, PPMOption& pOption) const = 0;
         virtual void Save(const char* pFilename, PGMOption& pOption) const = 0;
@@ -123,9 +118,11 @@ namespace Spinnaker
         virtual void Save(const char* pFilename, JPEGOption& pOption) const = 0;
         virtual void Save(const char* pFilename, JPG2Option& pOption) const = 0;
         virtual void Save(const char* pFilename, BMPOption& pOption) const = 0;
+        virtual void Save(const char* pFilename, SIOption& option) const = 0;
         virtual const ChunkData& GetChunkData() const = 0;
         virtual void CalculateStatistics(ImageStatistics& pStatistics) = 0;
         virtual bool HasCRC() const = 0;
+        virtual bool HasChunkData() const = 0;
         virtual bool CheckCRC() const = 0;
         virtual size_t GetImageSize() const = 0;
         virtual bool IsInUse() = 0;
@@ -134,6 +131,8 @@ namespace Spinnaker
 
       protected:
         friend class Stream;
+        friend class ImageImpl;
+        friend class ImageListImpl;
 
         IImage(){};
         struct ImageData;

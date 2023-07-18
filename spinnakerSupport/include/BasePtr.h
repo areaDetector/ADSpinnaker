@@ -79,10 +79,25 @@ namespace Spinnaker
         //! Pointer equal
         virtual bool operator==(long nMustBeNull) const;
 
+        //! Pointer not equal
+        virtual bool operator!=(const BasePtr& rT) const;
+
+        //! Pointer not equal
+        virtual bool operator!=(std::nullptr_t) const;
+
+        //! Pointer not equal
+        virtual bool operator!=(int nMustBeNull) const;
+
+        //! Pointer not equal
+        virtual bool operator!=(long nMustBeNull) const;
+
         //! get()
         virtual T* get() const;
 
       protected:
+        friend class CameraListImpl;
+        friend class InterfaceListImpl;
+
         struct PointerData;
         //! Underlying raw pointer.
         PointerData* m_pT;

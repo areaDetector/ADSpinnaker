@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -69,6 +69,12 @@ namespace Spinnaker
 		GenApi::IEnumerationT<StreamTypeEnum> &StreamType;
 
 		/**
+		 * Description: Stream mode of the device.
+		 * Visibility: Expert
+		 */
+		GenApi::IEnumerationT<StreamModeEnum> &StreamMode;
+
+		/**
 		 * Description: Controls the number of buffers to be used on this stream upon acquisition start when in manual mode.
 		 * Visibility: Expert
 		 */
@@ -123,10 +129,28 @@ namespace Spinnaker
 		GenApi::IInteger &StreamDeliveredFrameCount;
 
 		/**
-		 * Description: Number of lost frames due to queue underrun. This number is initialized with zero at the time the stream is opened and incremented every time the data could not be acquired because there was no buffer in the input buffer pool. It is not reset until the stream is closed.
+		 * Description: Number of successful GVSP data blocks received. Only valid while stream is active.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamReceivedFrameCount;
+
+		/**
+		 * Description: Displays number of images with missing packet.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamIncompleteFrameCount;
+
+		/**
+		 * Description: Number of times new data could not be acquired and was lost because there was no free buffer in the input buffer pool, or the frame data was never received fully due to data lost. This count usually indicates buffer starvation as well as some other underlying issues causing data lost in transit from the imaging device to the host.  To reduce lost frame count, improve the application's image processing speed, release the buffer (image->Release()) as soon as it is not needed, improve the data connection, or use buffer handling modes such as Oldest First Overwrite or Newest First.  This number is initialized with zero when the stream is opened and incremented when new data is lost. It is reset when the stream is closed.
 		 * Visibility: Expert
 		 */
 		GenApi::IInteger &StreamLostFrameCount;
+
+		/**
+		 * Description: Number of frames dropped from the output buffer queue before being processed by the application. This count usually indicates buffer starvation.  To reduce dropped frame count, improve the application's image processing speed, release the buffer (image->Release()) as soon as it is not needed, or add more buffers before streaming. This number is initialized with zero when stream is opened and incremented when old data is dropped. It is reset when the stream is closed.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamDroppedFrameCount;
 
 		/**
 		 * Description: Number of buffers in the input buffer pool plus the buffers(s) currently being filled.
@@ -139,30 +163,6 @@ namespace Spinnaker
 		 * Visibility: Expert
 		 */
 		GenApi::IInteger &StreamOutputBufferCount;
-
-		/**
-		 * Description: Enables or disables CRC checks on received images.
-		 * Visibility: Expert
-		 */
-		GenApi::IBoolean &StreamCRCCheckEnable;
-
-		/**
-		 * Description: Enables or disables the packet resend mechanism.
-		 * Visibility: Expert
-		 */
-		GenApi::IBoolean &GevPacketResendMode;
-
-		/**
-		 * Description: Maximum number of resend requests per image. Each resend request consists of a span of consecutive packet IDs.
-		 * Visibility: Expert
-		 */
-		GenApi::IInteger &GevMaximumNumberResendRequests;
-
-		/**
-		 * Description: Time in milliseconds to wait after the image trailer is received and before the image is completed by the driver.
-		 * Visibility: Expert
-		 */
-		GenApi::IInteger &GevPacketResendTimeout;
 
 		/**
 		 * Description: Flag indicating whether the acquisition engine is started or not.
@@ -183,40 +183,64 @@ namespace Spinnaker
 		GenApi::IInteger &StreamBufferAlignment;
 
 		/**
-		 * Description: Number of dropped frames due to queue overrun. This number is initialized with zero at the time the stream is opened and incremented every time old data is dropped from the output list for new data. It is not reset until the stream is closed.
+		 * Description: Enables or disables CRC checks on received images.
 		 * Visibility: Expert
 		 */
-		GenApi::IInteger &StreamDroppedFrameCount;
+		GenApi::IBoolean &StreamCRCCheckEnable;
 
 		/**
 		 * Description: Displays number of packets received on this stream.
 		 * Visibility: Expert
 		 */
-		GenApi::IInteger &GevTotalPacketCount;
+		GenApi::IInteger &StreamReceivedPacketCount;
 
 		/**
-		 * Description: Displays number of packets missed on this stream. Successful resent packets are not counted as a missed packet.
+		 * Description: Displays number of packets missed by this stream.
 		 * Visibility: Expert
 		 */
-		GenApi::IInteger &GevFailedPacketCount;
+		GenApi::IInteger &StreamMissedPacketCount;
 
 		/**
-		 * Description: Displays number of packets received after retransmit request on this stream.
+		 * Description: Enables or disables the packet resend mechanism.
 		 * Visibility: Expert
 		 */
-		GenApi::IInteger &GevResendPacketCount;
+		GenApi::IBoolean &StreamPacketResendEnable;
 
 		/**
-		 * Description: Displays number of images with missing packet.
+		 * Description: Time in milliseconds to wait after the image trailer is received and before the image is completed by the driver.
 		 * Visibility: Expert
 		 */
-		GenApi::IInteger &StreamFailedBufferCount;
+		GenApi::IInteger &StreamPacketResendTimeout;
+
+		/**
+		 * Description: Maximum number of resend requests per image. Each resend request consists of a span of consecutive packet IDs.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamPacketResendMaxRequests;
+
+		/**
+		 * Description: Displays number of packet resend requests transmitted to the camera.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamPacketResendRequestCount;
+
+		/**
+		 * Description: Displays number of packet resend requests successfully transmitted to the camera.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamPacketResendRequestSuccessCount;
 
 		/**
 		 * Description: Displays number of packets requested to be retransmitted on this stream.
 		 * Visibility: Expert
 		 */
-		GenApi::IInteger &GevResendRequestCount;
+		GenApi::IInteger &StreamPacketResendRequestedPacketCount;
+
+		/**
+		 * Description: Displays number of retransmitted packets received on this stream.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamPacketResendReceivedPacketCount;
 
 		/**
 		 * Description: Controls the image breakup size that should be used on this stream.

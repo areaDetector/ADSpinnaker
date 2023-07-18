@@ -53,11 +53,13 @@ namespace Spinnaker
         virtual CameraPtr GetBySerial(std::string serialNumber) const = 0;
         virtual CameraPtr GetByDeviceID(std::string deviceID) const = 0;
         virtual void Clear() = 0;
+        virtual void Add(CameraPtr camera) = 0;
+        virtual void Remove(CameraPtr camera) = 0;
         virtual void RemoveBySerial(std::string serialNumber) = 0;
         virtual void RemoveByIndex(unsigned int index) = 0;
         virtual void RemoveByDeviceID(std::string deviceID) = 0;
         virtual void Append(const CameraList& list) = 0;
-
+        
       protected:
         friend class InterfaceImpl;
         friend class CameraListImpl;
