@@ -5,7 +5,8 @@ dbLoadDatabase("$(TOP)/dbd/spinnakerApp.dbd")
 spinnakerApp_registerRecordDeviceDriver(pdbbase) 
 
 # Use this line for a specific camera by serial number, in this case a BlackFlyS GigE
-epicsEnvSet("CAMERA_ID", "14120134")
+epicsEnvSet("CAMERA_ID", "17549192")
+#epicsEnvSet("CAMERA_ID", "17476158")
 #epicsEnvSet("CAMERA_ID", "0")
 
 epicsEnvSet("GENICAM_DB_FILE", "$(ADGENICAM)/db/PGR_GS3_U3_23S6M.template")
