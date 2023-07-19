@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -231,29 +231,118 @@ void PrintDataStreamInfo(const Spinnaker::CameraPtr pCamera)
         stringstream outSS;
 
         // Get model name
-        const TransportLayerStream& camInfo = pCamera->TLStream;
+        const TransportLayerStream& camStreamInfo = pCamera->TLStream;
 
-        if (camInfo.StreamID != NULL)
-            outSS << "Stream ID: " << camInfo.StreamID.ToString() << endl;
-        if (camInfo.StreamType != NULL)
-            outSS << "Stream Type: " << camInfo.StreamType.ToString() << endl;
-        if (camInfo.StreamBufferCountResult != NULL)
-            outSS << "Stream Buffer Count: " << camInfo.StreamBufferCountResult.ToString() << endl;
-        if (camInfo.StreamBufferHandlingMode != NULL)
-            outSS << "Stream Buffer Handling Mode: " << camInfo.StreamBufferHandlingMode.ToString() << endl;
-
-        if (camInfo.GevTotalPacketCount != NULL)
-            outSS << "Stream Packets Received: " << camInfo.GevTotalPacketCount.ToString() << endl;
-        if (camInfo.GevFailedPacketCount != NULL)
-            outSS << "Stream Packets Missed: " << camInfo.GevFailedPacketCount.ToString() << endl;
-        if (camInfo.GevResendPacketCount != NULL)
-            outSS << "Stream Retransmitted Packets: " << camInfo.GevResendPacketCount.ToString() << endl;
-        if (camInfo.StreamFailedBufferCount != NULL)
-            outSS << "Stream Failed Buffer Count: " << camInfo.StreamFailedBufferCount.ToString() << endl;
-        if (camInfo.StreamLostFrameCount != NULL)
-            outSS << "Stream Buffer Underrun Count: " << camInfo.StreamLostFrameCount.ToString() << endl;
-        if (camInfo.GevResendRequestCount != NULL)
-            outSS << "Stream Retransmitted Packets Requested: " << camInfo.GevResendRequestCount.ToString() << endl;
+        if (camStreamInfo.StreamID != NULL)
+        {
+            outSS << "Stream ID: " << camStreamInfo.StreamID.ToString() << endl;
+        }
+        if (camStreamInfo.StreamType != NULL)
+        {
+            outSS << "Stream Type: " << camStreamInfo.StreamType.ToString() << endl;
+        }
+        if (camStreamInfo.StreamMode != NULL)
+        {
+            outSS << "Stream Mode: " << camStreamInfo.StreamMode.ToString() << endl;
+        }
+        if (camStreamInfo.StreamBufferCountResult != NULL)
+        {
+            outSS << "Stream Buffer Count: " << camStreamInfo.StreamBufferCountResult.ToString() << endl;
+        }
+        if (camStreamInfo.StreamBufferHandlingMode != NULL)
+        {
+            outSS << "Stream Buffer Handling Mode: " << camStreamInfo.StreamBufferHandlingMode.ToString() << endl;
+        }
+        if (camStreamInfo.StreamAnnounceBufferMinimum != NULL)
+        {
+            outSS << "Stream Announced Buffer Minimum: " << camStreamInfo.StreamAnnounceBufferMinimum.ToString()
+                  << endl;
+        }
+        if (camStreamInfo.StreamAnnouncedBufferCount != NULL)
+        {
+            outSS << "Stream Announced Buffer Count: " << camStreamInfo.StreamAnnouncedBufferCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamStartedFrameCount != NULL)
+        {
+            outSS << "Stream Started Frame Count: " << camStreamInfo.StreamStartedFrameCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamDeliveredFrameCount != NULL)
+        {
+            outSS << "Stream Delivered Frame Count: " << camStreamInfo.StreamDeliveredFrameCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamIncompleteFrameCount != NULL)
+        {
+            outSS << "Stream Incomplete Frame Count: " << camStreamInfo.StreamIncompleteFrameCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamReceivedFrameCount != NULL)
+        {
+            outSS << "Stream Received Frame Count: " << camStreamInfo.StreamReceivedFrameCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamLostFrameCount != NULL)
+        {
+            outSS << "Stream Lost Frame Count: " << camStreamInfo.StreamLostFrameCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamDroppedFrameCount != NULL)
+        {
+            outSS << "Stream Dropped Frame Count: " << camStreamInfo.StreamDroppedFrameCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamInputBufferCount != NULL)
+        {
+            outSS << "Stream Input Buffer Count: " << camStreamInfo.StreamInputBufferCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamOutputBufferCount != NULL)
+        {
+            outSS << "Stream Output Buffer Count: " << camStreamInfo.StreamOutputBufferCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamChunkCountMaximum != NULL)
+        {
+            outSS << "Stream Chunk Maximum: " << camStreamInfo.StreamChunkCountMaximum.ToString() << endl;
+        }
+        if (camStreamInfo.StreamCRCCheckEnable != NULL)
+        {
+            outSS << "Stream CRC Check Enable: " << camStreamInfo.StreamCRCCheckEnable.ToString() << endl;
+        }
+        if (camStreamInfo.StreamReceivedPacketCount != NULL)
+        {
+            outSS << "Stream Received Packet Count: " << camStreamInfo.StreamReceivedPacketCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamMissedPacketCount != NULL)
+        {
+            outSS << "Stream Incomplete Packet Count: " << camStreamInfo.StreamMissedPacketCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamPacketResendEnable != NULL)
+        {
+            outSS << "Stream Packet Resend Enable: " << camStreamInfo.StreamPacketResendEnable.ToString() << endl;
+        }
+        if (camStreamInfo.StreamPacketResendTimeout != NULL)
+        {
+            outSS << "Stream Packet Resend Timeout: " << camStreamInfo.StreamPacketResendTimeout.ToString() << endl;
+        }
+        if (camStreamInfo.StreamPacketResendMaxRequests != NULL)
+        {
+            outSS << "Stream Packet Resend Max Requests: " << camStreamInfo.StreamPacketResendMaxRequests.ToString()
+                  << endl;
+        }
+        if (camStreamInfo.StreamPacketResendRequestCount != NULL)
+        {
+            outSS << "Stream Packet Resend Request Count: " << camStreamInfo.StreamPacketResendRequestCount.ToString()
+                  << endl;
+        }
+        if (camStreamInfo.StreamPacketResendRequestSuccessCount != NULL)
+        {
+            outSS << "Stream Packet Resend Request Success Count: "
+                  << camStreamInfo.StreamPacketResendRequestSuccessCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamPacketResendRequestedPacketCount != NULL)
+        {
+            outSS << "Stream Packet Resend Requested Packet Count: "
+                  << camStreamInfo.StreamPacketResendRequestedPacketCount.ToString() << endl;
+        }
+        if (camStreamInfo.StreamPacketResendReceivedPacketCount != NULL)
+        {
+            outSS << "Stream Packet Resend Received Packet Count: "
+                  << camStreamInfo.StreamPacketResendReceivedPacketCount.ToString() << endl;
+        }
 
         cout << outSS.str() << endl;
     }
@@ -267,7 +356,6 @@ void PrintDataStreamInfo(const Spinnaker::CameraPtr pCamera)
 int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapGenTL, int numImagesToAcquire, int iteration)
 {
     int result = 0;
-    int fail_image = 0;
 
     cout << endl << endl << "*** ACQUIRING " << numImagesToAcquire << " IMAGES ***" << endl << endl;
 
@@ -275,7 +363,8 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapGenTL, int
     {
         // Retrieve enumeration node from nodemap
         CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-        if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
+        if (!IsReadable(ptrAcquisitionMode) ||
+            !IsWritable(ptrAcquisitionMode))
         {
             cout << "Unable to set acquisition mode to continuous (enum retrieval). Aborting..." << endl << endl;
             return -1;
@@ -283,7 +372,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapGenTL, int
 
         // Retrieve entry node from enumeration node
         CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
-        if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
+        if (!IsReadable(ptrAcquisitionModeContinuous))
         {
             cout << "Unable to set acquisition mode to continuous (entry retrieval). Aborting..." << endl << endl;
             return -1;
@@ -330,7 +419,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapGenTL, int
         CpuUtil::StopCpuTracing(&cpuUsageInfo);
 
         // Fetch CPU Stats
-        string cpuUsageString = CpuUtil::GetCpuStats(&cpuUsageInfo);
+        CpuUtil::GetCpuStats(&cpuUsageInfo);
 
         // End Acquisition
         pCam->EndAcquisition();
@@ -359,7 +448,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
     {
         FeatureList_t features;
         CCategoryPtr category = nodeMap.GetNode("DeviceInformation");
-        if (IsAvailable(category) && IsReadable(category))
+        if (IsReadable(category))
         {
             category->GetFeatures(features);
             FeatureList_t::const_iterator it;
@@ -374,7 +463,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
         }
         else
         {
-            cout << "Device control information not available." << endl;
+            cout << "Device control information not readable." << endl;
         }
     }
     catch (Spinnaker::Exception& e)
@@ -442,7 +531,7 @@ bool EnableManualFramerate(CameraPtr pCam)
         ptrFrameRateEnable = NodeMap.GetNode("AcquisitionFrameRateEnabled");
     }
 
-    if (IsAvailable(ptrFrameRateEnable) && IsWritable(ptrFrameRateEnable))
+    if (IsWritable(ptrFrameRateEnable))
     {
         ptrFrameRateEnable->SetValue(true);
 
@@ -451,16 +540,17 @@ bool EnableManualFramerate(CameraPtr pCam)
 
     // Turning AcquisitionFrameRateAuto off
     CEnumerationPtr ptrFrameRateAuto = NodeMap.GetNode("AcquisitionFrameRateAuto");
-    if (!IsAvailable(ptrFrameRateAuto) || !IsWritable(ptrFrameRateAuto))
+    if (!IsReadable(ptrFrameRateAuto) ||
+        !IsWritable(ptrFrameRateAuto))
     {
-        cout << "Unable to set AcquisitionFrameRateAuto..." << endl << endl;
+        cout << "Unable to get or set AcquisitionFrameRateAuto..." << endl << endl;
         return false;
     }
 
     CEnumEntryPtr ptrFrameRateAutoModeOff = ptrFrameRateAuto->GetEntryByName("Off");
-    if (!IsAvailable(ptrFrameRateAutoModeOff) || !IsReadable(ptrFrameRateAutoModeOff))
+    if (!IsReadable(ptrFrameRateAutoModeOff))
     {
-        cout << "Unable to set AcquisitionFrameRateAuto to OFF. Aborting..." << endl << endl;
+        cout << "Unable to get AcquisitionFrameRateAuto to OFF. Aborting..." << endl << endl;
         return false;
     }
 
@@ -490,9 +580,10 @@ bool SetFrameRate(CameraPtr pCam)
 
             // Set AcquisitionFrameRate to maximum
             CFloatPtr AcquisitionFrameRateNode = nodeMap.GetNode("AcquisitionFrameRate");
-            if (!IsAvailable(AcquisitionFrameRateNode) || !IsWritable(AcquisitionFrameRateNode))
+            if (!IsReadable(AcquisitionFrameRateNode) ||
+                !IsWritable(AcquisitionFrameRateNode))
             {
-                cout << "Unable to set AcquisitionFrameRate to Max. Aborting..." << endl << endl;
+                cout << "Unable to get or set AcquisitionFrameRate to Max. Aborting..." << endl << endl;
                 return false;
             }
 
@@ -518,7 +609,7 @@ bool SetFrameRate(CameraPtr pCam)
 
             // Set AcquisitionFrameRate to user defined value
             CFloatPtr AcquisitionFrameRateNode = nodeMap.GetNode("AcquisitionFrameRate");
-            if (!IsAvailable(AcquisitionFrameRateNode) || !IsWritable(AcquisitionFrameRateNode))
+            if (!IsWritable(AcquisitionFrameRateNode))
             {
                 cout << "Unable to set AcquisitionFrameRate to " << UserSetFramerate << ". Aborting..." << endl << endl;
                 return false;
@@ -563,7 +654,7 @@ int RunSingleCamera(CameraPtr pCam)
         {
             cout << "Setting the Packet Size to: " << PacketSizeToSet << endl << endl;
             CIntegerPtr PacketSizeNode = nodeMap.GetNode("GevSCPSPacketSize");
-            if (!IsAvailable(PacketSizeNode) || !IsWritable(PacketSizeNode))
+            if (!IsWritable(PacketSizeNode))
             {
                 cout << "Unable to set Packet Size to: " << PacketSizeToSet << ". Aborting..." << endl << endl;
             }
@@ -572,7 +663,7 @@ int RunSingleCamera(CameraPtr pCam)
 
             cout << "Setting the Packet Delay to: " << PacketDelayToSet << endl << endl;
             CIntegerPtr PacketDelayNode = nodeMap.GetNode("GevSCPD");
-            if (!IsAvailable(PacketSizeNode) || !IsWritable(PacketSizeNode))
+            if (!IsWritable(PacketDelayNode))
             {
                 cout << "Unable to set Packet Delay to: " << PacketDelayToSet << ". Aborting..." << endl << endl;
             }
@@ -591,14 +682,14 @@ int RunSingleCamera(CameraPtr pCam)
             {
                 cout << "Setting Pixel Format to: " << PixelFormatToSet << endl << endl;
                 CEnumerationPtr PixalFormatNode = nodeMap.GetNode("PixelFormat");
-                if (!IsAvailable(PixalFormatNode) || !IsReadable(PixalFormatNode))
+                if (!IsReadable(PixalFormatNode))
                 {
                     cout << "Unable to read PixalFormat. Aborting..." << endl << endl;
                     return false;
                 }
 
                 CEnumEntryPtr PixelFormat_entry = PixalFormatNode->GetEntryByName(PixelFormatToSet);
-                if (!IsAvailable(PixalFormatNode) || !IsWritable(PixalFormatNode))
+                if (!IsWritable(PixalFormatNode))
                 {
                     cout << "Unable to set PixalFormat to: " << PixelFormatToSet << ". Aborting..." << endl << endl;
                     return false;
@@ -619,7 +710,7 @@ int RunSingleCamera(CameraPtr pCam)
             {
                 cout << endl << "Turning off ExposureAuto..." << endl;
                 CEnumerationPtr ExposureModeNode = nodeMap.GetNode("ExposureAuto");
-                if (!IsAvailable(ExposureModeNode) || !IsWritable(ExposureModeNode))
+                if (!IsWritable(ExposureModeNode))
                 {
                     cout << "Unable to turn off ExposureAuto. Aborting..." << endl << endl;
                     return false;
@@ -634,9 +725,10 @@ int RunSingleCamera(CameraPtr pCam)
 
             cout << endl << "Setting minimum Exposure Time" << endl;
             CFloatPtr ExposureTimeNode = nodeMap.GetNode("ExposureTime");
-            if (!IsAvailable(ExposureTimeNode) || !IsWritable(ExposureTimeNode))
+            if (!IsReadable(ExposureTimeNode) ||
+                !IsWritable(ExposureTimeNode))
             {
-                cout << "Unable to set ExposureTime to minimum. Aborting..." << endl << endl;
+                cout << "Unable to get or set ExposureTime to minimum. Aborting..." << endl << endl;
                 return false;
             }
 
@@ -657,7 +749,7 @@ int RunSingleCamera(CameraPtr pCam)
             // Get FrameRate
             INodeMap& nodeMap = pCam->GetNodeMap();
             CFloatPtr AcquisitionFrameRateNode = nodeMap.GetNode("AcquisitionFrameRate");
-            if (!IsAvailable(AcquisitionFrameRateNode) || !IsReadable(AcquisitionFrameRateNode))
+            if (!IsReadable(AcquisitionFrameRateNode))
             {
                 cout << "Unable to read AcquisitionFrameRate. Aborting..." << endl << endl;
                 return false;
@@ -670,7 +762,7 @@ int RunSingleCamera(CameraPtr pCam)
         // Acquire images
         cout << "This iteration will stream: " << NumImagesToGrab << " images" << endl;
         result = result | AcquireImages(pCam, nodeMap, nodeMapGenTL, NumImagesToGrab, 0);
-
+        
         // Print Data Stream Nodemap Information
         PrintDataStreamInfo(pCam);
 
