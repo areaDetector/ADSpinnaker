@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -31,6 +31,10 @@
  *	a camera to acquire images, ExceptionHandling explores the use of standard
  *	and Spinnaker exceptions, and NodeMapInfo demonstrates retrieving
  *	information from various node types.
+ *
+ *  Please leave us feedback at: https://www.surveymonkey.com/r/TDYMVAPI
+ *  More source code examples at: https://github.com/Teledyne-MV/Spinnaker-Examples
+ *  Need help? Check out our forum at: https://teledynevisionsolutions.zendesk.com/hc/en-us/community/topics
  */
 
 #include "Spinnaker.h"
@@ -74,7 +78,7 @@ int QueryInterface(InterfacePtr pInterface)
         //
         CStringPtr ptrInterfaceDisplayName = nodeMapInterface.GetNode("InterfaceDisplayName");
 
-        if (IsAvailable(ptrInterfaceDisplayName) && IsReadable(ptrInterfaceDisplayName))
+        if (IsReadable(ptrInterfaceDisplayName))
         {
             gcstring interfaceDisplayName = ptrInterfaceDisplayName->GetValue();
 
@@ -151,7 +155,7 @@ int QueryInterface(InterfacePtr pInterface)
             //
             CStringPtr ptrDeviceVendorName = nodeMapTLDevice.GetNode("DeviceVendorName");
 
-            if (IsAvailable(ptrDeviceVendorName) && IsReadable(ptrDeviceVendorName))
+            if (IsReadable(ptrDeviceVendorName))
             {
                 gcstring deviceVendorName = ptrDeviceVendorName->ToString();
 
@@ -160,7 +164,7 @@ int QueryInterface(InterfacePtr pInterface)
 
             CStringPtr ptrDeviceModelName = nodeMapTLDevice.GetNode("DeviceModelName");
 
-            if (IsAvailable(ptrDeviceModelName) && IsReadable(ptrDeviceModelName))
+            if (IsReadable(ptrDeviceModelName))
             {
                 gcstring deviceModelName = ptrDeviceModelName->ToString();
 
