@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -16,24 +16,28 @@
 //=============================================================================
 
 /**
- *  @example Acquisition.cpp
- *
- *  @brief Acquisition.cpp shows how to acquire images. It relies on
- *  information provided in the Enumeration example. Also, check out the
- *  ExceptionHandling and NodeMapInfo examples if you haven't already.
- *  ExceptionHandling shows the handling of standard and Spinnaker exceptions
- *  while NodeMapInfo explores retrieving information from various node types.
- *
- *  This example touches on the preparation and cleanup of a camera just before
- *  and just after the acquisition of images. Image retrieval and conversion,
- *  grabbing image data, and saving images are all covered as well.
- *
- *  Once comfortable with Acquisition, we suggest checking out
- *  AcquisitionMultipleCamera, NodeMapCallback, or SaveToAvi.
- *  AcquisitionMultipleCamera demonstrates simultaneously acquiring images from
- *  a number of cameras, NodeMapCallback serves as a good introduction to
- *  programming with callbacks and events, and SaveToAvi exhibits video creation.
- */
+*  @example Acquisition.cpp
+*
+*  @brief Acquisition.cpp shows how to acquire images. It relies on
+*  information provided in the Enumeration example. Also, check out the
+*  ExceptionHandling and NodeMapInfo examples if you haven't already.
+*  ExceptionHandling shows the handling of standard and Spinnaker exceptions
+*  while NodeMapInfo explores retrieving information from various node types.
+*
+*  This example touches on the preparation and cleanup of a camera just before
+*  and just after the acquisition of images. Image retrieval and conversion,
+*  grabbing image data, and saving images are all covered as well.
+*
+*  Once comfortable with Acquisition, we suggest checking out
+*  AcquisitionMultipleCamera, NodeMapCallback, or SaveToAvi.
+*  AcquisitionMultipleCamera demonstrates simultaneously acquiring images from
+*  a number of cameras, NodeMapCallback serves as a good introduction to
+*  programming with callbacks and events, and SaveToAvi exhibits video creation.
+*
+*  Please leave us feedback at: https://www.surveymonkey.com/r/TDYMVAPI
+*  More source code examples at: https://github.com/Teledyne-MV/Spinnaker-Examples
+*  Need help? Check out our forum at: https://teledynevisionsolutions.zendesk.com/hc/en-us/community/topics
+*/
 
 #include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
@@ -45,61 +49,88 @@ using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
 
-#ifdef _DEBUG
-// Disables heartbeat on GEV cameras so debugging does not incur timeout errors
-int DisableHeartbeat(INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
+// Disables or enables heartbeat on GEV cameras so debugging does not incur timeout errors
+int ConfigureGVCPHeartbeat(CameraPtr pCam, bool enable)
 {
-    cout << "Checking device type to see if we need to disable the camera's heartbeat..." << endl << endl;
-
     //
     // Write to boolean node controlling the camera's heartbeat
     //
     // *** NOTES ***
-    // This applies only to GEV cameras and only applies when in DEBUG mode.
+    // This applies only to GEV cameras.
+    //
     // GEV cameras have a heartbeat built in, but when debugging applications the
     // camera may time out due to its heartbeat. Disabling the heartbeat prevents
-    // this timeout from occurring, enabling us to continue with any necessary debugging.
-    // This procedure does not affect other types of cameras and will prematurely exit
-    // if it determines the device in question is not a GEV camera.
+    // this timeout from occurring, enabling us to continue with any necessary 
+    // debugging.
     //
     // *** LATER ***
-    // Since we only disable the heartbeat on GEV cameras during debug mode, it is better
-    // to power cycle the camera after debugging. A power cycle will reset the camera
-    // to its default settings.
-    //
+    // Make sure that the heartbeat is reset upon completion of the debugging.  
+    // If the application is terminated unexpectedly, the camera may not locked
+    // to Spinnaker indefinitely due to the the timeout being disabled.  When that 
+    // happens, a camera power cycle will reset the heartbeat to its default setting.
+
+    // Retrieve TL device nodemap
+    INodeMap& nodeMapTLDevice = pCam->GetTLDeviceNodeMap();
+
+    // Retrieve GenICam nodemap
+    INodeMap& nodeMap = pCam->GetNodeMap();
+
     CEnumerationPtr ptrDeviceType = nodeMapTLDevice.GetNode("DeviceType");
-    if (!IsAvailable(ptrDeviceType) || !IsReadable(ptrDeviceType))
+    if (!IsReadable(ptrDeviceType))
     {
-        cout << "Error with reading the device's type. Aborting..." << endl << endl;
         return -1;
+    }
+
+    if (ptrDeviceType->GetIntValue() != DeviceType_GigEVision)
+    {
+        return 0;
+    }
+
+    if (enable)
+    {
+        cout << endl << "Resetting heartbeat..." << endl << endl;
     }
     else
     {
-        if (ptrDeviceType->GetIntValue() == DeviceType_GigEVision)
+        cout << endl << "Disabling heartbeat..." << endl << endl;
+    }
+
+    CBooleanPtr ptrDeviceHeartbeat = nodeMap.GetNode("GevGVCPHeartbeatDisable");
+    if (!IsWritable(ptrDeviceHeartbeat))
+    {
+        cout << "Unable to configure heartbeat. Continuing with execution as this may be non-fatal..."
+            << endl
+            << endl;
+    }
+    else
+    {
+        ptrDeviceHeartbeat->SetValue(enable);
+
+        if (!enable)
         {
-            cout << "Working with a GigE camera. Attempting to disable heartbeat before continuing..." << endl << endl;
-            CBooleanPtr ptrDeviceHeartbeat = nodeMap.GetNode("GevGVCPHeartbeatDisable");
-            if (!IsAvailable(ptrDeviceHeartbeat) || !IsWritable(ptrDeviceHeartbeat))
-            {
-                cout << "Unable to disable heartbeat on camera. Continuing with execution as this may be non-fatal..."
-                     << endl
-                     << endl;
-            }
-            else
-            {
-                ptrDeviceHeartbeat->SetValue(true);
-                cout << "WARNING: Heartbeat on GigE camera disabled for the rest of Debug Mode." << endl;
-                cout << "         Power cycle camera when done debugging to re-enable the heartbeat..." << endl << endl;
-            }
+            cout << "WARNING: Heartbeat has been disabled for the rest of this example run." << endl;
+            cout << "         Heartbeat will be reset upon the completion of this run.  If the " << endl;
+            cout << "         example is aborted unexpectedly before the heartbeat is reset, the" << endl;
+            cout << "         camera may need to be power cycled to reset the heartbeat." << endl << endl;
         }
         else
         {
-            cout << "Camera does not use GigE interface. Resuming normal execution..." << endl << endl;
+            cout << "Heartbeat has been reset." << endl;
         }
     }
+
     return 0;
 }
-#endif
+
+int ResetGVCPHeartbeat(CameraPtr pCam)
+{
+    return ConfigureGVCPHeartbeat(pCam, true);
+}
+
+int DisableGVCPHeartbeat(CameraPtr pCam)
+{
+    return ConfigureGVCPHeartbeat(pCam, false);
+}
 
 // This function acquires and saves 10 images from a device.
 int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
@@ -134,7 +165,8 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
         //
         // Retrieve enumeration node from nodemap
         CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-        if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
+        if (!IsReadable(ptrAcquisitionMode) ||
+            !IsWritable(ptrAcquisitionMode))
         {
             cout << "Unable to set acquisition mode to continuous (enum retrieval). Aborting..." << endl << endl;
             return -1;
@@ -142,9 +174,9 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         // Retrieve entry node from enumeration node
         CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
-        if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
+        if (!IsReadable(ptrAcquisitionModeContinuous))
         {
-            cout << "Unable to set acquisition mode to continuous (entry retrieval). Aborting..." << endl << endl;
+            cout << "Unable to get or set acquisition mode to continuous (entry retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
@@ -155,18 +187,6 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
         ptrAcquisitionMode->SetIntValue(acquisitionModeContinuous);
 
         cout << "Acquisition mode set to continuous..." << endl;
-
-#ifdef _DEBUG
-        cout << endl << endl << "*** DEBUG ***" << endl << endl;
-
-        // If using a GEV camera and debugging, should disable heartbeat first to prevent further issues
-        if (DisableHeartbeat(nodeMap, nodeMapTLDevice) != 0)
-        {
-            return -1;
-        }
-
-        cout << endl << endl << "*** END OF DEBUG ***" << endl << endl;
-#endif
 
         //
         // Begin acquiring images
@@ -195,7 +215,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
         //
         gcstring deviceSerialNumber("");
         CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
-        if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
+        if (IsReadable(ptrStringSerial))
         {
             deviceSerialNumber = ptrStringSerial->GetValue();
 
@@ -205,6 +225,20 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         // Retrieve, convert, and save images
         const unsigned int k_numImages = 10;
+
+        //
+        // Create ImageProcessor instance for post processing images
+        //
+        ImageProcessor processor;
+
+        //
+        // Set default image processor color processing method
+        //
+        // *** NOTES ***
+        // By default, if no specific color processing algorithm is set, the image
+        // processor will default to NEAREST_NEIGHBOR method.
+        //
+        processor.SetColorProcessing(SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR);
 
         for (unsigned int imageCnt = 0; imageCnt < k_numImages; imageCnt++)
         {
@@ -237,8 +271,8 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
                 {
                     // Retrieve and print the image status description
                     cout << "Image incomplete: " << Image::GetImageStatusDescription(pResultImage->GetImageStatus())
-                         << "..." << endl
-                         << endl;
+                        << "..." << endl
+                        << endl;
                 }
                 else
                 {
@@ -268,7 +302,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
                     // When converting images, color processing algorithm is an
                     // optional parameter.
                     //
-                    ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
+                    ImagePtr convertedImage = processor.Convert(pResultImage, PixelFormat_Mono8);
 
                     // Create a unique filename
                     ostringstream filename;
@@ -343,7 +377,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
     {
         FeatureList_t features;
         const CCategoryPtr category = nodeMap.GetNode("DeviceInformation");
-        if (IsAvailable(category) && IsReadable(category))
+        if (IsReadable(category))
         {
             category->GetFeatures(features);
 
@@ -389,8 +423,20 @@ int RunSingleCamera(CameraPtr pCam)
         // Retrieve GenICam nodemap
         INodeMap& nodeMap = pCam->GetNodeMap();
 
+        // Configure heartbeat for GEV camera
+#ifdef _DEBUG
+        result = result | DisableGVCPHeartbeat(pCam);
+#else
+        result = result | ResetGVCPHeartbeat(pCam);
+#endif
+
         // Acquire images
         result = result | AcquireImages(pCam, nodeMap, nodeMapTLDevice);
+
+#ifdef _DEBUG
+        // Reset heartbeat for GEV camera
+        result = result | ResetGVCPHeartbeat(pCam);
+#endif
 
         // Deinitialize camera
         pCam->DeInit();
@@ -415,8 +461,8 @@ int main(int /*argc*/, char** /*argv*/)
     if (tempFile == nullptr)
     {
         cout << "Failed to create file in current folder.  Please check "
-                "permissions."
-             << endl;
+            "permissions."
+            << endl;
         cout << "Press Enter to exit..." << endl;
         getchar();
         return -1;
@@ -433,8 +479,8 @@ int main(int /*argc*/, char** /*argv*/)
     // Print out current library version
     const LibraryVersion spinnakerLibraryVersion = system->GetLibraryVersion();
     cout << "Spinnaker library version: " << spinnakerLibraryVersion.major << "." << spinnakerLibraryVersion.minor
-         << "." << spinnakerLibraryVersion.type << "." << spinnakerLibraryVersion.build << endl
-         << endl;
+        << "." << spinnakerLibraryVersion.type << "." << spinnakerLibraryVersion.build << endl
+        << endl;
 
     // Retrieve list of cameras from the system
     CameraList camList = system->GetCameras();
