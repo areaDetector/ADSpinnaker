@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -16,7 +16,7 @@
 //=============================================================================
 
 #pragma once
-//#include "stdafx.h"
+#include "stdafx.h"
 #include <Windows.h>
 #include <string>
 #include "CpuUtil.h"
@@ -52,12 +52,20 @@ namespace CpuUtil
     {
         CpuUsageInfo()
         {
-            memset(&kernelStartTime, 0, sizeof(FILETIME));
-            memset(&kernelStopTime, 0, sizeof(FILETIME));
-            memset(&userStartTime, 0, sizeof(FILETIME));
-            memset(&userStopTime, 0, sizeof(FILETIME));
-            memset(&trackingStartTime, 0, sizeof(FILETIME));
-            memset(&trackingStopTime, 0, sizeof(FILETIME));
+            kernelStartTime = FILETIME();
+            kernelStopTime = FILETIME();
+            userStartTime = FILETIME();
+            userStopTime = FILETIME();
+
+            trackingStartTime = FILETIME();
+            trackingStopTime = FILETIME();
+
+            kernelSystemTime = SYSTEMTIME();
+            userSystemTime = SYSTEMTIME();
+            cpuPercentage = 0;
+            kernelTimeMilliseconds = 0;
+            userTimeMilliseconds = 0;
+            elapsedTime = 0;
         }
 
         FILETIME kernelStartTime;
@@ -69,7 +77,8 @@ namespace CpuUtil
         FILETIME trackingStopTime;
 
         double cpuPercentage;
-        SYSTEMTIME kernelSystemTime, userSystemTime;
+        SYSTEMTIME kernelSystemTime;
+        SYSTEMTIME userSystemTime;
         double kernelTimeMilliseconds;
         double userTimeMilliseconds;
         double elapsedTime;

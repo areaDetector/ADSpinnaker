@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -16,7 +16,7 @@
 //=============================================================================
 
 #pragma once
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "CpuUtil.h"
 using namespace std;
 
