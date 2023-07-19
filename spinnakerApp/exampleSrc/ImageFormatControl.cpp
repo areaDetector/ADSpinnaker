@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -32,6 +32,10 @@
  *	Exposure and ImageFormatControl, we suggest checking out any of the longer,
  *	more complicated examples related to camera configuration: ChunkData,
  *	LookupTable, Sequencer, or Trigger.
+ *
+ *  Please leave us feedback at: https://www.surveymonkey.com/r/TDYMVAPI
+ *  More source code examples at: https://github.com/Teledyne-MV/Spinnaker-Examples
+ *  Need help? Check out our forum at: https://teledynevisionsolutions.zendesk.com/hc/en-us/community/topics
  */
 
 #include "Spinnaker.h"
@@ -74,11 +78,11 @@ int ConfigureCustomImageSettings(INodeMap& nodeMap)
         //
         // Retrieve the enumeration node from the nodemap
         CEnumerationPtr ptrPixelFormat = nodeMap.GetNode("PixelFormat");
-        if (IsAvailable(ptrPixelFormat) && IsWritable(ptrPixelFormat))
+        if (IsReadable(ptrPixelFormat) && IsWritable(ptrPixelFormat))
         {
             // Retrieve the desired entry node from the enumeration node
             CEnumEntryPtr ptrPixelFormatMono8 = ptrPixelFormat->GetEntryByName("Mono8");
-            if (IsAvailable(ptrPixelFormatMono8) && IsReadable(ptrPixelFormatMono8))
+            if (IsReadable(ptrPixelFormatMono8))
             {
                 // Retrieve the integer value from the entry node
                 int64_t pixelFormatMono8 = ptrPixelFormatMono8->GetValue();
@@ -90,12 +94,12 @@ int ConfigureCustomImageSettings(INodeMap& nodeMap)
             }
             else
             {
-                cout << "Pixel format mono 8 not available..." << endl;
+                cout << "Pixel format mono 8 not readable..." << endl;
             }
         }
         else
         {
-            cout << "Pixel format not available..." << endl;
+            cout << "Pixel format not readable or writable..." << endl;
         }
 
         //
@@ -107,14 +111,14 @@ int ConfigureCustomImageSettings(INodeMap& nodeMap)
         // minimums to ensure that your desired value is within range.
         //
         CIntegerPtr ptrOffsetX = nodeMap.GetNode("OffsetX");
-        if (IsAvailable(ptrOffsetX) && IsWritable(ptrOffsetX))
+        if (IsReadable(ptrOffsetX) && IsWritable(ptrOffsetX))
         {
             ptrOffsetX->SetValue(ptrOffsetX->GetMin());
             cout << "Offset X set to " << ptrOffsetX->GetMin() << "..." << endl;
         }
         else
         {
-            cout << "Offset X not available..." << endl;
+            cout << "Offset X not readable or writable..." << endl;
         }
 
         //
@@ -128,14 +132,14 @@ int ConfigureCustomImageSettings(INodeMap& nodeMap)
         // is appropriate. The increment is retrieved with the method GetInc().
         //
         CIntegerPtr ptrOffsetY = nodeMap.GetNode("OffsetY");
-        if (IsAvailable(ptrOffsetY) && IsWritable(ptrOffsetY))
+        if (IsReadable(ptrOffsetY) && IsWritable(ptrOffsetY))
         {
             ptrOffsetY->SetValue(ptrOffsetY->GetMin());
             cout << "Offset Y set to " << ptrOffsetY->GetValue() << "..." << endl;
         }
         else
         {
-            cout << "Offset Y not available..." << endl;
+            cout << "Offset Y not readable or writable..." << endl;
         }
 
         //
@@ -149,7 +153,7 @@ int ConfigureCustomImageSettings(INodeMap& nodeMap)
         // there is no reason to check against the increment.
         //
         CIntegerPtr ptrWidth = nodeMap.GetNode("Width");
-        if (IsAvailable(ptrWidth) && IsWritable(ptrWidth))
+        if (IsReadable(ptrWidth) && IsWritable(ptrWidth))
         {
             int64_t widthToSet = ptrWidth->GetMax();
 
@@ -159,7 +163,7 @@ int ConfigureCustomImageSettings(INodeMap& nodeMap)
         }
         else
         {
-            cout << "Width not available..." << endl;
+            cout << "Width not readable or writable..." << endl;
         }
 
         //
@@ -170,7 +174,7 @@ int ConfigureCustomImageSettings(INodeMap& nodeMap)
         // maximum should always be a multiple of its increment.
         //
         CIntegerPtr ptrHeight = nodeMap.GetNode("Height");
-        if (IsAvailable(ptrHeight) && IsWritable(ptrHeight))
+        if (IsReadable(ptrHeight) && IsWritable(ptrHeight))
         {
             int64_t heightToSet = ptrHeight->GetMax();
 
@@ -180,7 +184,7 @@ int ConfigureCustomImageSettings(INodeMap& nodeMap)
         }
         else
         {
-            cout << "Height not available..." << endl << endl;
+            cout << "Height not readable or writable..." << endl << endl;
         }
     }
     catch (Spinnaker::Exception& e)
@@ -205,7 +209,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
     {
         FeatureList_t features;
         CCategoryPtr category = nodeMap.GetNode("DeviceInformation");
-        if (IsAvailable(category) && IsReadable(category))
+        if (IsReadable(category))
         {
             category->GetFeatures(features);
 
@@ -221,7 +225,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
         }
         else
         {
-            cout << "Device control information not available." << endl;
+            cout << "Device control information not readable." << endl;
         }
     }
     catch (Spinnaker::Exception& e)
@@ -245,16 +249,17 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
     {
         // Set acquisition mode to continuous
         CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-        if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
+        if (!IsReadable(ptrAcquisitionMode) ||
+            !IsWritable(ptrAcquisitionMode))
         {
-            cout << "Unable to set acquisition mode to continuous (node retrieval). Aborting..." << endl << endl;
+            cout << "Unable to get or set acquisition mode to continuous (node retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
         CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
-        if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
+        if (!IsReadable(ptrAcquisitionModeContinuous))
         {
-            cout << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl
+            cout << "Unable to get acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl
                  << endl;
             return -1;
         }
@@ -274,7 +279,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
         gcstring deviceSerialNumber("");
 
         CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
-        if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
+        if (IsReadable(ptrStringSerial))
         {
             deviceSerialNumber = ptrStringSerial->GetValue();
 
@@ -284,6 +289,20 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         // Retrieve, convert, and save images
         const unsigned int k_numImages = 10;
+
+        //
+        // Create ImageProcessor instance for post processing images
+        //
+        ImageProcessor processor;
+
+        //
+        // Set default image processor color processing method
+        //
+        // *** NOTES ***
+        // By default, if no specific color processing algorithm is set, the image
+        // processor will default to NEAREST_NEIGHBOR method.
+        //
+        processor.SetColorProcessing(SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR);
 
         for (unsigned int imageCnt = 0; imageCnt < k_numImages; imageCnt++)
         {
@@ -304,7 +323,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
                          << ", height = " << pResultImage->GetHeight() << endl;
 
                     // Convert image to mono 8
-                    ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
+                    ImagePtr convertedImage = processor.Convert(pResultImage, PixelFormat_Mono8);
 
                     // Create a unique filename
                     ostringstream filename;
