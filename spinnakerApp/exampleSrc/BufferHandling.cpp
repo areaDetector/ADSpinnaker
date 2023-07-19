@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -32,6 +32,9 @@
  *  modes to see which images are retrieved, confirming their identities via their
  *  Frame ID values.
  *
+ *  Please leave us feedback at: https://www.surveymonkey.com/r/TDYMVAPI
+ *  More source code examples at: https://github.com/Teledyne-MV/Spinnaker-Examples
+ *  Need help? Check out our forum at: https://teledynevisionsolutions.zendesk.com/hc/en-us/community/topics
  */
 
 #include "Spinnaker.h"
@@ -78,40 +81,42 @@ int ConfigureTrigger(INodeMap& nodeMap)
     try
     {
         //
-        // Ensure trigger mode off
+        // Ensure trigger mode on
         //
         // *** NOTES ***
-        // The trigger must be disabled in order to configure the
+        // The trigger must be enabled in order to configure the
         // trigger source.
         //
         CEnumerationPtr ptrTriggerMode = nodeMap.GetNode("TriggerMode");
-        if (!IsAvailable(ptrTriggerMode) || !IsWritable(ptrTriggerMode))
+        if (!IsReadable(ptrTriggerMode) ||
+            !IsWritable(ptrTriggerMode))
         {
-            cout << "Unable to disable trigger mode (node retrieval). Aborting..." << endl;
+            cout << "Unable to enable trigger mode (node retrieval). Aborting..." << endl;
             return -1;
         }
 
-        CEnumEntryPtr ptrTriggerModeOff = ptrTriggerMode->GetEntryByName("Off");
-        if (!IsAvailable(ptrTriggerModeOff) || !IsReadable(ptrTriggerModeOff))
+        CEnumEntryPtr ptrTriggerModeOn = ptrTriggerMode->GetEntryByName("On");
+        if (!IsReadable(ptrTriggerModeOn))
         {
-            cout << "Unable to disable trigger mode (enum entry retrieval). Aborting..." << endl;
+            cout << "Unable to enable trigger mode (enum entry retrieval). Aborting..." << endl;
             return -1;
         }
 
-        ptrTriggerMode->SetIntValue(ptrTriggerModeOff->GetValue());
+        ptrTriggerMode->SetIntValue(ptrTriggerModeOn->GetValue());
 
-        cout << endl << "Trigger mode disabled..." << endl;
+        cout << endl << "Trigger mode enabled..." << endl;
 
         // Set trigger source to software
         CEnumerationPtr ptrTriggerSource = nodeMap.GetNode("TriggerSource");
-        if (!IsAvailable(ptrTriggerSource) || !IsWritable(ptrTriggerSource))
+        if (!IsReadable(ptrTriggerSource) ||
+            !IsWritable(ptrTriggerSource))
         {
-            cout << "Unable to set trigger mode (node retrieval). Aborting..." << endl;
+            cout << "Unable to get or set trigger mode (node retrieval). Aborting..." << endl;
             return -1;
         }
 
         CEnumEntryPtr ptrTriggerSourceSoftware = ptrTriggerSource->GetEntryByName("Software");
-        if (!IsAvailable(ptrTriggerSourceSoftware) || !IsReadable(ptrTriggerSourceSoftware))
+        if (!IsReadable(ptrTriggerSourceSoftware))
         {
             cout << "Unable to set trigger mode (enum entry retrieval). Aborting..." << endl;
             return -1;
@@ -121,16 +126,6 @@ int ConfigureTrigger(INodeMap& nodeMap)
 
         cout << "Trigger source set to software..." << endl;
 
-        // Turn trigger mode on
-        CEnumEntryPtr ptrTriggerModeOn = ptrTriggerMode->GetEntryByName("On");
-        if (!IsAvailable(ptrTriggerModeOn) || !IsReadable(ptrTriggerModeOn))
-        {
-            cout << "Unable to enable trigger mode (enum entry retrieval). Aborting..." << endl;
-            return -1;
-        }
-        ptrTriggerMode->SetIntValue(ptrTriggerModeOn->GetValue());
-
-        cout << "Trigger mode turned back on..." << endl << endl;
     }
     catch (Spinnaker::Exception& e)
     {
@@ -155,7 +150,7 @@ int GrabNextImageByTrigger(INodeMap& nodeMap)
     {
         // Execute software trigger
         CCommandPtr ptrSoftwareTriggerCommand = nodeMap.GetNode("TriggerSoftware");
-        if (!IsAvailable(ptrSoftwareTriggerCommand) || !IsWritable(ptrSoftwareTriggerCommand))
+        if (!IsWritable(ptrSoftwareTriggerCommand))
         {
             cout << "Unable to execute trigger. Aborting..." << endl;
             return -1;
@@ -188,14 +183,15 @@ int ResetTrigger(INodeMap& nodeMap)
         // restore the camera to a clean state.
         //
         CEnumerationPtr ptrTriggerMode = nodeMap.GetNode("TriggerMode");
-        if (!IsAvailable(ptrTriggerMode) || !IsWritable(ptrTriggerMode))
+        if (!IsReadable(ptrTriggerMode) ||
+            !IsWritable(ptrTriggerMode))
         {
             cout << "Unable to disable trigger mode (node retrieval). Non-fatal error..." << endl;
             return -1;
         }
 
         CEnumEntryPtr ptrTriggerModeOff = ptrTriggerMode->GetEntryByName("Off");
-        if (!IsAvailable(ptrTriggerModeOff) || !IsReadable(ptrTriggerModeOff))
+        if (!IsReadable(ptrTriggerModeOff))
         {
             cout << "Unable to disable trigger mode (enum entry retrieval). Non-fatal error..." << endl;
             return -1;
@@ -227,7 +223,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
     {
         // Retrieve and display Device Information
         CCategoryPtr category = nodeMap.GetNode("DeviceInformation");
-        if (IsAvailable(category) && IsReadable(category))
+        if (IsReadable(category))
         {
             FeatureList_t features;
             category->GetFeatures(features);
@@ -243,7 +239,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
         }
         else
         {
-            cout << "Device control information not available." << endl;
+            cout << "Device control information not readable." << endl;
         }
     }
     catch (Spinnaker::Exception& e)
@@ -269,14 +265,15 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
     {
         // Set acquisition mode to continuous
         CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-        if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
+        if (!IsReadable(ptrAcquisitionMode) ||
+            !IsWritable(ptrAcquisitionMode))
         {
             cout << "Unable to set acquisition mode to continuous (node retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
         CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
-        if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
+        if (!IsReadable(ptrAcquisitionModeContinuous))
         {
             cout << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl
                  << endl;
@@ -291,7 +288,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
         gcstring deviceSerialNumber("");
 
         CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
-        if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
+        if (IsReadable(ptrStringSerial))
         {
             deviceSerialNumber = ptrStringSerial->GetValue();
 
@@ -303,31 +300,33 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         // Retrieve Buffer Handling Mode Information
         CEnumerationPtr ptrHandlingMode = sNodeMap.GetNode("StreamBufferHandlingMode");
-        if (!IsAvailable(ptrHandlingMode) || !IsWritable(ptrHandlingMode))
+        if (!IsReadable(ptrHandlingMode) ||
+            !IsWritable(ptrHandlingMode))
         {
             cout << "Unable to set Buffer Handling mode (node retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
         CEnumEntryPtr ptrHandlingModeEntry = ptrHandlingMode->GetCurrentEntry();
-        if (!IsAvailable(ptrHandlingModeEntry) || !IsReadable(ptrHandlingModeEntry))
+        if (!IsReadable(ptrHandlingModeEntry))
         {
-            cout << "Unable to set Buffer Handling mode (Entry retrieval). Aborting..." << endl << endl;
+            cout << "Unable to get Buffer Handling mode (Entry retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
         // Set stream buffer Count Mode to manual
         CEnumerationPtr ptrStreamBufferCountMode = sNodeMap.GetNode("StreamBufferCountMode");
-        if (!IsAvailable(ptrStreamBufferCountMode) || !IsWritable(ptrStreamBufferCountMode))
+        if (!IsReadable(ptrStreamBufferCountMode) ||
+            !IsWritable(ptrStreamBufferCountMode))
         {
-            cout << "Unable to set Buffer Count Mode (node retrieval). Aborting..." << endl << endl;
+            cout << "Unable to get or set Buffer Count Mode (node retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
         CEnumEntryPtr ptrStreamBufferCountModeManual = ptrStreamBufferCountMode->GetEntryByName("Manual");
-        if (!IsAvailable(ptrStreamBufferCountModeManual) || !IsReadable(ptrStreamBufferCountModeManual))
+        if (!IsReadable(ptrStreamBufferCountModeManual))
         {
-            cout << "Unable to set Buffer Count Mode entry (Entry retrieval). Aborting..." << endl << endl;
+            cout << "Unable to get Buffer Count Mode entry (Entry retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
@@ -337,9 +336,10 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         // Retrieve and modify Stream Buffer Count
         CIntegerPtr ptrBufferCount = sNodeMap.GetNode("StreamBufferCountManual");
-        if (!IsAvailable(ptrBufferCount) || !IsWritable(ptrBufferCount))
+        if (!IsReadable(ptrBufferCount) ||
+            !IsWritable(ptrBufferCount))
         {
-            cout << "Unable to set Buffer Count (Integer node retrieval). Aborting..." << endl << endl;
+            cout << "Unable to get or set Buffer Count (Integer node retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
@@ -455,7 +455,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
                         pResultImage->Release();
                     }
 
-                    // To control the framerate, have the application pause for 250ms.
+                    // To control the framerate, have the application pause for 250ms
                     SleepyWrapper(250);
                 }
             }
@@ -463,9 +463,14 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
             {
                 cout << endl << "Error: " << e.what() << endl;
 
-                if (ptrHandlingModeEntry->GetSymbolic() == "NewestOnly")
+                // For overwrite buffer handling modes such as NewestOnly and OldestFirstOverwrite, it is expected that
+                // two buffers are used to cycle images within spinnaker acquisition engine. So when buffer count is set
+                // to three, only one image is expected to return to the user so fetching another image without additional 
+                // triggers will return an error
+                if (ptrHandlingModeEntry->GetSymbolic() == "NewestOnly" || 
+                    ptrHandlingModeEntry->GetSymbolic() == "OldestFirstOverwrite")
                 {
-                    cout << "Error should occur when grabbing image 1 with handling mode set to NewestOnly" << endl;
+                    cout << "Error should occur when grabbing image 1 with handling mode set to NewestOnly or OldestFirstOverwrite" << endl;
                 }
 
                 result = -1;
