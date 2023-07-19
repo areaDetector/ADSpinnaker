@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -35,6 +35,10 @@
  *	using the nodemap. This is because chunk data retrieved from the nodemap is
  *	only valid for the current image; when GetNextImage() is called, chunk data
  *	will be updated to that of the new current image.
+ *
+ *  Please leave us feedback at: https://www.surveymonkey.com/r/TDYMVAPI
+ *  More source code examples at: https://github.com/Teledyne-MV/Spinnaker-Examples
+ *  Need help? Check out our forum at: https://teledynevisionsolutions.zendesk.com/hc/en-us/community/topics
  */
 
 #include "Spinnaker.h"
@@ -58,8 +62,8 @@ enum chunkDataType
 const chunkDataType chosenChunkData = IMAGE;
 
 // This function configures the camera to add chunk data to each image. It does
-// this by enabling each type of chunk data before enabling chunk data mode.
-// When chunk data is turned on, the data is made available in both the nodemap
+// this by enabling each type of chunk data after enabling chunk data mode.
+// When chunk data mode is turned on, the data is made available in both the nodemap
 // and each image.
 int ConfigureChunkData(INodeMap& nodeMap)
 {
@@ -79,7 +83,7 @@ int ConfigureChunkData(INodeMap& nodeMap)
         //
         CBooleanPtr ptrChunkModeActive = nodeMap.GetNode("ChunkModeActive");
 
-        if (!IsAvailable(ptrChunkModeActive) || !IsWritable(ptrChunkModeActive))
+        if (!IsWritable(ptrChunkModeActive))
         {
             cout << "Unable to activate chunk mode. Aborting..." << endl << endl;
             return -1;
@@ -108,7 +112,7 @@ int ConfigureChunkData(INodeMap& nodeMap)
         // Retrieve the selector node
         CEnumerationPtr ptrChunkSelector = nodeMap.GetNode("ChunkSelector");
 
-        if (!IsAvailable(ptrChunkSelector) || !IsReadable(ptrChunkSelector))
+        if (!IsReadable(ptrChunkSelector))
         {
             cout << "Unable to retrieve chunk selector. Aborting..." << endl << endl;
             return -1;
@@ -125,7 +129,7 @@ int ConfigureChunkData(INodeMap& nodeMap)
             CEnumEntryPtr ptrChunkSelectorEntry = entries.at(i);
 
             // Go to next node if problem occurs
-            if (!IsAvailable(ptrChunkSelectorEntry) || !IsReadable(ptrChunkSelectorEntry))
+            if (!IsReadable(ptrChunkSelectorEntry))
             {
                 continue;
             }
@@ -264,7 +268,7 @@ int DisplayChunkData(INodeMap& nodeMap)
         // it is available from both sources.
         //
         CCategoryPtr ptrChunkDataControl = nodeMap.GetNode("ChunkDataControl");
-        if (!IsAvailable(ptrChunkDataControl) || !IsReadable(ptrChunkDataControl))
+        if (!IsReadable(ptrChunkDataControl))
         {
             cout << "Unable to retrieve chunk data control. Aborting..." << endl << endl;
             return -1;
@@ -280,11 +284,9 @@ int DisplayChunkData(INodeMap& nodeMap)
         {
             CNodePtr pFeature = (CNodePtr)*it;
 
-            cout << "\t" << pFeature->GetDisplayName() << ": ";
-
-            if (!IsAvailable(pFeature) || !IsReadable(pFeature))
+            if (!IsReadable(pFeature))
             {
-                cout << "node not available" << endl;
+                cout << "node not readable" << endl;
                 result = result | -1;
                 continue;
             }
@@ -297,6 +299,8 @@ int DisplayChunkData(INodeMap& nodeMap)
             //
             else if (pFeature->GetPrincipalInterfaceType() == intfIBoolean)
             {
+                cout << "\t" << pFeature->GetDisplayName() << ": ";
+
                 CBooleanPtr pBool = (CBooleanPtr)pFeature;
                 bool value = pBool->GetValue();
                 cout << (value ? "true" : "false") << endl;
@@ -338,7 +342,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
     {
         FeatureList_t features;
         CCategoryPtr category = nodeMap.GetNode("DeviceInformation");
-        if (IsAvailable(category) && IsReadable(category))
+        if (IsReadable(category))
         {
             category->GetFeatures(features);
 
@@ -354,7 +358,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
         }
         else
         {
-            cout << "Device control information not available." << endl;
+            cout << "Device control information not readable." << endl;
         }
     }
     catch (Spinnaker::Exception& e)
@@ -378,14 +382,15 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
     {
         // Set acquisition mode to continuous
         CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-        if (!IsAvailable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
+        if (!IsReadable(ptrAcquisitionMode) ||
+            !IsWritable(ptrAcquisitionMode))
         {
             cout << "Unable to set acquisition mode to continuous (node retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
         CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
-        if (!IsAvailable(ptrAcquisitionModeContinuous) || !IsReadable(ptrAcquisitionModeContinuous))
+        if (!IsReadable(ptrAcquisitionModeContinuous))
         {
             cout << "Unable to set acquisition mode to continuous (entry 'continuous' retrieval). Aborting..." << endl
                  << endl;
@@ -407,7 +412,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
         gcstring deviceSerialNumber("");
 
         CStringPtr ptrStringSerial = nodeMapTLDevice.GetNode("DeviceSerialNumber");
-        if (IsAvailable(ptrStringSerial) && IsReadable(ptrStringSerial))
+        if (IsReadable(ptrStringSerial))
         {
             deviceSerialNumber = ptrStringSerial->GetValue();
 
@@ -417,6 +422,20 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         // Retrieve, convert, and save images
         const unsigned int k_numImages = 10;
+
+        //
+        // Create ImageProcessor instance for post processing images
+        //
+        ImageProcessor processor;
+
+        //
+        // Set default image processor color processing method
+        //
+        // *** NOTES ***
+        // By default, if no specific color processing algorithm is set, the image
+        // processor will default to NEAREST_NEIGHBOR method.
+        //
+        processor.SetColorProcessing(SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR);
 
         for (unsigned int imageCnt = 0; imageCnt < k_numImages; imageCnt++)
         {
@@ -437,7 +456,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
                          << ", height = " << pResultImage->GetHeight() << endl;
 
                     // Convert image to mono 8
-                    ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
+                    ImagePtr convertedImage = processor.Convert(pResultImage, PixelFormat_Mono8);
 
                     // Create a unique filename
                     ostringstream filename;
@@ -500,7 +519,7 @@ int DisableChunkData(INodeMap& nodeMap)
         // Retrieve the selector node
         CEnumerationPtr ptrChunkSelector = nodeMap.GetNode("ChunkSelector");
 
-        if (!IsAvailable(ptrChunkSelector) || !IsReadable(ptrChunkSelector))
+        if (!IsReadable(ptrChunkSelector))
         {
             cout << "Unable to retrieve chunk selector. Aborting..." << endl << endl;
             return -1;
@@ -517,7 +536,7 @@ int DisableChunkData(INodeMap& nodeMap)
             CEnumEntryPtr ptrChunkSelectorEntry = entries.at(i);
 
             // Go to next node if problem occurs
-            if (!IsAvailable(ptrChunkSelectorEntry) || !IsReadable(ptrChunkSelectorEntry))
+            if (!IsReadable(ptrChunkSelectorEntry))
             {
                 continue;
             }
@@ -554,7 +573,7 @@ int DisableChunkData(INodeMap& nodeMap)
         // Deactivate ChunkMode
         CBooleanPtr ptrChunkModeActive = nodeMap.GetNode("ChunkModeActive");
 
-        if (!IsAvailable(ptrChunkModeActive) || !IsWritable(ptrChunkModeActive))
+        if (!IsWritable(ptrChunkModeActive))
         {
             cout << "Unable to deactivate chunk mode. Aborting..." << endl << endl;
             return -1;
