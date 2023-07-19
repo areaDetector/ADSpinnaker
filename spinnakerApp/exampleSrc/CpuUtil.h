@@ -16,7 +16,7 @@
 //=============================================================================
 
 #pragma once
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <Windows.h>
 #include <string>
 #include "CpuUtil.h"

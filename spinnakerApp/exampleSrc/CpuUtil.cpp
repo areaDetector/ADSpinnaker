@@ -16,7 +16,7 @@
 //=============================================================================
 
 #pragma once
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "CpuUtil.h"
 using namespace std;
 
