@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
+// Copyright (c) 2001-2023 FLIR Systems, Inc. All Rights Reserved.
 //
 // This software is the confidential and proprietary information of FLIR
 // Integrated Imaging Solutions, Inc. ("Confidential Information"). You
@@ -36,6 +36,10 @@
  *  camera while Exposure introduces the standard structure of configuring a
  *  device, acquiring some images, and then returning the device to a default
  *  state.
+ *
+ *  Please leave us feedback at: https://www.surveymonkey.com/r/TDYMVAPI
+ *  More source code examples at: https://github.com/Teledyne-MV/Spinnaker-Examples
+ *  Need help? Check out our forum at: https://teledynevisionsolutions.zendesk.com/hc/en-us/community/topics
  */
 
 #include "Spinnaker.h"
@@ -43,8 +47,8 @@
 #include <iostream>
 #include <sstream>
 
- // Define the maximum number of characters that will be printed out
- // for any information retrieved from a node.
+// Define the maximum number of characters that will be printed out
+// for any information retrieved from a node.
 const unsigned int maxChars = 35;
 
 using namespace Spinnaker;
@@ -87,7 +91,7 @@ int PrintValueNode(CNodePtr node, unsigned int level)
         {
             return PrintEnumerationSelector(node, level);
         }
-      
+
         // Cast as value node
         CValuePtr ptrValueNode = static_cast<CValuePtr>(node);
 
@@ -411,7 +415,7 @@ int PrintNode(CNodePtr node, unsigned int level)
         {
             return PrintStringNode(node, level);
         }
-        case  intfIInteger:
+        case intfIInteger:
         {
             return PrintIntegerNode(node, level);
         }
@@ -446,10 +450,9 @@ int PrintNode(CNodePtr node, unsigned int level)
     }
 }
 
-
 // This function retrieves and prints the display names of enumeration selector nodes.
 // The selector will cycle through every selector entry and print out all the selected
-// features for that selector entry. It is possible for integer nodes to be selector 
+// features for that selector entry. It is possible for integer nodes to be selector
 // nodes as well, but this function will only cycle through Enumeration nodes.
 int PrintEnumerationSelector(CNodePtr node, unsigned int level)
 {
@@ -488,7 +491,7 @@ int PrintEnumerationSelector(CNodePtr node, unsigned int level)
             // Go through each enum entry of the selector node
             if (IsWritable(ptrSelectorNode))
             {
-                if (IsAvailable(selectorEntry) && IsReadable(selectorEntry))
+                if (IsReadable(selectorEntry))
                 {
                     ptrSelectorNode->SetIntValue(selectorEntry->GetValue());
                     Indent(level + 1);
@@ -501,7 +504,7 @@ int PrintEnumerationSelector(CNodePtr node, unsigned int level)
             {
                 CNodePtr ptrFeatureNode = *it;
 
-                if (!IsAvailable(ptrFeatureNode) || !IsReadable(ptrFeatureNode))
+                if (!IsReadable(ptrFeatureNode))
                 {
                     continue;
                 }
@@ -575,8 +578,8 @@ int PrintCategoryNodeAndAllFeatures(CNodePtr node, unsigned int level)
         {
             CNodePtr ptrFeatureNode = *it;
 
-            // Ensure node is available and readable
-            if (!IsAvailable(ptrFeatureNode) || !IsReadable(ptrFeatureNode))
+            // Ensure node is readable
+            if (!IsReadable(ptrFeatureNode))
             {
                 continue;
             }
@@ -707,11 +710,9 @@ int main(int /*argc*/, char** /*argv*/)
 
     // Print out current library version
     const LibraryVersion spinnakerLibraryVersion = system->GetLibraryVersion();
-    cout << "Spinnaker library version: "
-        << spinnakerLibraryVersion.major << "."
-        << spinnakerLibraryVersion.minor << "."
-        << spinnakerLibraryVersion.type << "."
-        << spinnakerLibraryVersion.build << endl << endl;
+    cout << "Spinnaker library version: " << spinnakerLibraryVersion.major << "." << spinnakerLibraryVersion.minor
+         << "." << spinnakerLibraryVersion.type << "." << spinnakerLibraryVersion.build << endl
+         << endl;
 
     // Retrieve list of cameras from the system
     CameraList camList = system->GetCameras();
