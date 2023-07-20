@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--Saved on 2023-07-20 14:17:04 by epics-->
 <display version="2.0.0">
   <name>ADSpinnaker</name>
-  <x>131</x>
-  <y>80</y>
+  <x>557</x>
+  <y>54</y>
   <width>1070</width>
-  <height>825</height>
+  <height>900</height>
   <background_color>
     <color red="187" green="187" blue="187">
     </color>
@@ -194,7 +195,7 @@
     <x>715</x>
     <y>35</y>
     <width>350</width>
-    <height>280</height>
+    <height>380</height>
     <line_width>1</line_width>
     <line_color>
       <color red="0" green="0" blue="0">
@@ -225,7 +226,7 @@
   <widget type="group" version="2.0.0">
     <name>composite #52</name>
     <x>715</x>
-    <y>320</y>
+    <y>420</y>
     <width>350</width>
     <height>475</height>
     <style>3</style>
@@ -1101,11 +1102,24 @@
       <border_alarm_sensitive>false</border_alarm_sensitive>
     </widget>
   </widget>
+  <widget type="combo" version="2.0.0">
+    <name>menu #231</name>
+    <pv_name>$(P)$(R)ReadStatus.SCAN</pv_name>
+    <x>920</x>
+    <y>365</y>
+    <width>80</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #231</name>
-    <pv_name>$(P)$(R)TemperatureActual</pv_name>
-    <x>884</x>
-    <y>291</y>
+    <name>text update #234</name>
+    <pv_name>$(P)$(R)InputBufferCount</pv_name>
+    <x>920</x>
+    <y>316</y>
     <width>120</width>
     <height>18</height>
     <font>
@@ -1124,59 +1138,33 @@
     <show_units>false</show_units>
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #235</name>
-    <text>Temperature</text>
-    <x>770</x>
-    <y>290</y>
-    <width>110</width>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #238</name>
+    <pv_name>$(P)$(R)OutputBufferCount</pv_name>
+    <x>920</x>
+    <y>341</y>
+    <width>120</width>
+    <height>18</height>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
       </font>
     </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #238</name>
-    <text>Poll features</text>
-    <x>750</x>
-    <y>265</y>
-    <width>130</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
-  <widget type="combo" version="2.0.0">
-    <name>menu #241</name>
-    <pv_name>$(P)$(R)ReadStatus.SCAN</pv_name>
-    <x>885</x>
-    <y>265</y>
-    <width>80</width>
-    <height>20</height>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
     <background_color>
-      <color red="115" green="223" blue="255">
+      <color red="187" green="187" blue="187">
       </color>
     </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #244</name>
-    <text>Lost frames</text>
-    <x>770</x>
-    <y>90</y>
-    <width>110</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #247</name>
-    <pv_name>$(P)$(R)LostFrameCount</pv_name>
-    <x>884</x>
+    <name>text update #242</name>
+    <pv_name>$(P)$(R)DeliveredFrameCount</pv_name>
+    <x>920</x>
     <y>91</y>
     <width>120</width>
     <height>18</height>
@@ -1196,127 +1184,10 @@
     <show_units>false</show_units>
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #251</name>
-    <text>Failed buffers</text>
-    <x>740</x>
-    <y>166</y>
-    <width>140</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #254</name>
-    <pv_name>$(P)$(R)FailedBufferCount</pv_name>
-    <x>884</x>
-    <y>167</y>
-    <width>120</width>
-    <height>18</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="187" green="187" blue="187">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #258</name>
-    <text>Failed packets</text>
-    <x>740</x>
-    <y>240</y>
-    <width>140</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #261</name>
-    <pv_name>$(P)$(R)FailedPacketCount</pv_name>
-    <x>884</x>
-    <y>241</y>
-    <width>120</width>
-    <height>18</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="187" green="187" blue="187">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #265</name>
-    <text>Delivered frames</text>
-    <x>720</x>
-    <y>65</y>
-    <width>160</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #268</name>
-    <pv_name>$(P)$(R)DeliveredFrameCount</pv_name>
-    <x>884</x>
-    <y>66</y>
-    <width>120</width>
-    <height>18</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="187" green="187" blue="187">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #272</name>
-    <text>Input buffers</text>
-    <x>750</x>
-    <y>115</y>
-    <width>130</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #275</name>
-    <pv_name>$(P)$(R)InputBufferCount</pv_name>
-    <x>884</x>
+    <name>text update #246</name>
+    <pv_name>$(P)$(R)ReceivedFrameCount</pv_name>
+    <x>920</x>
     <y>116</y>
     <width>120</width>
     <height>18</height>
@@ -1336,23 +1207,195 @@
     <show_units>false</show_units>
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #279</name>
-    <text>Output buffers</text>
-    <x>740</x>
-    <y>140</y>
-    <width>140</width>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #250</name>
+    <pv_name>$(P)$(R)IncompleteFrameCount</pv_name>
+    <x>920</x>
+    <y>141</y>
+    <width>120</width>
+    <height>18</height>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
       </font>
     </font>
-    <horizontal_alignment>2</horizontal_alignment>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #254</name>
+    <pv_name>$(P)$(R)LostFrameCount</pv_name>
+    <x>920</x>
+    <y>166</y>
+    <width>120</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #258</name>
+    <pv_name>$(P)$(R)StartedFrameCount</pv_name>
+    <x>920</x>
+    <y>66</y>
+    <width>120</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #262</name>
+    <pv_name>$(P)$(R)ReceivedPacketCount</pv_name>
+    <x>920</x>
+    <y>216</y>
+    <width>120</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #266</name>
+    <pv_name>$(P)$(R)ResendReceivedPacketCount</pv_name>
+    <x>920</x>
+    <y>291</y>
+    <width>120</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #270</name>
+    <pv_name>$(P)$(R)MissedPacketCount</pv_name>
+    <x>920</x>
+    <y>241</y>
+    <width>120</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #274</name>
+    <pv_name>$(P)$(R)ResendRequestedPacketCount</pv_name>
+    <x>920</x>
+    <y>266</y>
+    <width>120</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #278</name>
+    <pv_name>$(P)$(R)DroppedFrameCount</pv_name>
+    <x>920</x>
+    <y>191</y>
+    <width>120</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="textupdate" version="2.0.0">
     <name>text update #282</name>
-    <pv_name>$(P)$(R)OutputBufferCount</pv_name>
-    <x>884</x>
-    <y>141</y>
+    <pv_name>$(P)$(R)TemperatureActual</pv_name>
+    <x>920</x>
+    <y>391</y>
     <width>120</width>
     <height>18</height>
     <font>
@@ -1373,9 +1416,21 @@
   </widget>
   <widget type="label" version="2.0.0">
     <name>text #286</name>
-    <text>Total packets</text>
-    <x>750</x>
-    <y>190</y>
+    <text>Temperature</text>
+    <x>805</x>
+    <y>390</y>
+    <width>110</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #289</name>
+    <text>Poll features</text>
+    <x>785</x>
+    <y>365</y>
     <width>130</width>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
@@ -1383,34 +1438,23 @@
     </font>
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #289</name>
-    <pv_name>$(P)$(R)TotalPacketCount</pv_name>
-    <x>884</x>
-    <y>191</y>
-    <width>120</width>
-    <height>18</height>
+  <widget type="label" version="2.0.0">
+    <name>text #292</name>
+    <text>Input buffers</text>
+    <x>785</x>
+    <y>315</y>
+    <width>130</width>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
       </font>
     </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="187" green="187" blue="187">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #293</name>
-    <text>Resent packets</text>
-    <x>740</x>
-    <y>215</y>
+    <name>text #295</name>
+    <text>Output buffers</text>
+    <x>775</x>
+    <y>340</y>
     <width>140</width>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
@@ -1418,27 +1462,124 @@
     </font>
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #296</name>
-    <pv_name>$(P)$(R)ResendPacketCount</pv_name>
-    <x>884</x>
-    <y>216</y>
-    <width>120</width>
-    <height>18</height>
+  <widget type="label" version="2.0.0">
+    <name>text #298</name>
+    <text>Delivered frames</text>
+    <x>755</x>
+    <y>90</y>
+    <width>160</width>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
       </font>
     </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="187" green="187" blue="187">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #301</name>
+    <text>Received frames</text>
+    <x>765</x>
+    <y>115</y>
+    <width>150</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #304</name>
+    <text>Incomplete frames</text>
+    <x>745</x>
+    <y>140</y>
+    <width>170</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #307</name>
+    <text>Lost frames</text>
+    <x>805</x>
+    <y>165</y>
+    <width>110</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #310</name>
+    <text>Started frames</text>
+    <x>775</x>
+    <y>65</y>
+    <width>140</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #313</name>
+    <text>Received packets</text>
+    <x>755</x>
+    <y>215</y>
+    <width>160</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #316</name>
+    <text>Resend recv packets</text>
+    <x>725</x>
+    <y>290</y>
+    <width>190</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #319</name>
+    <text>Missed packets</text>
+    <x>775</x>
+    <y>240</y>
+    <width>140</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #322</name>
+    <text>Resend rqst packets</text>
+    <x>725</x>
+    <y>265</y>
+    <width>190</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #325</name>
+    <text>Dropped frames</text>
+    <x>775</x>
+    <y>190</y>
+    <width>140</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
   </widget>
 </display>
