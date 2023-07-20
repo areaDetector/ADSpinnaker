@@ -18,6 +18,17 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-4 (July 20, 2023)
+-------------------
+* Updated Spinnaker version from 2.4.0.147 to 3.1.0.79.
+  Windows users will need to update their local install of the Spinnaker SDK to this version. 
+  Linux users do not need to do anything, since all required files are included with ADSpinnaker.
+  The vendor Spinnaker libraries for Linux are built with gcc 11.
+  This means the version of gcc on the computing running the ADSpinnaker IOC must be at least gcc 11.
+  RHEL 9, Centos 9 Stream, and Ubuntu 22.04 all have gcc 11.
+* The frame, packet, and buffer statistics available have changed in this version of Spinnaker.
+  The records and OPI displays of these have been updated.
+
 R3-3 (November 14, 2021)
 -------------------
 * Fixed a problem reading Integer GenICam feature values, and their min and max.
