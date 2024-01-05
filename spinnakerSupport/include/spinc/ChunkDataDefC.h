@@ -28,12 +28,12 @@
 *
 * Definitions for Spinnaker C
 */
-/*@{*/
+/**@{*/
 
 /**
 * @defgroup ChunkDataDefC_h Chunk Data Structures
 */
-/*@{*/
+/**@{*/
 
 /**
 * @brief The type of information that can be obtained from image chunk data.
@@ -82,8 +82,8 @@ typedef struct _spinChunkData
     double m_inferenceConfidence;
 } spinChunkData;
 
-/*@}*/
+/**@}*/
 
-/*@}*/
+/**@}*/
 
 #endif // FLIR_SPINNAKER_CHUNKDATADEF_C_H

@@ -30,12 +30,12 @@ namespace Spinnaker
 	/**
 	* @defgroup SpinnakerQuickSpinClasses Spinnaker QuickSpin Classes
 	*/
-	/*@{*/
+	/**@{*/
 
 	/**
 	* @defgroup TransportLayerStream_h TransportLayerStream Class
 	*/
-	/*@{*/
+	/**@{*/
 
 	/**
 	*@brief Part of the QuickSpin API to provide access to camera information without having to first initialize the camera.
@@ -225,10 +225,10 @@ namespace Spinnaker
 		GenApi::IInteger &StreamPacketResendRequestCount;
 
 		/**
-		 * Description: Displays number of packet resend requests successfully transmitted to the camera.
+		 * Description: Number of resend requests not fully fulfilled before the resend request timeout expired.
 		 * Visibility: Expert
 		 */
-		GenApi::IInteger &StreamPacketResendRequestSuccessCount;
+		GenApi::IInteger &StreamPacketResendRequestTimeoutCount;
 
 		/**
 		 * Description: Displays number of packets requested to be retransmitted on this stream.
@@ -243,6 +243,78 @@ namespace Spinnaker
 		GenApi::IInteger &StreamPacketResendReceivedPacketCount;
 
 		/**
+		 * Description: Number of duplicate packets received from the streaming device.
+		 * Visibility: Beginner
+		 */
+		GenApi::IInteger &StreamPacketsDuplicatedCount;
+
+		/**
+		 * Description: Number of packets not received before the inter-packet timeout expired.
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamPacketsTimeoutCount;
+
+		/**
+		 * Description: Number of packets not yet available on the streaming device.
+		 * Visibility: Beginner
+		 */
+		GenApi::IInteger &StreamPacketsNotYetAvailableCount;
+
+		/**
+		 * Description: Number of packets temporarily unavailable on the streaming device.
+		 * Visibility: Beginner
+		 */
+		GenApi::IInteger &StreamPacketsTemporarilyUnavailableCount;
+
+		/**
+		 * Description: Number of packets per frame.
+		 * Visibility: Beginner
+		 */
+		GenApi::IInteger &StreamPacketsPerFrameCount;
+
+		/**
+		 * Description: Number of missing packets no more available on the streaming device.
+		 * Visibility: Beginner
+		 */
+		GenApi::IInteger &StreamPacketsUnavailableCount;
+
+		/**
+		 * Description: Time for receiving all packets for last block
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamBlocksReceptionTimeLast;
+
+		/**
+		 * Description: Minimum time for receiving all packets for all blocks
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamBlocksReceptionTimeMin;
+
+		/**
+		 * Description: Maximum time for receiving all packets for all blocks
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamBlocksReceptionTimeMax;
+
+		/**
+		 * Description: Time for processing all packets for last block
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamBlocksProcessingTimeLast;
+
+		/**
+		 * Description: Minimum time for processing all packets for all blocks
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamBlocksProcessingTimeMin;
+
+		/**
+		 * Description: Maximum time for processing all packets for all blocks
+		 * Visibility: Expert
+		 */
+		GenApi::IInteger &StreamBlocksProcessingTimeMax;
+
+		/**
 		 * Description: Controls the image breakup size that should be used on this stream.
 		 * Visibility: Expert
 		 */
@@ -255,9 +327,9 @@ namespace Spinnaker
 		friend class CameraInternal;
 
 	};
-	/*@}*/
+	/**@}*/
 
-	/*@}*/
+	/**@}*/
 
 }
 #endif // FLIR_SPINNAKER_TRANSPORTLAYERSTREAM_H

@@ -23,12 +23,12 @@
 /**
 * @defgroup CQuickSpin Spinnaker C QuickSpin API
 */
-/*@{*/
+/**@{*/
 
 /**	
 * @defgroup TransportLayerDefsC_h Transport Layer Enumerations
 */
-/*@{*/
+/**@{*/
 
 /**
 *@brief The enumeration definitions for transport layer nodes.
@@ -49,7 +49,7 @@ typedef enum _spinTLStreamModeEnums	/*!< Stream mode of the device.*/
 {
 	StreamMode_Socket,/*!< Socket*/
 	StreamMode_LWF,/*!< Light Weight Filter Driver*/
-	StreamMode_MVA,/*!< Machine Vision Accelerator Driver*/
+	StreamMode_TeledyneGigeVision,/*!< Teledyne Gige Vision Driver*/
 	NUMSTREAMMODE
 } spinTLStreamModeEnums;
 
@@ -149,13 +149,21 @@ typedef enum _spinTLPOEStatusEnums	/*!< Reports and controls the interface's pow
 	NUMPOESTATUS
 } spinTLPOEStatusEnums;
 
-typedef enum _spinTLFilterDriverStatusEnums	/*!< Reports whether FLIR Light Weight Filter Driver is enabled, disabled, or not installed.*/
+typedef enum _spinTLFLIRFilterDriverStatusEnums	/*!< Reports whether FLIR Light Weight Filter Driver is enabled, disabled, or not installed.*/
 {
-	FilterDriverStatus_NotSupported,/*!< Not Installed*/
-	FilterDriverStatus_Disabled,/*!< FLIR Light Weight Filter Driver is disabled across all interfaces*/
-	FilterDriverStatus_Enabled,/*!< FLIR Light Weight Filter Driver is enabled*/
-	NUMFILTERDRIVERSTATUS
-} spinTLFilterDriverStatusEnums;
+	FLIRFilterDriverStatus_NotSupported,/*!< Not Installed*/
+	FLIRFilterDriverStatus_Disabled,/*!< FLIR Light Weight Filter Driver is disabled across all interfaces*/
+	FLIRFilterDriverStatus_Enabled,/*!< FLIR Light Weight Filter Driver is enabled*/
+	NUMFLIRFILTERDRIVERSTATUS
+} spinTLFLIRFilterDriverStatusEnums;
+
+typedef enum _spinTLTeledyneGigeVisionFilterDriverStatusEnums	/*!< Reports whether Teledyne Gige Vision Filter Driver is enabled, disabled, or not installed.*/
+{
+	TeledyneGigeVisionFilterDriverStatus_NotSupported,/*!< Not Installed*/
+	TeledyneGigeVisionFilterDriverStatus_Disabled,/*!< Teledyne Gige Vision Filter Driver is disabled across all interfaces*/
+	TeledyneGigeVisionFilterDriverStatus_Enabled,/*!< Teledyne Gige Vision Filter Driver is enabled*/
+	NUMTELEDYNEGIGEVISIONFILTERDRIVERSTATUS
+} spinTLTeledyneGigeVisionFilterDriverStatusEnums;
 
 typedef enum _spinTLTLTypeEnums	/*!< Transport layer type of the GenTL Producer implementation.*/
 {
@@ -169,8 +177,8 @@ typedef enum _spinTLTLTypeEnums	/*!< Transport layer type of the GenTL Producer 
 	NUMTLTYPE
 } spinTLTLTypeEnums;
 
-/*@}*/
+/**@}*/
 
-/*@}*/
+/**@}*/
 
 #endif // FLIR_SPINNAKER_TRANSPORTLAYERDEFSC_H

@@ -451,11 +451,14 @@ namespace Spinnaker
         bool IsIncomplete() const;
 
         /**
-         * Returns the size of valid data in the image payload.  This is the actual amount
-         * of data read from the device.  The value returned here can be equal to the
-         * value returned by GetImageSize() if image data is the only payload. Note that
-         * GetBufferSize() returns the total size of bytes allocated for the image and could
-         * be equal to or greater than the size returned by this function.
+         * Returns the size of valid data in the image payload.
+         *
+         * This is the actual amount of data read from the device. For non-chunk images, the
+         * value returned here is equal to the value returned by GetImageSize(). For chunk enabled
+         * data transmissions, the sum of the image chunk, other optional data chunks
+         * (e.g. ExposureTime) and their associated chunk headers is returned here. Note that
+         * GetBufferSize() returns the total size of bytes allocated for the image and could be equal
+         * to or greater than the size returned by this function.
          *
          * @see GetBufferSize()
          * @see GetImageSize()
@@ -604,14 +607,11 @@ namespace Spinnaker
         /**
          * Returns the size of the image
          *
-         * For non-chunk images, the value returned by this function represents the size of the
-         * image based on its resolution and pixel size.
-         *
-         * For chunk images, only the size of chunk image portion is reported here.  If the chunk
-         * image is compressed, the value returned represents the size of the compressed image
-         * data in bytes.
-         *
-         * The entire chunk data payload can be queried by GetValidPayloadSize(). 
+         * If the image is compressed, the value returned represents the size of the compressed image data
+         * in bytes. For chunk enabled data transmissions, only the size of the image chunk is reported here.
+         * If the image chunk is compressed, the value returned represents the size of the compressed image
+         * data in bytes. The entire chunk data payload including the image chunk and other optional data
+         * chunks can be queried by GetValidPayloadSize().
          *
          * @see GetBufferSize()
          * @see GetValidPayloadSize()

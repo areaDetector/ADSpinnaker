@@ -27,12 +27,12 @@ namespace Spinnaker
     /**
     * @defgroup SpinnakerClasses Spinnaker Classes
     */
-    /*@{*/
+    /**@{*/
 
     /**
     * @defgroup ChunkData_h ChunkData Class
     */
-    /*@{*/
+    /**@{*/
 
     /**
     *@brief The chunk data which contains additional information about an image.
@@ -292,9 +292,9 @@ namespace Spinnaker
         friend class ChunkDataImpl;
 
     };
-    /*@}*/
+    /**@}*/
 
-    /*@}*/
+    /**@}*/
 
 }
 #endif // FLIR_SPINNAKER_CHUNKDATA_H

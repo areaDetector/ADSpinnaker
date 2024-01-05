@@ -429,6 +429,7 @@ extern "C"
      * @param iGroupKey The Action Command's group key
      * @param iGroupMask The Action Command's group mask
      * @param iActionTime (Optional) Time when to assert a future action. Zero means immediate action.
+     * @param requestAck (Optional) Whether to request an ACK from the camera. True is to send ack.
      * @param piResultSize (Optional) The number of results in the results array. The value passed should be equal to
      * the expected number of devices that acknowledge the command. Returns the number of received results.
      * @param results (Optional) An Array with *piResultSize elements to hold the action command result status. The
@@ -445,6 +446,7 @@ extern "C"
         size_t iGroupKey,
         size_t iGroupMask,
         size_t iActionTime,
+        bool8_t requestAck,
         size_t* piResultSize,
         actionCommandResult results[]);
 
@@ -970,6 +972,7 @@ extern "C"
      * @param iGroupKey The Action Command's group key
      * @param iGroupMask The Action Command's group mask
      * @param iActionTime (Optional) Time when to assert a future action. Zero means immediate action.
+     * @param requestAck (Optional) Whether to request an ACK from the camera. True is to send ack.
      * @param piResultSize (Optional) The number of results in the results array. The value passed should be equal to
      * the expected number of devices that acknowledge the command. Returns the number of received results.
      * @param results (Optional) An Array with *piResultSize elements to hold the action command result status. The
@@ -986,6 +989,7 @@ extern "C"
         size_t iGroupKey,
         size_t iGroupMask,
         size_t iActionTime,
+        bool8_t requestAck,
         size_t* piResultSize,
         actionCommandResult results[]);
     /*@}*/
@@ -1171,7 +1175,21 @@ extern "C"
      *
      * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
      */
-    SPINNAKERC_API spinCameraGetUniqueID(spinCamera hCamera, char* pBuf, size_t* pBufLen);
+    SPINNAKERC_API spinCameraGetDeviceID(spinCamera hCamera, char* pBuf, size_t* pBufLen);
+
+    /**
+     * Retrieves a unique identifier for a camera
+     * @see spinError
+     *
+     * @param hCamera The camera of the unique identifier
+     * @param pBuf The c-string character buffer in which the unique identifier is returned
+     * @param pBufLen The unsigned integer pointer in which the length of the c-string is returned; the input value is
+     * the maximum length
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
+    SPINNAKERC_API_DEPRECATED("Use spinCameraGetDeviceID() instead.",
+                              spinCameraGetUniqueID(spinCamera hCamera, char* pBuf, size_t* pBufLen);)
 
     /**
      * Checks whether a camera is currently acquiring images
@@ -1456,16 +1474,15 @@ extern "C"
     SPINNAKERC_API spinImageDestroy(spinImage hImage);
 
     /**
-    * Retrieves the color processing algorithm of a specific image
-    * @see spinError
-    *
-    * @param hImage The image of the color processing algorithm to retrieve
-    * @param pAlgorithm The color processing algorithm pointer in which the color processing algorithm is returned
-    *
-    * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
-    */
+     * Retrieves the color processing algorithm of a specific image
+     * @see spinError
+     *
+     * @param hImage The image of the color processing algorithm to retrieve
+     * @param pAlgorithm The color processing algorithm pointer in which the color processing algorithm is returned
+     *
+     * @return spinError The error code; returns SPINNAKER_ERR_SUCCESS (or 0) for no error
+     */
     SPINNAKERC_API spinImageGetColorProcessing(spinImage hImage, spinColorProcessingAlgorithm* pAlgorithm);
-
 
     /**
      * Resets an image with some set properties

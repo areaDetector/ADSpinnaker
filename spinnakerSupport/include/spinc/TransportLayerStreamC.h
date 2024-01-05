@@ -26,7 +26,7 @@
 * @defgroup TLStreamC_h TLStream Structures
 * @ingroup CQuickSpin
 */
-/*@{*/
+/**@{*/
 
 typedef struct _quickSpinTLStream
 {
@@ -58,12 +58,24 @@ typedef struct _quickSpinTLStream
 	quickSpinIntegerNode StreamPacketResendTimeout;
 	quickSpinIntegerNode StreamPacketResendMaxRequests;
 	quickSpinIntegerNode StreamPacketResendRequestCount;
-	quickSpinIntegerNode StreamPacketResendRequestSuccessCount;
+	quickSpinIntegerNode StreamPacketResendRequestTimeoutCount;
 	quickSpinIntegerNode StreamPacketResendRequestedPacketCount;
 	quickSpinIntegerNode StreamPacketResendReceivedPacketCount;
+	quickSpinIntegerNode StreamPacketsDuplicatedCount;
+	quickSpinIntegerNode StreamPacketsTimeoutCount;
+	quickSpinIntegerNode StreamPacketsNotYetAvailableCount;
+	quickSpinIntegerNode StreamPacketsTemporarilyUnavailableCount;
+	quickSpinIntegerNode StreamPacketsPerFrameCount;
+	quickSpinIntegerNode StreamPacketsUnavailableCount;
+	quickSpinIntegerNode StreamBlocksReceptionTimeLast;
+	quickSpinIntegerNode StreamBlocksReceptionTimeMin;
+	quickSpinIntegerNode StreamBlocksReceptionTimeMax;
+	quickSpinIntegerNode StreamBlocksProcessingTimeLast;
+	quickSpinIntegerNode StreamBlocksProcessingTimeMin;
+	quickSpinIntegerNode StreamBlocksProcessingTimeMax;
 	quickSpinIntegerNode StreamBlockTransferSize;
 } quickSpinTLStream;
 
-/*@}*/
+/**@}*/
 
 #endif // FLIR_SPINNAKERC_TLSTREAM_H

@@ -25,12 +25,12 @@ namespace Spinnaker
     /**
     * @defgroup SpinnakerClasses Spinnaker Classes
     */
-    /*@{*/
+    /**@{*/
 
     /**
     * @defgroup CameraDefs_h CameraDefs Class
     */
-    /*@{*/
+    /**@{*/
 
     /**
     *@brief The enum definitions for camera nodes from the Standard Feature Naming Convention (SFNC) .xml files.
@@ -2609,9 +2609,9 @@ namespace Spinnaker
         NUM_CXPPOCXPSTATUS
     };
 
-    /*@}*/
+    /**@}*/
 
-    /*@}*/
+    /**@}*/
 
 }
 #endif // FLIR_SPINNAKER_CAMERA_DEFS_H

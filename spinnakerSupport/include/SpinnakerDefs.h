@@ -82,6 +82,7 @@ namespace Spinnaker
         SPINNAKER_ERR_RESOURCE_EXHAUSTED = -1020,
         SPINNAKER_ERR_OUT_OF_MEMORY = -1021,
         SPINNAKER_ERR_BUSY = -1022,
+        SPINNAKER_ERR_IP_CONFLICT = -1023,
 
         SPINNAKER_ERR_GENICAM_INVALID_ARGUMENT = -2001,
         SPINNAKER_ERR_GENICAM_OUT_OF_RANGE = -2002,
@@ -200,8 +201,9 @@ namespace Spinnaker
     /** Status of images returned from GetNextImage() or Convert() calls. */
     enum ImageStatus
     {
-        SPINNAKER_IMAGE_STATUS_UNKNOWN_ERROR = -1,   /**< Image has an unknown error. */
-        SPINNAKER_IMAGE_STATUS_NO_ERROR = 0,         /**< Image is returned from GetNextImage() or Convert() calls without any errors. */
+        SPINNAKER_IMAGE_STATUS_UNKNOWN_ERROR = -1, /**< Image has an unknown error. */
+        SPINNAKER_IMAGE_STATUS_NO_ERROR =
+            0, /**< Image is returned from GetNextImage() or Convert() calls without any errors. */
         SPINNAKER_IMAGE_STATUS_CRC_CHECK_FAILED = 1, /**< Image failed CRC check. */
         SPINNAKER_IMAGE_STATUS_DATA_OVERFLOW = 2,    /**< Received more data than the size of the image. */
         SPINNAKER_IMAGE_STATUS_MISSING_PACKETS =
@@ -215,11 +217,12 @@ namespace Spinnaker
             5, /**< Image trailer is incomplete. Could be caused by missing packet(s). See link above.*/
         SPINNAKER_IMAGE_STATUS_PACKETID_INCONSISTENT =
             6, /**< Image has an inconsistent packet id. Could be caused by missing packet(s). See link above.*/
-        SPINNAKER_IMAGE_STATUS_MISSING_LEADER = 7, /**< Image leader is missing. Could be caused by missing packet(s). See link above.*/
+        SPINNAKER_IMAGE_STATUS_MISSING_LEADER =
+            7, /**< Image leader is missing. Could be caused by missing packet(s). See link above.*/
         SPINNAKER_IMAGE_STATUS_MISSING_TRAILER =
             8, /**< Image trailer is missing. Could be caused by missing packet(s). See link above.*/
-        SPINNAKER_IMAGE_STATUS_DATA_INCOMPLETE = 9, /**< Image data is incomplete. Could be caused by missing packet(s) or decompression
-                                      error. See link above.*/
+        SPINNAKER_IMAGE_STATUS_DATA_INCOMPLETE = 9, /**< Image data is incomplete. Could be caused by missing packet(s)
+                                      or decompression error. See link above.*/
         SPINNAKER_IMAGE_STATUS_INFO_INCONSISTENT =
             10, /**< Image info is corrupted. Could be caused by missing packet(s). See link above.*/
         SPINNAKER_IMAGE_STATUS_CHUNK_DATA_INVALID = 11, /**< Image chunk data is invalid */
@@ -228,8 +231,8 @@ namespace Spinnaker
     };
 
     /**
-    * Channels that allow statistics to be calculated.
-    */
+     * Channels that allow statistics to be calculated.
+     */
     enum StatisticsChannel
     {
         SPINNAKER_STATISTICS_CHANNEL_GREY,
@@ -245,19 +248,20 @@ namespace Spinnaker
     /** Log levels */
     enum SpinnakerLogLevel
     {
-        SPINNAKER_LOG_LEVEL_OFF = -1,     // Logging is off.
-        SPINNAKER_LOG_LEVEL_FATAL = 0,    // Failures that are non-recoverable without user intervention.
-        SPINNAKER_LOG_LEVEL_ALERT = 100,  // Not used by Spinnaker.
-        SPINNAKER_LOG_LEVEL_CRIT = 200,   // Not used by Spinnaker.
-        SPINNAKER_LOG_LEVEL_ERROR = 300,  // Failures that may or may not be recoverable without user
-                                          // intervention (use case dependent).
-        SPINNAKER_LOG_LEVEL_WARN = 400,   // Failures that are recoverable without user intervention.
-        SPINNAKER_LOG_LEVEL_NOTICE = 500, // Events such as camera arrival and removal, initialization and deinitialization,
-                                          // starting and stopping image acquisition, and feature modification.
-        SPINNAKER_LOG_LEVEL_INFO = 600,   // Information about recurring events that are generated regularly such as information on
-                                          // individual images.
-        SPINNAKER_LOG_LEVEL_DEBUG = 700,  // Information that can be used to troubleshoot the system.
-        SPINNAKER_LOG_LEVEL_NOTSET = 800  // Logs everything.
+        SPINNAKER_LOG_LEVEL_OFF = -1,    // Logging is off.
+        SPINNAKER_LOG_LEVEL_FATAL = 0,   // Failures that are non-recoverable without user intervention.
+        SPINNAKER_LOG_LEVEL_ALERT = 100, // Not used by Spinnaker.
+        SPINNAKER_LOG_LEVEL_CRIT = 200,  // Not used by Spinnaker.
+        SPINNAKER_LOG_LEVEL_ERROR = 300, // Failures that may or may not be recoverable without user
+                                         // intervention (use case dependent).
+        SPINNAKER_LOG_LEVEL_WARN = 400,  // Failures that are recoverable without user intervention.
+        SPINNAKER_LOG_LEVEL_NOTICE =
+            500, // Events such as camera arrival and removal, initialization and deinitialization,
+                 // starting and stopping image acquisition, and feature modification.
+        SPINNAKER_LOG_LEVEL_INFO = 600,  // Information about recurring events that are generated regularly such as
+                                         // information on individual images.
+        SPINNAKER_LOG_LEVEL_DEBUG = 700, // Information that can be used to troubleshoot the system.
+        SPINNAKER_LOG_LEVEL_NOTSET = 800 // Logs everything.
     };
 
     /* Image payload types supported by the Spinnaker Image class*/
@@ -298,16 +302,16 @@ namespace Spinnaker
     {
         SPINNAKER_ACTION_COMMAND_STATUS_OK = 0, /* The device acknowledged the command.*/
         SPINNAKER_ACTION_COMMAND_STATUS_NO_REF_TIME =
-        0x8013, /* The device is not synchronized to a master clock to be used as time reference. Typically used
-                when scheduled action commands cannot be scheduled for a future time since the reference time
-                coming from IEEE 1588 is not locked. */
-        SPINNAKER_ACTION_COMMAND_STATUS_OVERFLOW = 0x8015, /* Returned when the scheduled action commands queue is full and the
-                                                           device cannot accept the additional request. */
+            0x8013, /* The device is not synchronized to a master clock to be used as time reference. Typically used
+                    when scheduled action commands cannot be scheduled for a future time since the reference time
+                    coming from IEEE 1588 is not locked. */
+        SPINNAKER_ACTION_COMMAND_STATUS_OVERFLOW = 0x8015, /* Returned when the scheduled action commands queue is full
+                                                           and the device cannot accept the additional request. */
         SPINNAKER_ACTION_COMMAND_STATUS_ACTION_LATE =
-        0x8016, /* The requested scheduled action command was requested at a point in time that is in the past. */
+            0x8016, /* The requested scheduled action command was requested at a point in time that is in the past. */
         SPINNAKER_ACTION_COMMAND_STATUS_ERROR =
-        0x8FFF /* Generic Error. Try enabling the Extended Status Code 2.0 bit on gvcp configuration register in
-               order to receive more meaningful/detailed acknowledge messages from the device. */
+            0x8FFF /* Generic Error. Try enabling the Extended Status Code 2.0 bit on gvcp configuration register in
+                   order to receive more meaningful/detailed acknowledge messages from the device. */
     };
 
     /** Compression method to use for encoding TIFF images. */
@@ -317,21 +321,21 @@ namespace Spinnaker
         SPINNAKER_TIFF_COMPRESS_METHOD_PACKBITS,      /**< Save using PACKBITS compression. */
         SPINNAKER_TIFF_COMPRESS_METHOD_DEFLATE,       /**< Save using DEFLATE compression (ZLIB compression). */
         SPINNAKER_TIFF_COMPRESS_METHOD_ADOBE_DEFLATE, /**< Save using ADOBE DEFLATE compression */
-                                             /**
-                                             * Save using CCITT Group 3 fax encoding. This is only valid for
-                                             * 1-bit images only. Default to LZW for other bit depths.
-                                             */
+                                                      /**
+                                                       * Save using CCITT Group 3 fax encoding. This is only valid for
+                                                       * 1-bit images only. Default to LZW for other bit depths.
+                                                       */
         SPINNAKER_TIFF_COMPRESS_METHOD_CCITTFAX3,
         /**
-        * Save using CCITT Group 4 fax encoding. This is only valid for
-        * 1-bit images only. Default to LZW for other bit depths.
-        */
+         * Save using CCITT Group 4 fax encoding. This is only valid for
+         * 1-bit images only. Default to LZW for other bit depths.
+         */
         SPINNAKER_TIFF_COMPRESS_METHOD_CCITTFAX4,
         SPINNAKER_TIFF_COMPRESS_METHOD_LZW, /**< Save using LZW compression. */
-                                   /**
-                                   * Save using JPEG compression. This is only valid for 8-bit
-                                   * greyscale and 24-bit only. Default to LZW for other bit depths.
-                                   */
+                                            /**
+                                             * Save using JPEG compression. This is only valid for 8-bit
+                                             * greyscale and 24-bit only. Default to LZW for other bit depths.
+                                             */
         SPINNAKER_TIFF_COMPRESS_METHOD_JPEG
     };
 
@@ -360,30 +364,30 @@ namespace Spinnaker
     };
 
     /**
-    * Image scaling algorithms.
-    */
+     * Image scaling algorithms.
+     */
     enum ImageScalingAlgorithm
     {
         /*
-        * Uses copies of the nearest source pixels to compute a scaled image.
-        * The scaling factor used with this algorithm will be rounded to the
-        * nearest integer (upscaling) or inverse integer (downscaling).
-        * eg. 1.3 will be rounded to 1 and 0.3 will be rounded to (1 / 3).
-        */
+         * Uses copies of the nearest source pixels to compute a scaled image.
+         * The scaling factor used with this algorithm will be rounded to the
+         * nearest integer (upscaling) or inverse integer (downscaling).
+         * eg. 1.3 will be rounded to 1 and 0.3 will be rounded to (1 / 3).
+         */
         SPINNAKER_IMAGE_SCALING_ALGORITHM_NEAREST_NEIGHBOR
     };
 
     /**
-    * Image normalization source data options.
-    * Options to normalize the source data based on the max and min values present in the specific
-    * image (image data) or the theoretical abosolute max and min image data values for the image type (absolute
-    * data). By default the abosolute max and min values for an image are the max and min values allowable for the
-    * image's pixel format. An exception to this is for some computed image data formats such as AoLP, DoLP and
-    * Stokes, where the absolute max and min are dependant on the algorithm used.
-    *
-    * For a given pixel, normalization is done by:
-    * NormalizedValue = ((maxDest - minDest) * (PixelValue - minSrc) / (maxSrc - minSrc)) + minDest
-    */
+     * Image normalization source data options.
+     * Options to normalize the source data based on the max and min values present in the specific
+     * image (image data) or the theoretical abosolute max and min image data values for the image type (absolute
+     * data). By default the abosolute max and min values for an image are the max and min values allowable for the
+     * image's pixel format. An exception to this is for some computed image data formats such as AoLP, DoLP and
+     * Stokes, where the absolute max and min are dependant on the algorithm used.
+     *
+     * For a given pixel, normalization is done by:
+     * NormalizedValue = ((maxDest - minDest) * (PixelValue - minSrc) / (maxSrc - minSrc)) + minDest
+     */
     enum SourceDataRange
     {
         /** Normalize based on the actual max and min values for the source image. */
@@ -397,8 +401,8 @@ namespace Spinnaker
     };
 
     /**
-    * Color specifiers for the heatmap color gradient.
-    */
+     * Color specifiers for the heatmap color gradient.
+     */
     enum HeatmapColor
     {
         SPINNAKER_HEATMAP_COLOR_BLACK = 1,
@@ -411,9 +415,9 @@ namespace Spinnaker
     };
 
     /**
-    * Polarization quadrant specifiers describing the four orientations of linear polarizing
-    * filters on polarized cameras
-    */
+     * Polarization quadrant specifiers describing the four orientations of linear polarizing
+     * filters on polarized cameras
+     */
     enum PolarizationQuadrant
     {
         /** The 0 degree of polarization. */
@@ -465,8 +469,8 @@ namespace Spinnaker
     /*@{*/
 
     /**
-    * @brief Spinnaker struct definitions.
-    */
+     * @brief Spinnaker struct definitions.
+     */
 
     /** Options for saving PNG images. */
     struct PNGOption

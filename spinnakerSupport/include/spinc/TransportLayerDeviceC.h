@@ -26,7 +26,7 @@
 * @defgroup TLDeviceC_h TLDevice Structures
 * @ingroup CQuickSpin
 */
-/*@{*/
+/**@{*/
 
 typedef struct _quickSpinTLDevice
 {
@@ -76,6 +76,6 @@ typedef struct _quickSpinTLDevice
 	quickSpinStringNode DevicePortId;
 } quickSpinTLDevice;
 
-/*@}*/
+/**@}*/
 
 #endif // FLIR_SPINNAKERC_TLDEVICE_H

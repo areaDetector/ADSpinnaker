@@ -30,12 +30,12 @@ namespace Spinnaker
 	/**
 	* @defgroup SpinnakerQuickSpinClasses Spinnaker QuickSpin Classes
 	*/
-	/*@{*/
+	/**@{*/
 
 	/**
 	* @defgroup TransportLayerDevice_h TransportLayerDevice Class
 	*/
-	/*@{*/
+	/**@{*/
 
 	/**
 	*@brief Part of the QuickSpin API to provide access to camera information without having to first initialize the camera.
@@ -327,9 +327,9 @@ namespace Spinnaker
 		friend class CameraInternal;
 
 	};
-	/*@}*/
+	/**@}*/
 
-	/*@}*/
+	/**@}*/
 
 }
 #endif // FLIR_SPINNAKER_TRANSPORTLAYERDEVICE_H

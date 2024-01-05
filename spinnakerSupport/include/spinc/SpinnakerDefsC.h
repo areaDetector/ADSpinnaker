@@ -399,10 +399,14 @@ typedef enum _spinImageStatus
         5, /**< Image trailer is incomplete. Could be caused by missing packet(s). See link above.*/
     SPINNAKER_IMAGE_STATUS_PACKETID_INCONSISTENT =
         6, /**< Image has an inconsistent packet id. Could be caused by missing packet(s). See link above.*/
-    SPINNAKER_IMAGE_STATUS_MISSING_LEADER = 7,     /**< Image leader is missing. Could be caused by missing packet(s). See link above.*/
-    SPINNAKER_IMAGE_STATUS_MISSING_TRAILER = 8,    /**< Image trailer is missing. Could be caused by missing packet(s). See link above.*/
-    SPINNAKER_IMAGE_STATUS_DATA_INCOMPLETE = 9,    /**< Image data is incomplete. Could be caused by missing packet(s). See link above.*/
-    SPINNAKER_IMAGE_STATUS_INFO_INCONSISTENT = 10, /**< Image info is corrupted. Could be caused by missing packet(s). See link above.*/
+    SPINNAKER_IMAGE_STATUS_MISSING_LEADER =
+        7, /**< Image leader is missing. Could be caused by missing packet(s). See link above.*/
+    SPINNAKER_IMAGE_STATUS_MISSING_TRAILER =
+        8, /**< Image trailer is missing. Could be caused by missing packet(s). See link above.*/
+    SPINNAKER_IMAGE_STATUS_DATA_INCOMPLETE =
+        9, /**< Image data is incomplete. Could be caused by missing packet(s). See link above.*/
+    SPINNAKER_IMAGE_STATUS_INFO_INCONSISTENT =
+        10, /**< Image info is corrupted. Could be caused by missing packet(s). See link above.*/
     SPINNAKER_IMAGE_STATUS_CHUNK_DATA_INVALID = 11, /**< Image chunk data is invalid */
     SPINNAKER_IMAGE_STATUS_NO_SYSTEM_RESOURCES = 12 /**< Image cannot be processed due to lack of system
                                    resources. */
@@ -416,13 +420,13 @@ typedef enum _spinLogLevel
     SPINNAKER_LOG_LEVEL_ALERT = 100,  // Not used by Spinnaker.
     SPINNAKER_LOG_LEVEL_CRIT = 200,   // Not used by Spinnaker.
     SPINNAKER_LOG_LEVEL_ERROR = 300,  // Failures that may or may not be recoverable without user
-                            // intervention (use case dependent).
+                                      // intervention (use case dependent).
     SPINNAKER_LOG_LEVEL_WARN = 400,   // Failures that are recoverable without user intervention.
     SPINNAKER_LOG_LEVEL_NOTICE = 500, // Events such as camera arrival and removal, initialization
-                            // and deinitialization, starting and stopping image acquisition,
-                            // and feature modification.
+                                      // and deinitialization, starting and stopping image acquisition,
+                                      // and feature modification.
     SPINNAKER_LOG_LEVEL_INFO = 600,   // Information about recurring events that are generated regularly
-                            // such as information on individual images.
+                                      // such as information on individual images.
     SPINNAKER_LOG_LEVEL_DEBUG = 700,  // Information that can be used to troubleshoot the system.
     SPINNAKER_LOG_LEVEL_NOTSET = 800  // Logs everything.
 } spinnakerLogLevel;
@@ -475,8 +479,8 @@ typedef enum _spinTIFFCompressionMethod
 } spinTIFFCompressionMethod;
 
 /**
-* Possible Status Codes Returned from Action Command.
-*/
+ * Possible Status Codes Returned from Action Command.
+ */
 typedef enum _spinActionCommandStatus
 {
     /** The device acknowledged the command. */

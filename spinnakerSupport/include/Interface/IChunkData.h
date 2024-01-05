@@ -30,12 +30,12 @@ namespace Spinnaker
     /**
     * @defgroup SpinnakerClasses Spinnaker Classes
     */
-    /*@{*/
+    /**@{*/
 
     /**
     * @defgroup IChunkData_h IChunkData Class
     */
-    /*@{*/
+    /**@{*/
 
     /**
     *@brief The Interface file for ChunkData.
@@ -97,9 +97,9 @@ namespace Spinnaker
         IChunkData() {};
 
     };
-    /*@}*/
+    /**@}*/
 
-    /*@}*/
+    /**@}*/
 
 }
 #endif // FLIR_SPINNAKER_ICHUNKDATA_H

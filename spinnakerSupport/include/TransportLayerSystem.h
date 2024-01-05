@@ -30,12 +30,12 @@ namespace Spinnaker
 	/**
 	* @defgroup SpinnakerQuickSpinClasses Spinnaker QuickSpin Classes
 	*/
-	/*@{*/
+	/**@{*/
 
 	/**
 	* @defgroup TransportLayerSystem_h TransportLayerSystem Class
 	*/
-	/*@{*/
+	/**@{*/
 
 	/**
 	*@brief Part of the QuickSpin API to provide access to camera information without having to first initialize the camera.
@@ -212,15 +212,21 @@ namespace Spinnaker
 		 */
 		GenApi::IBoolean &EnumerateGen2Cameras;
 
+		/**
+		 * Description: GEV cameras on different subnets than their host adapter will be automatically assigned a valid IP. Note: this feature does not work when network adapters are in the IP address range 169.254.0.0/16 (169.254.0.0 through 169.254.255.255).
+		 * Visibility: Expert
+		 */
+		GenApi::IBoolean &GevAutoAssignIPEnable;
+
 
 	protected:
 		friend class System;
 		friend class ISystem;
 		friend class SystemPtrInternal;
 	};
-	/*@}*/
+	/**@}*/
 
-	/*@}*/
+	/**@}*/
 
 }
 #endif // FLIR_SPINNAKER_TRANSPORTLAYERSYSTEM_H

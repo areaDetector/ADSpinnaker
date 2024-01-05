@@ -30,12 +30,12 @@ namespace Spinnaker
     /**
     * @defgroup SpinnakerClasses Spinnaker Classes
     */
-    /*@{*/
+    /**@{*/
 
     /**
     * @defgroup Camera_h Camera Class
     */
-    /*@{*/
+    /**@{*/
 
     /**
     *@brief The camera object class.
@@ -4420,9 +4420,9 @@ namespace Spinnaker
         GenApi::IRegister &ChunkInferenceBoundingBoxResult;
 
     };
-    /*@}*/
+    /**@}*/
 
-    /*@}*/
+    /**@}*/
 
 }
 #endif // FLIR_SPINNAKER_CAMERA_H

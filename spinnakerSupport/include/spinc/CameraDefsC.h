@@ -26,12 +26,12 @@
 *
 * Definitions for Spinnaker C
 */
-/*@{*/
+/**@{*/
 
 /**
 * @defgroup CameraDefsC_h Camera Enumerations
 */
-/*@{*/
+/**@{*/
 
 /**
 *@brief The enum definitions for camera nodes.
@@ -2610,8 +2610,8 @@ typedef enum _spinCxpPoCxpStatusEnums    /*!< Returns the Power over CoaXPress (
     NUM_CXPPOCXPSTATUS
 } spinCxpPoCxpStatusEnums;
 
-/*@}*/
+/**@}*/
 
-/*@}*/
+/**@}*/
 
 #endif // FLIR_SPINNAKER_CAMERA_DEFS_C_H

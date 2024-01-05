@@ -75,6 +75,7 @@ namespace Spinnaker
             const uint64_t bufferSize) = 0;
 
         virtual ImagePtr GetNextImage(uint64_t grabTimeout = EVENT_TIMEOUT_INFINITE, uint64_t streamIndex = 0) = 0;
+        virtual GenICam::gcstring GetDeviceID() = 0;
         virtual GenICam::gcstring GetUniqueID() = 0;
         virtual bool IsStreaming() const = 0;
         virtual GenICam::gcstring GetGuiXml() const = 0;

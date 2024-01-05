@@ -50,12 +50,13 @@ namespace Spinnaker
         virtual GenApi::INodeMap& GetTLNodeMap() const = 0;
         virtual void RegisterEventHandler(EventHandler& evtHandlerToRegister) = 0;
         virtual void UnregisterEventHandler(EventHandler& evtHandlerToUnregister) = 0;
-        virtual bool IsInUse() const = 0;
+        virtual bool IsCameraInUse() const = 0;
         virtual void SendActionCommand(
             unsigned int deviceKey,
             unsigned int groupKey,
             unsigned int groupMask,
             unsigned long long actionTime = 0,
+            bool requestAck = false,
             unsigned int* pResultSize = 0,
             ActionCommandResult results[] = NULL) const = 0;
         virtual bool IsValid() = 0;

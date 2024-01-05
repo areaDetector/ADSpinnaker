@@ -26,7 +26,7 @@
 * @defgroup TLSystemC_h TLSystem Structures
 * @ingroup CQuickSpin
 */
-/*@{*/
+/**@{*/
 
 typedef struct _quickSpinTLSystem
 {
@@ -56,8 +56,9 @@ typedef struct _quickSpinTLSystem
 	quickSpinBooleanNode EnumerateGEVInterfaces;
 	quickSpinBooleanNode EnumerateUSBInterfaces;
 	quickSpinBooleanNode EnumerateGen2Cameras;
+	quickSpinBooleanNode GevAutoAssignIPEnable;
 } quickSpinTLSystem;
 
-/*@}*/
+/**@}*/
 
 #endif // FLIR_SPINNAKERC_TLSYSTEM_H

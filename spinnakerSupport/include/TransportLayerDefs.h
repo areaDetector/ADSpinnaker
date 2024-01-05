@@ -25,12 +25,12 @@ namespace Spinnaker
 	/**
 	* @defgroup SpinnakerQuickSpinClasses Spinnaker QuickSpin Classes
 	*/
-	/*@{*/
+	/**@{*/
 
 	/**	
 	* @defgroup TransportLayerDefs_h TransportLayerDefs Class
 	*/
-	/*@{*/
+	/**@{*/
 
 	/**
 	*@brief The enum definitions for TL Device nodes from the transport layer .xml files.
@@ -51,7 +51,7 @@ namespace Spinnaker
 	{
 		StreamMode_Socket,	/*!< Socket*/
 		StreamMode_LWF,	/*!< Light Weight Filter Driver*/
-		StreamMode_MVA,	/*!< Machine Vision Accelerator Driver*/
+		StreamMode_TeledyneGigeVision,	/*!< Teledyne Gige Vision Driver*/
 		NUMSTREAMMODE
 	};
 
@@ -151,12 +151,20 @@ namespace Spinnaker
 		NUMPOESTATUS
 	};
 
-	enum FilterDriverStatusEnum	/*!< Reports whether FLIR Light Weight Filter Driver is enabled, disabled, or not installed.*/
+	enum FLIRFilterDriverStatusEnum	/*!< Reports whether FLIR Light Weight Filter Driver is enabled, disabled, or not installed.*/
 	{
-		FilterDriverStatus_NotSupported,	/*!< Not Installed*/
-		FilterDriverStatus_Disabled,	/*!< FLIR Light Weight Filter Driver is disabled across all interfaces*/
-		FilterDriverStatus_Enabled,	/*!< FLIR Light Weight Filter Driver is enabled*/
-		NUMFILTERDRIVERSTATUS
+		FLIRFilterDriverStatus_NotSupported,	/*!< Not Installed*/
+		FLIRFilterDriverStatus_Disabled,	/*!< FLIR Light Weight Filter Driver is disabled across all interfaces*/
+		FLIRFilterDriverStatus_Enabled,	/*!< FLIR Light Weight Filter Driver is enabled*/
+		NUMFLIRFILTERDRIVERSTATUS
+	};
+
+	enum TeledyneGigeVisionFilterDriverStatusEnum	/*!< Reports whether Teledyne Gige Vision Filter Driver is enabled, disabled, or not installed.*/
+	{
+		TeledyneGigeVisionFilterDriverStatus_NotSupported,	/*!< Not Installed*/
+		TeledyneGigeVisionFilterDriverStatus_Disabled,	/*!< Teledyne Gige Vision Filter Driver is disabled across all interfaces*/
+		TeledyneGigeVisionFilterDriverStatus_Enabled,	/*!< Teledyne Gige Vision Filter Driver is enabled*/
+		NUMTELEDYNEGIGEVISIONFILTERDRIVERSTATUS
 	};
 
 	enum TLTypeEnum	/*!< Transport layer type of the GenTL Producer implementation.*/
@@ -171,9 +179,9 @@ namespace Spinnaker
 		NUMTLTYPE
 	};
 
-	/*@}*/
+	/**@}*/
 
-	/*@}*/
+	/**@}*/
 
 }
 #endif // FLIR_SPINNAKER_TRANSPORTLAYERDEFS_H

@@ -83,22 +83,6 @@ namespace Spinnaker
              */
             void Destroy();
 
-            /*!
-            //! Creates the object from the default DLL
-            //! note Can only be used if the class TCameraParams was auto generated from a specific camera xml file
-            void LoadDLL(void);
-            */
-
-            /*!
-            //! Creates the object from a DLL whose name is deduced from vendor and model name
-            void LoadDLL(GenICam::gcstring VendorName, GenICam::gcstring ModelName);
-            */
-
-            /*!
-            //! Creates the object from a DLL with given file name
-            void LoadDLL(GenICam::gcstring FileName);
-            */
-
             /**
              * Creates the object from a XML file with given file name
              */
@@ -285,13 +269,17 @@ namespace Spinnaker
 
             void PopulateNodeMap(void* pNodeMap, std::map<GenICam::gcstring, std::shared_ptr<INode>>& outMap);
 
+            GenICam::gcstring m_deviceName;
             void* m_nodeMapRef;
+            void* m_nodeMapRefOld;
 
             mutable CLock* m_pLock;
 
-            mutable std::vector<std::shared_ptr<PortAdapter>> m_portAdapters;
+            mutable std::map<GenICam::gcstring, std::shared_ptr<PortAdapter>> m_portAdapters;
+            mutable std::map<GenICam::gcstring, std::shared_ptr<PortAdapter>> m_portAdaptersOld;
 
             mutable std::map<GenICam::gcstring, std::shared_ptr<INode>> m_nodeMap;
+            mutable std::map<GenICam::gcstring, std::shared_ptr<INode>> m_nodeMapOld;
         };
 
         /*@}*/

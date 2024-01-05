@@ -67,6 +67,7 @@ namespace Spinnaker
             unsigned int groupKey,
             unsigned int groupMask,
             unsigned long long actionTime = 0,
+            bool requestAck = false,
             unsigned int* pResultSize = 0,
             ActionCommandResult results[] = NULL) = 0;
         virtual const LibraryVersion GetLibraryVersion() = 0;
