@@ -413,16 +413,16 @@ void ADSpinnaker::imageGrabTask()
             pTLStreamNodeMap_->InvalidateNodes();
             setIntegerParam(SPStartedFrameCount,          (int)streamStats.StreamStartedFrameCount.GetValue());
             setIntegerParam(SPDeliveredFrameCount,        (int)streamStats.StreamDeliveredFrameCount.GetValue());
-            setIntegerParam(SPReceivedFrameCount,         (int)streamStats.StreamReceivedFrameCount.GetValue());
+//            setIntegerParam(SPReceivedFrameCount,         (int)streamStats.StreamReceivedFrameCount.GetValue());
             setIntegerParam(SPIncompleteFrameCount,       (int)streamStats.StreamIncompleteFrameCount.GetValue());
             setIntegerParam(SPLostFrameCount,             (int)streamStats.StreamLostFrameCount.GetValue());
             setIntegerParam(SPDroppedFrameCount,          (int)streamStats.StreamDroppedFrameCount.GetValue());
             setIntegerParam(SPInputBufferCount,           (int)streamStats.StreamInputBufferCount.GetValue());
             setIntegerParam(SPOutputBufferCount,          (int)streamStats.StreamOutputBufferCount.GetValue());
-            setIntegerParam(SPReceivedPacketCount,        (int)streamStats.StreamReceivedPacketCount.GetValue());
-            setIntegerParam(SPMissedPacketCount,          (int)streamStats.StreamMissedPacketCount.GetValue());
-            setIntegerParam(SPResendRequestedPacketCount, (int)streamStats.StreamPacketResendRequestedPacketCount.GetValue());
-            setIntegerParam(SPResendReceivedPacketCount,  (int)streamStats.StreamPacketResendReceivedPacketCount.GetValue());
+//            setIntegerParam(SPReceivedPacketCount,        (int)streamStats.StreamReceivedPacketCount.GetValue());
+//            setIntegerParam(SPMissedPacketCount,          (int)streamStats.StreamMissedPacketCount.GetValue());
+//            setIntegerParam(SPResendRequestedPacketCount, (int)streamStats.StreamPacketResendRequestedPacketCount.GetValue());
+//            setIntegerParam(SPResendReceivedPacketCount,  (int)streamStats.StreamPacketResendReceivedPacketCount.GetValue());
         }
         catch (Spinnaker::Exception &e) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
