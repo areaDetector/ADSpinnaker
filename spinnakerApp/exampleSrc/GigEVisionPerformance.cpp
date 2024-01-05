@@ -233,117 +233,144 @@ void PrintDataStreamInfo(const Spinnaker::CameraPtr pCamera)
         // Get model name
         const TransportLayerStream& camStreamInfo = pCamera->TLStream;
 
-        if (camStreamInfo.StreamID != NULL)
+        if (IsReadable(camStreamInfo.StreamID))
         {
             outSS << "Stream ID: " << camStreamInfo.StreamID.ToString() << endl;
         }
-        if (camStreamInfo.StreamType != NULL)
+        if (IsReadable(camStreamInfo.StreamType))
         {
             outSS << "Stream Type: " << camStreamInfo.StreamType.ToString() << endl;
         }
-        if (camStreamInfo.StreamMode != NULL)
+        if (IsReadable(camStreamInfo.StreamMode))
         {
             outSS << "Stream Mode: " << camStreamInfo.StreamMode.ToString() << endl;
         }
-        if (camStreamInfo.StreamBufferCountResult != NULL)
+        if (IsReadable(camStreamInfo.StreamBufferCountResult))
         {
             outSS << "Stream Buffer Count: " << camStreamInfo.StreamBufferCountResult.ToString() << endl;
         }
-        if (camStreamInfo.StreamBufferHandlingMode != NULL)
+        if (IsReadable(camStreamInfo.StreamBufferHandlingMode))
         {
             outSS << "Stream Buffer Handling Mode: " << camStreamInfo.StreamBufferHandlingMode.ToString() << endl;
         }
-        if (camStreamInfo.StreamAnnounceBufferMinimum != NULL)
+        if (IsReadable(camStreamInfo.StreamAnnounceBufferMinimum))
         {
             outSS << "Stream Announced Buffer Minimum: " << camStreamInfo.StreamAnnounceBufferMinimum.ToString()
                   << endl;
         }
-        if (camStreamInfo.StreamAnnouncedBufferCount != NULL)
+        if (IsReadable(camStreamInfo.StreamAnnouncedBufferCount))
         {
             outSS << "Stream Announced Buffer Count: " << camStreamInfo.StreamAnnouncedBufferCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamStartedFrameCount != NULL)
+        if (IsReadable(camStreamInfo.StreamStartedFrameCount))
         {
             outSS << "Stream Started Frame Count: " << camStreamInfo.StreamStartedFrameCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamDeliveredFrameCount != NULL)
+        if (IsReadable(camStreamInfo.StreamDeliveredFrameCount))
         {
             outSS << "Stream Delivered Frame Count: " << camStreamInfo.StreamDeliveredFrameCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamIncompleteFrameCount != NULL)
+        if (IsReadable(camStreamInfo.StreamIncompleteFrameCount))
         {
             outSS << "Stream Incomplete Frame Count: " << camStreamInfo.StreamIncompleteFrameCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamReceivedFrameCount != NULL)
+        if (IsReadable(camStreamInfo.StreamReceivedFrameCount))
         {
             outSS << "Stream Received Frame Count: " << camStreamInfo.StreamReceivedFrameCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamLostFrameCount != NULL)
+        if (IsReadable(camStreamInfo.StreamLostFrameCount))
         {
             outSS << "Stream Lost Frame Count: " << camStreamInfo.StreamLostFrameCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamDroppedFrameCount != NULL)
+        if (IsReadable(camStreamInfo.StreamDroppedFrameCount))
         {
             outSS << "Stream Dropped Frame Count: " << camStreamInfo.StreamDroppedFrameCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamInputBufferCount != NULL)
+        if (IsReadable(camStreamInfo.StreamInputBufferCount))
         {
             outSS << "Stream Input Buffer Count: " << camStreamInfo.StreamInputBufferCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamOutputBufferCount != NULL)
+        if (IsReadable(camStreamInfo.StreamOutputBufferCount))
         {
             outSS << "Stream Output Buffer Count: " << camStreamInfo.StreamOutputBufferCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamChunkCountMaximum != NULL)
+        if (IsReadable(camStreamInfo.StreamChunkCountMaximum))
         {
             outSS << "Stream Chunk Maximum: " << camStreamInfo.StreamChunkCountMaximum.ToString() << endl;
         }
-        if (camStreamInfo.StreamCRCCheckEnable != NULL)
+        if (IsReadable(camStreamInfo.StreamCRCCheckEnable))
         {
             outSS << "Stream CRC Check Enable: " << camStreamInfo.StreamCRCCheckEnable.ToString() << endl;
         }
-        if (camStreamInfo.StreamReceivedPacketCount != NULL)
+        if (IsReadable(camStreamInfo.StreamReceivedPacketCount))
         {
             outSS << "Stream Received Packet Count: " << camStreamInfo.StreamReceivedPacketCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamMissedPacketCount != NULL)
+        if (IsReadable(camStreamInfo.StreamMissedPacketCount))
         {
             outSS << "Stream Incomplete Packet Count: " << camStreamInfo.StreamMissedPacketCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamPacketResendEnable != NULL)
+        if (IsReadable(camStreamInfo.StreamPacketResendEnable))
         {
             outSS << "Stream Packet Resend Enable: " << camStreamInfo.StreamPacketResendEnable.ToString() << endl;
         }
-        if (camStreamInfo.StreamPacketResendTimeout != NULL)
+        if (IsReadable(camStreamInfo.StreamPacketResendTimeout))
         {
             outSS << "Stream Packet Resend Timeout: " << camStreamInfo.StreamPacketResendTimeout.ToString() << endl;
         }
-        if (camStreamInfo.StreamPacketResendMaxRequests != NULL)
+        if (IsReadable(camStreamInfo.StreamPacketResendMaxRequests))
         {
             outSS << "Stream Packet Resend Max Requests: " << camStreamInfo.StreamPacketResendMaxRequests.ToString()
                   << endl;
         }
-        if (camStreamInfo.StreamPacketResendRequestCount != NULL)
+        if (IsReadable(camStreamInfo.StreamPacketResendRequestCount))
         {
             outSS << "Stream Packet Resend Request Count: " << camStreamInfo.StreamPacketResendRequestCount.ToString()
                   << endl;
         }
-        if (camStreamInfo.StreamPacketResendRequestSuccessCount != NULL)
+        if (IsReadable(camStreamInfo.StreamPacketResendRequestTimeoutCount))
         {
             outSS << "Stream Packet Resend Request Success Count: "
-                  << camStreamInfo.StreamPacketResendRequestSuccessCount.ToString() << endl;
+                  << camStreamInfo.StreamPacketResendRequestTimeoutCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamPacketResendRequestedPacketCount != NULL)
+        if (IsReadable(camStreamInfo.StreamPacketResendRequestedPacketCount))
         {
             outSS << "Stream Packet Resend Requested Packet Count: "
                   << camStreamInfo.StreamPacketResendRequestedPacketCount.ToString() << endl;
         }
-        if (camStreamInfo.StreamPacketResendReceivedPacketCount != NULL)
+        if (IsReadable(camStreamInfo.StreamPacketResendReceivedPacketCount))
         {
             outSS << "Stream Packet Resend Received Packet Count: "
                   << camStreamInfo.StreamPacketResendReceivedPacketCount.ToString() << endl;
         }
-
+        if (IsReadable(camStreamInfo.StreamPacketsDuplicatedCount))
+        {
+            outSS << "Stream Packets Duplicated Count: " << camStreamInfo.StreamPacketsDuplicatedCount.ToString()
+                  << endl;
+        }
+        if (IsReadable(camStreamInfo.StreamPacketsTimeoutCount))
+        {
+            outSS << "Stream Packets Timeout Count: " << camStreamInfo.StreamPacketsTimeoutCount.ToString() << endl;
+        }
+        if (IsReadable(camStreamInfo.StreamPacketsNotYetAvailableCount))
+        {
+            outSS << "Stream Packets Not Yet Available Count: "
+                  << camStreamInfo.StreamPacketsNotYetAvailableCount.ToString() << endl;
+        }
+        if (IsReadable(camStreamInfo.StreamPacketsTemporarilyUnavailableCount))
+        {
+            outSS << "Stream Packets Temporarily Unavailable Count: "
+                  << camStreamInfo.StreamPacketsTemporarilyUnavailableCount.ToString() << endl;
+        }
+        if (IsReadable(camStreamInfo.StreamPacketsPerFrameCount))
+        {
+            outSS << "Stream Packets Per Frame Count: " << camStreamInfo.StreamPacketsPerFrameCount.ToString() << endl;
+        }
+        if (IsReadable(camStreamInfo.StreamPacketsUnavailableCount))
+        {
+            outSS << "Stream Packets Unavailable Count: " << camStreamInfo.StreamPacketsUnavailableCount.ToString()
+                  << endl;
+        }
         cout << outSS.str() << endl;
     }
     catch (Spinnaker::Exception& e)
@@ -363,8 +390,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapGenTL, int
     {
         // Retrieve enumeration node from nodemap
         CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-        if (!IsReadable(ptrAcquisitionMode) ||
-            !IsWritable(ptrAcquisitionMode))
+        if (!IsReadable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
         {
             cout << "Unable to set acquisition mode to continuous (enum retrieval). Aborting..." << endl << endl;
             return -1;
@@ -540,8 +566,7 @@ bool EnableManualFramerate(CameraPtr pCam)
 
     // Turning AcquisitionFrameRateAuto off
     CEnumerationPtr ptrFrameRateAuto = NodeMap.GetNode("AcquisitionFrameRateAuto");
-    if (!IsReadable(ptrFrameRateAuto) ||
-        !IsWritable(ptrFrameRateAuto))
+    if (!IsReadable(ptrFrameRateAuto) || !IsWritable(ptrFrameRateAuto))
     {
         cout << "Unable to get or set AcquisitionFrameRateAuto..." << endl << endl;
         return false;
@@ -580,8 +605,7 @@ bool SetFrameRate(CameraPtr pCam)
 
             // Set AcquisitionFrameRate to maximum
             CFloatPtr AcquisitionFrameRateNode = nodeMap.GetNode("AcquisitionFrameRate");
-            if (!IsReadable(AcquisitionFrameRateNode) ||
-                !IsWritable(AcquisitionFrameRateNode))
+            if (!IsReadable(AcquisitionFrameRateNode) || !IsWritable(AcquisitionFrameRateNode))
             {
                 cout << "Unable to get or set AcquisitionFrameRate to Max. Aborting..." << endl << endl;
                 return false;
@@ -725,8 +749,7 @@ int RunSingleCamera(CameraPtr pCam)
 
             cout << endl << "Setting minimum Exposure Time" << endl;
             CFloatPtr ExposureTimeNode = nodeMap.GetNode("ExposureTime");
-            if (!IsReadable(ExposureTimeNode) ||
-                !IsWritable(ExposureTimeNode))
+            if (!IsReadable(ExposureTimeNode) || !IsWritable(ExposureTimeNode))
             {
                 cout << "Unable to get or set ExposureTime to minimum. Aborting..." << endl << endl;
                 return false;
@@ -762,7 +785,7 @@ int RunSingleCamera(CameraPtr pCam)
         // Acquire images
         cout << "This iteration will stream: " << NumImagesToGrab << " images" << endl;
         result = result | AcquireImages(pCam, nodeMap, nodeMapGenTL, NumImagesToGrab, 0);
-        
+
         // Print Data Stream Nodemap Information
         PrintDataStreamInfo(pCam);
 
