@@ -101,6 +101,7 @@ private:
     asynStatus disconnectCamera();
     void imageEventCallback(ImagePtr pImage);
     void reportNode(FILE *fp, INodeMap *pNodeMap, gcstring nodeName, int level);
+    void updateStreamStat(IInteger &stat, int param);
 
     /* Data */
     int cameraId_;

@@ -174,7 +174,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int numSPBuffers,
 
     startEventId_ = epicsEventCreate(epicsEventEmpty);
 
-    // launch image read task
+    // launch image read taskp
     epicsThreadCreate("ADSpinnakerImageTask", 
                       epicsThreadPriorityMedium,
                       epicsThreadGetStackSize(epicsThreadStackMedium),
@@ -321,6 +321,16 @@ asynStatus ADSpinnaker::connectCamera(void)
     return asynSuccess;
 }
 
+void ADSpinnaker::updateStreamStat(IInteger &stat, int param)
+{
+    INode *node;
+    node = stat.GetNode();
+    if (GenApi::IsAvailable(node)) {
+        setIntegerParam(param, (int)stat.GetValue());
+    } else {
+        setIntegerParam(param, 0);
+    }
+}
 
 /** Task to grab images off the camera and send them up to areaDetector
  *
@@ -411,18 +421,18 @@ void ADSpinnaker::imageGrabTask()
         try {
             const TransportLayerStream& streamStats = pCamera_->TLStream;
             pTLStreamNodeMap_->InvalidateNodes();
-            setIntegerParam(SPStartedFrameCount,          (int)streamStats.StreamStartedFrameCount.GetValue());
-            setIntegerParam(SPDeliveredFrameCount,        (int)streamStats.StreamDeliveredFrameCount.GetValue());
-//            setIntegerParam(SPReceivedFrameCount,         (int)streamStats.StreamReceivedFrameCount.GetValue());
-            setIntegerParam(SPIncompleteFrameCount,       (int)streamStats.StreamIncompleteFrameCount.GetValue());
-            setIntegerParam(SPLostFrameCount,             (int)streamStats.StreamLostFrameCount.GetValue());
-            setIntegerParam(SPDroppedFrameCount,          (int)streamStats.StreamDroppedFrameCount.GetValue());
-            setIntegerParam(SPInputBufferCount,           (int)streamStats.StreamInputBufferCount.GetValue());
-            setIntegerParam(SPOutputBufferCount,          (int)streamStats.StreamOutputBufferCount.GetValue());
-//            setIntegerParam(SPReceivedPacketCount,        (int)streamStats.StreamReceivedPacketCount.GetValue());
-//            setIntegerParam(SPMissedPacketCount,          (int)streamStats.StreamMissedPacketCount.GetValue());
-//            setIntegerParam(SPResendRequestedPacketCount, (int)streamStats.StreamPacketResendRequestedPacketCount.GetValue());
-//            setIntegerParam(SPResendReceivedPacketCount,  (int)streamStats.StreamPacketResendReceivedPacketCount.GetValue());
+            updateStreamStat(streamStats.StreamStartedFrameCount,                 SPStartedFrameCount);
+            updateStreamStat(streamStats.StreamDeliveredFrameCount,               SPDeliveredFrameCount);
+            updateStreamStat(streamStats.StreamReceivedFrameCount,                SPReceivedFrameCount);
+            updateStreamStat(streamStats.StreamIncompleteFrameCount,              SPIncompleteFrameCount);
+            updateStreamStat(streamStats.StreamLostFrameCount,                    SPLostFrameCount);
+            updateStreamStat(streamStats.StreamDroppedFrameCount,                 SPDroppedFrameCount);
+            updateStreamStat(streamStats.StreamInputBufferCount,                  SPInputBufferCount);
+            updateStreamStat(streamStats.StreamOutputBufferCount,                 SPOutputBufferCount);
+            updateStreamStat(streamStats.StreamReceivedPacketCount,               SPReceivedPacketCount);
+            updateStreamStat(streamStats.StreamMissedPacketCount,                 SPMissedPacketCount);
+            updateStreamStat(streamStats.StreamPacketResendRequestedPacketCount,  SPResendRequestedPacketCount);
+            updateStreamStat(streamStats.StreamPacketResendReceivedPacketCount,   SPResendReceivedPacketCount);
         }
         catch (Spinnaker::Exception &e) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
