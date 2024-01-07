@@ -321,14 +321,21 @@ asynStatus ADSpinnaker::connectCamera(void)
     return asynSuccess;
 }
 
-void ADSpinnaker::updateStreamStat(IInteger &stat, int param)
+void ADSpinnaker::updateStreamStat(const char *nodeName, int param)
 {
-    INode *node;
-    node = stat.GetNode();
-    if (GenApi::IsAvailable(node)) {
-        setIntegerParam(param, (int)stat.GetValue());
-    } else {
-        setIntegerParam(param, 0);
+    static const char *functionName = "updateStreamStat";
+    try {
+        CIntegerPtr pNode = pTLStreamNodeMap_->GetNode(nodeName);
+        if (IsReadable(pNode)) {
+            setIntegerParam(param, (int)pNode->GetValue());
+        } else {
+            setIntegerParam(param, 0);
+        }
+    }
+    catch (Spinnaker::Exception &e) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s exception %s\n",
+            driverName, functionName, e.what());
     }
 }
 
@@ -418,27 +425,27 @@ void ADSpinnaker::imageGrabTask()
             setIntegerParam(ADStatus, ADStatusIdle);
             status = stopCapture();
         }
-        try {
-            const TransportLayerStream& streamStats = pCamera_->TLStream;
-            pTLStreamNodeMap_->InvalidateNodes();
-            updateStreamStat(streamStats.StreamStartedFrameCount,                 SPStartedFrameCount);
-            updateStreamStat(streamStats.StreamDeliveredFrameCount,               SPDeliveredFrameCount);
-            updateStreamStat(streamStats.StreamReceivedFrameCount,                SPReceivedFrameCount);
-            updateStreamStat(streamStats.StreamIncompleteFrameCount,              SPIncompleteFrameCount);
-            updateStreamStat(streamStats.StreamLostFrameCount,                    SPLostFrameCount);
-            updateStreamStat(streamStats.StreamDroppedFrameCount,                 SPDroppedFrameCount);
-            updateStreamStat(streamStats.StreamInputBufferCount,                  SPInputBufferCount);
-            updateStreamStat(streamStats.StreamOutputBufferCount,                 SPOutputBufferCount);
-            updateStreamStat(streamStats.StreamReceivedPacketCount,               SPReceivedPacketCount);
-            updateStreamStat(streamStats.StreamMissedPacketCount,                 SPMissedPacketCount);
-            updateStreamStat(streamStats.StreamPacketResendRequestedPacketCount,  SPResendRequestedPacketCount);
-            updateStreamStat(streamStats.StreamPacketResendReceivedPacketCount,   SPResendReceivedPacketCount);
-        }
-        catch (Spinnaker::Exception &e) {
-            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s::%s exception %s\n",
-                driverName, functionName, e.what());
-        }
+        //epicsTimeStamp tstart, tend;
+        //epicsTimeGetCurrent(&tstart);
+        const TransportLayerStream& streamStats = pCamera_->TLStream;
+        pTLStreamNodeMap_->InvalidateNodes();
+        updateStreamStat("StreamStartedFrameCount",                 SPStartedFrameCount);
+        updateStreamStat("StreamDeliveredFrameCount",               SPDeliveredFrameCount);
+        updateStreamStat("StreamReceivedFrameCount",                SPReceivedFrameCount);
+        updateStreamStat("StreamIncompleteFrameCount",              SPIncompleteFrameCount);
+        updateStreamStat("StreamLostFrameCount",                    SPLostFrameCount);
+        updateStreamStat("StreamDroppedFrameCount",                 SPDroppedFrameCount);
+        updateStreamStat("StreamInputBufferCount",                  SPInputBufferCount);
+        updateStreamStat("StreamOutputBufferCount",                 SPOutputBufferCount);
+        updateStreamStat("StreamReceivedPacketCount",               SPReceivedPacketCount);
+        updateStreamStat("StreamMissedPacketCount",                 SPMissedPacketCount);
+        updateStreamStat("StreamPacketResendRequestedPacketCount",  SPResendRequestedPacketCount);
+        updateStreamStat("StreamPacketResendReceivedPacketCount",   SPResendReceivedPacketCount);
+        //epicsTimeGetCurrent(&tend);
+        //asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s time to read stats=%f\n", 
+        //          driverName, functionName, epicsTimeDiffInSeconds(&tend, &tstart));
+        // NOTE: Using above timing code I found that it took 120 microseconds to read the stats
+        // It could probably be faster by only checking IsReadable() once when connecting camera, but not worth the complexity
         callParamCallbacks();
     }
 }
