@@ -427,7 +427,6 @@ void ADSpinnaker::imageGrabTask()
         }
         //epicsTimeStamp tstart, tend;
         //epicsTimeGetCurrent(&tstart);
-        const TransportLayerStream& streamStats = pCamera_->TLStream;
         pTLStreamNodeMap_->InvalidateNodes();
         updateStreamStat("StreamStartedFrameCount",                 SPStartedFrameCount);
         updateStreamStat("StreamDeliveredFrameCount",               SPDeliveredFrameCount);
