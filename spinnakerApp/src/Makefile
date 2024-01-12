@@ -6,8 +6,8 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC_WIN32 += ADSpinnaker
 LIBRARY_IOC_Linux += ADSpinnaker
 
-LIB_SRCS += SPFeature.cpp
-LIB_SRCS += ADSpinnaker.cpp
+LIB_SRCS_Linux += SPFeature.cpp ADSpinnaker.cpp
+LIB_SRCS_WIN32 += SPFeature.cpp ADSpinnaker.cpp
 
 ifeq (debug, $(findstring debug, $(T_A)))
   LIB_LIBS_WIN32 += Spinnakerd_v140
@@ -22,7 +22,6 @@ LIB_LIBS_Linux  += Spinnaker
 DBD += ADSpinnakerSupport.dbd
 
 USR_INCLUDES += -I ../../../spinnakerSupport/include
-USR_CXXFLAGS_Linux += -D LINUX
 USR_CXXFLAGS_Linux += -std=c++11 -Wno-unknown-pragmas
 
 ifeq (debug, $(findstring debug, $(T_A)))
