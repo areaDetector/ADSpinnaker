@@ -16,28 +16,28 @@
 //=============================================================================
 
 /**
-*  @example Acquisition.cpp
-*
-*  @brief Acquisition.cpp shows how to acquire images. It relies on
-*  information provided in the Enumeration example. Also, check out the
-*  ExceptionHandling and NodeMapInfo examples if you haven't already.
-*  ExceptionHandling shows the handling of standard and Spinnaker exceptions
-*  while NodeMapInfo explores retrieving information from various node types.
-*
-*  This example touches on the preparation and cleanup of a camera just before
-*  and just after the acquisition of images. Image retrieval and conversion,
-*  grabbing image data, and saving images are all covered as well.
-*
-*  Once comfortable with Acquisition, we suggest checking out
-*  AcquisitionMultipleCamera, NodeMapCallback, or SaveToAvi.
-*  AcquisitionMultipleCamera demonstrates simultaneously acquiring images from
-*  a number of cameras, NodeMapCallback serves as a good introduction to
-*  programming with callbacks and events, and SaveToAvi exhibits video creation.
-*
-*  Please leave us feedback at: https://www.surveymonkey.com/r/TDYMVAPI
-*  More source code examples at: https://github.com/Teledyne-MV/Spinnaker-Examples
-*  Need help? Check out our forum at: https://teledynevisionsolutions.zendesk.com/hc/en-us/community/topics
-*/
+ *  @example Acquisition.cpp
+ *
+ *  @brief Acquisition.cpp shows how to acquire images. It relies on
+ *  information provided in the Enumeration example. Also, check out the
+ *  ExceptionHandling and NodeMapInfo examples if you haven't already.
+ *  ExceptionHandling shows the handling of standard and Spinnaker exceptions
+ *  while NodeMapInfo explores retrieving information from various node types.
+ *
+ *  This example touches on the preparation and cleanup of a camera just before
+ *  and just after the acquisition of images. Image retrieval and conversion,
+ *  grabbing image data, and saving images are all covered as well.
+ *
+ *  Once comfortable with Acquisition, we suggest checking out
+ *  AcquisitionMultipleCamera, NodeMapCallback, or SaveToAvi.
+ *  AcquisitionMultipleCamera demonstrates simultaneously acquiring images from
+ *  a number of cameras, NodeMapCallback serves as a good introduction to
+ *  programming with callbacks and events, and SaveToAvi exhibits video creation.
+ *
+ *  Please leave us feedback at: https://www.surveymonkey.com/r/TDYMVAPI
+ *  More source code examples at: https://github.com/Teledyne-MV/Spinnaker-Examples
+ *  Need help? Check out our forum at: https://teledynevisionsolutions.zendesk.com/hc/en-us/community/topics
+ */
 
 #include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
@@ -48,6 +48,21 @@ using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 using namespace std;
+
+// Use the following enum to select the stream mode
+enum StreamMode
+{
+    STREAM_MODE_TELEDYNE_GIGE_VISION, // Teledyne Gige Vision is the default stream mode for spinview which is supported on Windows
+    STREAM_MODE_PGRLWF, // Light Weight Filter driver is our legacy driver which is supported on Windows
+    STREAM_MODE_SOCKET, // Socket is supported for MacOS and Linux, and uses native OS network sockets instead of a
+                        // filter driver
+};
+
+#if defined(WIN32) || defined(WIN64)
+const StreamMode chosenStreamMode = STREAM_MODE_TELEDYNE_GIGE_VISION;
+#else
+const StreamMode chosenStreamMode = STREAM_MODE_SOCKET;
+#endif
 
 // Disables or enables heartbeat on GEV cameras so debugging does not incur timeout errors
 int ConfigureGVCPHeartbeat(CameraPtr pCam, bool enable)
@@ -60,13 +75,13 @@ int ConfigureGVCPHeartbeat(CameraPtr pCam, bool enable)
     //
     // GEV cameras have a heartbeat built in, but when debugging applications the
     // camera may time out due to its heartbeat. Disabling the heartbeat prevents
-    // this timeout from occurring, enabling us to continue with any necessary 
+    // this timeout from occurring, enabling us to continue with any necessary
     // debugging.
     //
     // *** LATER ***
-    // Make sure that the heartbeat is reset upon completion of the debugging.  
+    // Make sure that the heartbeat is reset upon completion of the debugging.
     // If the application is terminated unexpectedly, the camera may not locked
-    // to Spinnaker indefinitely due to the the timeout being disabled.  When that 
+    // to Spinnaker indefinitely due to the the timeout being disabled.  When that
     // happens, a camera power cycle will reset the heartbeat to its default setting.
 
     // Retrieve TL device nodemap
@@ -98,9 +113,7 @@ int ConfigureGVCPHeartbeat(CameraPtr pCam, bool enable)
     CBooleanPtr ptrDeviceHeartbeat = nodeMap.GetNode("GevGVCPHeartbeatDisable");
     if (!IsWritable(ptrDeviceHeartbeat))
     {
-        cout << "Unable to configure heartbeat. Continuing with execution as this may be non-fatal..."
-            << endl
-            << endl;
+        cout << "Unable to configure heartbeat. Continuing with execution as this may be non-fatal..." << endl << endl;
     }
     else
     {
@@ -130,6 +143,56 @@ int ResetGVCPHeartbeat(CameraPtr pCam)
 int DisableGVCPHeartbeat(CameraPtr pCam)
 {
     return ConfigureGVCPHeartbeat(pCam, false);
+}
+
+// This function demonstrates how we can change stream modes.
+int SetStreamMode(CameraPtr pCam)
+{
+    int result = 0;
+
+    // Retrieve Stream nodemap
+    const INodeMap& sNodeMap = pCam->GetTLStreamNodeMap();
+
+    // The node "StreamMode" is only available for GEV cameras.
+    // Skip setting stream mode if the node is inaccessible.
+    const CEnumerationPtr ptrStreamMode = sNodeMap.GetNode("StreamMode");
+    if (!IsReadable(ptrStreamMode) || !IsWritable(ptrStreamMode))
+    {
+        return 0;
+    }
+
+    gcstring streamMode;
+    switch (chosenStreamMode)
+    {
+    case STREAM_MODE_PGRLWF:
+        streamMode = "LWF";
+        break;
+    case STREAM_MODE_SOCKET:
+        streamMode = "Socket";
+        break;
+    case STREAM_MODE_TELEDYNE_GIGE_VISION:
+    default:
+        streamMode = "TeledyneGigeVision";
+    }
+
+    // Retrieve the desired entry node from the enumeration node
+    const CEnumEntryPtr ptrStreamModeCustom = ptrStreamMode->GetEntryByName(streamMode);
+    if (!IsReadable(ptrStreamModeCustom))
+    {
+        // Failed to get custom node
+        cout << "Stream mode " + streamMode + " not available.  Aborting..." << endl;
+        return -1;
+    }
+    // Retrieve the integer value from the entry node
+    const int64_t streamModeCustom = ptrStreamModeCustom->GetValue();
+
+    // Set integer as new value for enumeration node
+    ptrStreamMode->SetIntValue(streamModeCustom);
+
+    // Print out the current stream mode
+    cout << endl << "Stream Mode set to " + ptrStreamMode->GetCurrentEntry()->GetSymbolic() << "..." << endl;
+
+    return 0;
 }
 
 // This function acquires and saves 10 images from a device.
@@ -165,8 +228,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
         //
         // Retrieve enumeration node from nodemap
         CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-        if (!IsReadable(ptrAcquisitionMode) ||
-            !IsWritable(ptrAcquisitionMode))
+        if (!IsReadable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
         {
             cout << "Unable to set acquisition mode to continuous (enum retrieval). Aborting..." << endl << endl;
             return -1;
@@ -176,7 +238,8 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
         CEnumEntryPtr ptrAcquisitionModeContinuous = ptrAcquisitionMode->GetEntryByName("Continuous");
         if (!IsReadable(ptrAcquisitionModeContinuous))
         {
-            cout << "Unable to get or set acquisition mode to continuous (entry retrieval). Aborting..." << endl << endl;
+            cout << "Unable to get or set acquisition mode to continuous (entry retrieval). Aborting..." << endl
+                 << endl;
             return -1;
         }
 
@@ -271,8 +334,8 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
                 {
                     // Retrieve and print the image status description
                     cout << "Image incomplete: " << Image::GetImageStatusDescription(pResultImage->GetImageStatus())
-                        << "..." << endl
-                        << endl;
+                         << "..." << endl
+                         << endl;
                 }
                 else
                 {
@@ -429,6 +492,8 @@ int RunSingleCamera(CameraPtr pCam)
 #else
         result = result | ResetGVCPHeartbeat(pCam);
 #endif
+        // Set stream mode
+        result = result | SetStreamMode(pCam);
 
         // Acquire images
         result = result | AcquireImages(pCam, nodeMap, nodeMapTLDevice);
@@ -461,8 +526,8 @@ int main(int /*argc*/, char** /*argv*/)
     if (tempFile == nullptr)
     {
         cout << "Failed to create file in current folder.  Please check "
-            "permissions."
-            << endl;
+                "permissions."
+             << endl;
         cout << "Press Enter to exit..." << endl;
         getchar();
         return -1;
@@ -479,8 +544,8 @@ int main(int /*argc*/, char** /*argv*/)
     // Print out current library version
     const LibraryVersion spinnakerLibraryVersion = system->GetLibraryVersion();
     cout << "Spinnaker library version: " << spinnakerLibraryVersion.major << "." << spinnakerLibraryVersion.minor
-        << "." << spinnakerLibraryVersion.type << "." << spinnakerLibraryVersion.build << endl
-        << endl;
+         << "." << spinnakerLibraryVersion.type << "." << spinnakerLibraryVersion.build << endl
+         << endl;
 
     // Retrieve list of cameras from the system
     CameraList camList = system->GetCameras();

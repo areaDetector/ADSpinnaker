@@ -42,14 +42,14 @@
 #include <iostream>
 #include <sstream>
 
-// Total number of buffers
-#define numBuffers 3
+// Total number of GenTL buffers. 1-2 buffers unavailable for some buffer modes
+constexpr int numBuffers = 6;
 
-// Number of triggers
-#define z_numTriggers 6
+// Number of triggers to load images from camera to Spinnaker
+constexpr int numTriggers = 10;
 
-// Total number of loops
-#define k_numLoops 9
+// Number of times attempted to grab an image from Spinnaker to application
+constexpr int numGrabs = 10;
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -68,6 +68,34 @@ void SleepyWrapper(int milliseconds)
 #endif
 }
 
+// This helper function determines the appropriate number of images to expect
+// when running this example on various cameras and stream modes.
+int GetExpectedImageCount(INodeMap& nodeMapTLDevice, INodeMap& snodeMap)
+{
+    // Check DeviceType and only adjust count for GigEVision device
+    CEnumerationPtr ptrDeviceType = nodeMapTLDevice.GetNode("DeviceType");
+    if (IsReadable(ptrDeviceType) && ptrDeviceType->GetIntValue() == DeviceType_GigEVision)
+    {
+        // Check StreamMode
+        CEnumerationPtr ptrStreamMode = snodeMap.GetNode("StreamMode");
+        if (!IsAvailable(ptrStreamMode) || !IsReadable(ptrStreamMode))
+        {
+            cout << "Unable to get device's stream mode. Aborting..." << endl << endl;
+            return -1;
+        }
+
+        // Adjust the expected image count to account for the trash buffer in
+        // TeledyneGigeVision driver, where we expect one less image than the
+        // total number of buffers
+        if (ptrStreamMode->GetIntValue() == StreamMode_TeledyneGigeVision)
+        {
+            return (numBuffers - 1);
+        }
+    }
+
+    return numBuffers;
+}
+
 // This function configures the camera to use a trigger. First, trigger mode is
 // set to off in order to select the trigger source. Once the trigger source
 // has been selected, trigger mode is then enabled, which has the camera
@@ -76,7 +104,7 @@ int ConfigureTrigger(INodeMap& nodeMap)
 {
     int result = 0;
 
-    cout << endl << endl << "*** CONFIGURING TRIGGER ***" << endl << endl;
+    cout << endl << "*** CONFIGURING TRIGGER ***" << endl;
 
     try
     {
@@ -88,8 +116,7 @@ int ConfigureTrigger(INodeMap& nodeMap)
         // trigger source.
         //
         CEnumerationPtr ptrTriggerMode = nodeMap.GetNode("TriggerMode");
-        if (!IsReadable(ptrTriggerMode) ||
-            !IsWritable(ptrTriggerMode))
+        if (!IsReadable(ptrTriggerMode) || !IsWritable(ptrTriggerMode))
         {
             cout << "Unable to enable trigger mode (node retrieval). Aborting..." << endl;
             return -1;
@@ -108,8 +135,7 @@ int ConfigureTrigger(INodeMap& nodeMap)
 
         // Set trigger source to software
         CEnumerationPtr ptrTriggerSource = nodeMap.GetNode("TriggerSource");
-        if (!IsReadable(ptrTriggerSource) ||
-            !IsWritable(ptrTriggerSource))
+        if (!IsReadable(ptrTriggerSource) || !IsWritable(ptrTriggerSource))
         {
             cout << "Unable to get or set trigger mode (node retrieval). Aborting..." << endl;
             return -1;
@@ -125,7 +151,6 @@ int ConfigureTrigger(INodeMap& nodeMap)
         ptrTriggerSource->SetIntValue(ptrTriggerSourceSoftware->GetValue());
 
         cout << "Trigger source set to software..." << endl;
-
     }
     catch (Spinnaker::Exception& e)
     {
@@ -183,8 +208,7 @@ int ResetTrigger(INodeMap& nodeMap)
         // restore the camera to a clean state.
         //
         CEnumerationPtr ptrTriggerMode = nodeMap.GetNode("TriggerMode");
-        if (!IsReadable(ptrTriggerMode) ||
-            !IsWritable(ptrTriggerMode))
+        if (!IsReadable(ptrTriggerMode) || !IsWritable(ptrTriggerMode))
         {
             cout << "Unable to disable trigger mode (node retrieval). Non-fatal error..." << endl;
             return -1;
@@ -255,7 +279,7 @@ int PrintDeviceInfo(INodeMap& nodeMap)
 // It saves three images for three of the buffer handling modes
 // (NewestFirst, OldestFirst, and OldestFirstOverwrite).  For NewestOnly,
 // it saves one image.
-int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
+int AcquireImages(const CameraPtr& pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 {
     int result = 0;
 
@@ -265,8 +289,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
     {
         // Set acquisition mode to continuous
         CEnumerationPtr ptrAcquisitionMode = nodeMap.GetNode("AcquisitionMode");
-        if (!IsReadable(ptrAcquisitionMode) ||
-            !IsWritable(ptrAcquisitionMode))
+        if (!IsReadable(ptrAcquisitionMode) || !IsWritable(ptrAcquisitionMode))
         {
             cout << "Unable to set acquisition mode to continuous (node retrieval). Aborting..." << endl << endl;
             return -1;
@@ -284,6 +307,23 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         cout << "Acquisition mode set to continuous..." << endl;
 
+        // Set pixel format to mono8
+        CEnumerationPtr ptrPixelFormat = nodeMap.GetNode("PixelFormat");
+
+        if (!IsWritable(ptrPixelFormat))
+        {
+            cout << "Unable to set Pixel Format mode (node retrieval). Aborting..." << endl << endl;
+            return false;
+        }
+        CEnumEntryPtr ptrMono8 = ptrPixelFormat->GetEntryByName("Mono8");
+        if (!IsReadable(ptrMono8))
+        {
+            cout << "Unable to set pixel format (entry 'mono8' retrieval). Aborting..." << endl << endl;
+            return false;
+        }
+        ptrPixelFormat->SetIntValue(ptrMono8->GetValue());
+        cout << "Pixel format set to " << ptrPixelFormat->GetCurrentEntry()->GetName() << endl;
+
         // Retrieve device serial number for filename
         gcstring deviceSerialNumber("");
 
@@ -300,14 +340,14 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         // Retrieve Buffer Handling Mode Information
         CEnumerationPtr ptrHandlingMode = sNodeMap.GetNode("StreamBufferHandlingMode");
-        if (!IsReadable(ptrHandlingMode) ||
-            !IsWritable(ptrHandlingMode))
+        if (!IsReadable(ptrHandlingMode) || !IsWritable(ptrHandlingMode))
         {
             cout << "Unable to set Buffer Handling mode (node retrieval). Aborting..." << endl << endl;
             return -1;
         }
 
         CEnumEntryPtr ptrHandlingModeEntry = ptrHandlingMode->GetCurrentEntry();
+
         if (!IsReadable(ptrHandlingModeEntry))
         {
             cout << "Unable to get Buffer Handling mode (Entry retrieval). Aborting..." << endl << endl;
@@ -316,8 +356,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         // Set stream buffer Count Mode to manual
         CEnumerationPtr ptrStreamBufferCountMode = sNodeMap.GetNode("StreamBufferCountMode");
-        if (!IsReadable(ptrStreamBufferCountMode) ||
-            !IsWritable(ptrStreamBufferCountMode))
+        if (!IsReadable(ptrStreamBufferCountMode) || !IsWritable(ptrStreamBufferCountMode))
         {
             cout << "Unable to get or set Buffer Count Mode (node retrieval). Aborting..." << endl << endl;
             return -1;
@@ -336,8 +375,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
         // Retrieve and modify Stream Buffer Count
         CIntegerPtr ptrBufferCount = sNodeMap.GetNode("StreamBufferCountManual");
-        if (!IsReadable(ptrBufferCount) ||
-            !IsWritable(ptrBufferCount))
+        if (!IsReadable(ptrBufferCount) || !IsWritable(ptrBufferCount))
         {
             cout << "Unable to get or set Buffer Count (Integer node retrieval). Aborting..." << endl << endl;
             return -1;
@@ -353,48 +391,22 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
         cout << "Buffer count now set to: " << ptrBufferCount->GetValue() << endl;
 
         cout << endl
-             << "Camera will be triggered " << z_numTriggers << " times in a row before " << k_numLoops - z_numTriggers
-             << " images will be retrieved" << endl;
+             << "Camera will be triggered " << numTriggers << " times in a row, followed by " << numGrabs
+             << " image retrieval attempts" << endl;
+        cout << endl << "Note - Buffer behaviour is different for USB3 and GigE cameras" << endl;
+        cout << "     - USB3 cameras buffer images internally if no host buffers are available" << endl;
+        cout << "     - Once the stream buffer is released, the USB3 camera will fill that buffer" << endl;
+        cout << "     - GigE cameras do not buffer images" << endl;
+        cout << "     - In TeledyneGigEVision stream mode an extra buffer will be reserved for trashing" << endl;
 
-        for (int i = 0; i < 4; i++)
+        const std::vector<gcstring> bufferHandlingModes = {
+            "NewestFirst", "OldestFirst", "NewestOnly", "OldestFirstOverwrite"};
+        for (unsigned int i = 0; i < bufferHandlingModes.size(); i++)
         {
-            switch (i)
-            {
-            case 0:
-                ptrHandlingModeEntry = ptrHandlingMode->GetEntryByName("NewestFirst");
-                ptrHandlingMode->SetIntValue(ptrHandlingModeEntry->GetValue());
-                cout << endl
-                     << endl
-                     << "Buffer Handling Mode has been set to " << ptrHandlingModeEntry->GetDisplayName() << endl;
-                break;
-
-            case 1:
-                ptrHandlingModeEntry = ptrHandlingMode->GetEntryByName("NewestOnly");
-                ptrHandlingMode->SetIntValue(ptrHandlingModeEntry->GetValue());
-                cout << endl
-                     << endl
-                     << "Buffer Handling Mode has been set to " << ptrHandlingModeEntry->GetDisplayName() << endl;
-                break;
-
-            case 2:
-                ptrHandlingModeEntry = ptrHandlingMode->GetEntryByName("OldestFirst");
-                ptrHandlingMode->SetIntValue(ptrHandlingModeEntry->GetValue());
-                cout << endl
-                     << endl
-                     << "Buffer Handling Mode has been set to " << ptrHandlingModeEntry->GetDisplayName() << endl;
-                break;
-
-            case 3:
-                ptrHandlingModeEntry = ptrHandlingMode->GetEntryByName("OldestFirstOverwrite");
-                ptrHandlingMode->SetIntValue(ptrHandlingModeEntry->GetValue());
-                cout << endl
-                     << endl
-                     << "Buffer Handling Mode has been set to " << ptrHandlingModeEntry->GetDisplayName() << endl;
-                break;
-
-            default:
-                break;
-            }
+            ptrHandlingModeEntry = ptrHandlingMode->GetEntryByName(bufferHandlingModes[i]);
+            ptrHandlingMode->SetIntValue(ptrHandlingModeEntry->GetValue());
+            const std::string bufferModeName = ptrHandlingMode->GetCurrentEntry()->GetDisplayName().c_str();
+            cout << endl << endl << "*** Buffer Handling Mode has been set to " << bufferModeName << " ***" << endl;
 
             // Begin capturing images
             pCam->BeginAcquisition();
@@ -407,70 +419,79 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
             try
             {
-                // Software Trigger the camera then  save images
-                for (int loopCnt = 0; loopCnt < k_numLoops; loopCnt++)
+                for (int j = 0; j < numTriggers; j++)
                 {
-                    ImagePtr pResultImage;
-                    if (loopCnt < z_numTriggers)
-                    {
-                        // Retrieve the next image from the trigger
-                        result = result | GrabNextImageByTrigger(nodeMap);
-                        cout << endl << "Camera triggered. No image grabbed" << endl;
-                    }
-                    else
-                    {
-                        cout << endl << "No trigger. Grabbing image " << loopCnt - z_numTriggers << endl;
+                    // Retrieve the next image from the trigger
+                    result = result | GrabNextImageByTrigger(nodeMap);
 
-                        pResultImage = pCam->GetNextImage(500);
-                        if (pResultImage->IsIncomplete())
-                        {
-                            cout << "Image incomplete with image status " << pResultImage->GetImageStatus() << "..."
-                                 << endl
-                                 << endl;
-                        }
-                    }
-
-                    if (loopCnt >= z_numTriggers)
-                    {
-                        // Retrieve Frame ID
-                        cout << "Frame ID: " << pResultImage->GetFrameID() << endl;
-
-                        // Create a unique filename
-                        ostringstream filename;
-
-                        filename << ptrHandlingModeEntry->GetSymbolic() << "-";
-
-                        if (!deviceSerialNumber.empty())
-                        {
-                            filename << deviceSerialNumber.c_str() << "-";
-                        }
-
-                        filename << loopCnt - z_numTriggers << ".jpg";
-
-                        // Save image
-                        pResultImage->Save(filename.str().c_str());
-                        cout << "Image saved at " << filename.str() << endl;
-
-                        // Release image
-                        pResultImage->Release();
-                    }
-
-                    // To control the framerate, have the application pause for 250ms
+                    // Control framerate
                     SleepyWrapper(250);
+                }
+
+                cout << endl << "Camera triggered " << numTriggers << " times" << endl;
+
+                cout << endl << "Retrieving images from library until no image data is returned (errors out)" << endl;
+
+                // Software Trigger the camera then save images
+                for (int j = 1; j < numGrabs; j++)
+                {
+                    // Create a unique filename
+                    ostringstream filename;
+                    filename << ptrHandlingModeEntry->GetSymbolic() << "-";
+                    if (!deviceSerialNumber.empty())
+                    {
+                        filename << deviceSerialNumber.c_str() << "-";
+                    }
+                    filename << j << ".jpg";
+
+                    const ImagePtr pResultImage = pCam->GetNextImage(500);
+                    if (pResultImage->IsIncomplete())
+                    {
+                        cout << "Image #" << j << " incomplete with image status " << pResultImage->GetImageStatus()
+                             << "..." << endl
+                             << endl;
+                    }
+
+                    // Retrieve and Save image
+                    pResultImage->Save(filename.str().c_str());
+                    cout << "GetNextImage() #" << j << ", Frame ID: " << pResultImage->GetFrameID()
+                         << ", Image saved at " << filename.str() << endl;
+
+                    // Release image
+                    pResultImage->Release();
                 }
             }
             catch (Spinnaker::Exception& e)
             {
-                cout << endl << "Error: " << e.what() << endl;
-
-                // For overwrite buffer handling modes such as NewestOnly and OldestFirstOverwrite, it is expected that
-                // two buffers are used to cycle images within spinnaker acquisition engine. So when buffer count is set
-                // to three, only one image is expected to return to the user so fetching another image without additional 
-                // triggers will return an error
-                if (ptrHandlingModeEntry->GetSymbolic() == "NewestOnly" || 
-                    ptrHandlingModeEntry->GetSymbolic() == "OldestFirstOverwrite")
+                cout << "Error: " << e.what() << endl << endl;
+                if (ptrHandlingModeEntry->GetSymbolic() == "NewestFirst" ||
+                    ptrHandlingModeEntry->GetSymbolic() == "OldestFirst")
                 {
-                    cout << "Error should occur when grabbing image 1 with handling mode set to NewestOnly or OldestFirstOverwrite" << endl;
+                    // In this mode, one buffer is used to cycle images within spinnaker acquisition engine.
+                    // Only numBuffers - 1 images will be stored in the library; additional triggered images will be
+                    // dropped.
+                    // Calling GetNextImage() more than buffered images will return an error.
+                    // Note: These two modes differ in the order of images returned.
+                    const unsigned int expectedImageCount = GetExpectedImageCount(nodeMapTLDevice, sNodeMap);
+                    cout << endl << "EXPECTED: error getting image # " << expectedImageCount + 1
+                         << " with handling mode set "
+                            "to NewestFirst or OldestFirst in GigE Streaming"
+                         << endl;
+                }
+                else if (ptrHandlingModeEntry->GetSymbolic() == "NewestOnly")
+                {
+                    // In this mode, a single buffer is overwritten if not read out in time
+                    cout << endl << "EXPECTED: error occur when getting image #2 with handling mode set to NewestOnly" << endl;
+                }
+                if (ptrHandlingModeEntry->GetSymbolic() == "OldestFirstOverwrite")
+                {
+                    // In this mode, two buffers are used to cycle images within
+                    // the spinnaker acquisition engine. Only numBuffers - 2 images will return to the user.
+                    // Calling GetNextImage() without additional triggers will return an error
+                    cout << endl << "EXPECTED: error occur when getting image #" << numBuffers - 1
+                         << " with handling mode set to"
+                            " OldestFirstOverwrite"
+                         << endl;
                 }
 
                 result = -1;
@@ -491,7 +512,7 @@ int AcquireImages(CameraPtr pCam, INodeMap& nodeMap, INodeMap& nodeMapTLDevice)
 
 // This function acts as the body of the example; please see NodeMapInfo example
 // for more in-depth comments on setting up cameras.
-int RunSingleCamera(CameraPtr pCam)
+int RunSingleCamera(const CameraPtr& pCam)
 {
     int result = 0;
     int err = 0;
@@ -547,8 +568,8 @@ int main(int /*argc*/, char** /*argv*/)
         cout << "Failed to create file in current folder.  Please check "
                 "permissions."
              << endl;
-        cout << "Press Enter to exit..." << endl;
-        getchar();
+        cout << "Press any key to exit..." << endl;
+        cin.ignore();
         return -1;
     }
     fclose(tempFile);
@@ -579,8 +600,8 @@ int main(int /*argc*/, char** /*argv*/)
         system->ReleaseInstance();
 
         cout << "Not enough cameras!" << endl;
-        cout << "Done! Press Enter to exit..." << endl;
-        getchar();
+        cout << "Done! Press any key to exit..." << endl;
+        cin.ignore();
 
         return -1;
     }
@@ -601,8 +622,8 @@ int main(int /*argc*/, char** /*argv*/)
     // Release system
     system->ReleaseInstance();
 
-    cout << endl << "Done! Press Enter to exit..." << endl;
-    getchar();
+    cout << endl << "Done! Press any key to exit..." << endl;
+    cin.ignore();
 
     return result;
 }
