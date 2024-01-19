@@ -18,6 +18,14 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-5 (January XXX, 2024)
+-------------------
+* Updated Spinnaker version from 3.1.0.79 to 4.0.0.116 on Windows abnd Linux.
+  Windows users will need to update their local install of the Spinnaker SDK to this version. 
+* Fixed a problem with stream statistics introduced in R3-4.
+  Some of the new statistics are not available on all cameras, for example USB vs GigE.
+  The driver was printing many error messages when a statistic was not supported.
+
 R3-4 (July 20, 2023)
 -------------------
 * Updated Spinnaker version from 2.4.0.147 to 3.1.0.79.
