@@ -18,10 +18,14 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R3-5 (January XXX, 2024)
+R3-5 (February 9, 2024)
 -------------------
-* Updated Spinnaker version from 3.1.0.79 to 4.0.0.116 on Windows abnd Linux.
-  Windows users will need to update their local install of the Spinnaker SDK to this version. 
+* Updated Spinnaker version from 3.1.0.79 to 4.0.0.116 on Windows and Linux.
+  - Windows users will need to update their local install of the Spinnaker SDK to this version.
+  - There is a known problem on CentOS 9.  The maximum number of driver buffers that Spinnaker will
+    allow is 3.  This is not a problem on Ubuntu 22 where a value over 200 is allowed on my system.
+    Even with the limit of 3 I am able to stream the full 163 frame/s on a GS3-U3-23S6M camera.
+    FLIR is aware of the issue.
 * Fixed a problem with stream statistics introduced in R3-4.
   Some of the new statistics are not available on all cameras, for example USB vs GigE.
   The driver was printing many error messages when a statistic was not supported.
