@@ -174,7 +174,7 @@ ADSpinnaker::ADSpinnaker(const char *portName, int cameraId, int numSPBuffers,
 
     startEventId_ = epicsEventCreate(epicsEventEmpty);
 
-    // launch image read taskp
+    // launch image read task
     epicsThreadCreate("ADSpinnakerImageTask", 
                       epicsThreadPriorityMedium,
                       epicsThreadGetStackSize(epicsThreadStackMedium),
@@ -504,8 +504,8 @@ asynStatus ADSpinnaker::grabImage()
             pImage->Release();
             return asynError;
         }
-        // There is a problem on Windows in SDK 4.0.  
-        // If acquisition has stopped we can receive an image, 
+        // There is a problem on Windows in SDK 4.0.
+        // If acquisition has stopped we can receive an image,
         // but when we try to read the data we get an access violation
         // Prevent that by ignoring this image.
         getIntegerParam(ADAcquire, &acquiring);
@@ -515,7 +515,7 @@ asynStatus ADSpinnaker::grabImage()
                 driverName, functionName);
             return asynError;
         }
-        
+
         nCols = pImage->GetWidth();
         nRows = pImage->GetHeight();
         // Print the first 16 bytes of the buffer in hex
