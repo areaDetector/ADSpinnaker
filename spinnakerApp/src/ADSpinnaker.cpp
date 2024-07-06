@@ -253,15 +253,38 @@ asynStatus ADSpinnaker::connectCamera(void)
                 driverName, functionName, &camList_);
             pCamera_ = camList_.GetByIndex(cameraId_);
         } else { 
-            asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-                "%s::%s calling camList_.GetBySerial, camList_=%p, cameraId_=%d\n",
-                driverName, functionName, &camList_, cameraId_);
-            char tempString[100];
-            sprintf(tempString, "%d", cameraId_);
-            std::string tempStdString(tempString);
-            pCamera_ = camList_.GetBySerial(tempStdString);
+            // Previously we just called camList_.GetBySerial() to find the camera.
+            // However, with multiple VLANs sharing the same physical layer, this can fail because the camList_
+            // contains multiple entries for the same camera, only one of which is on the subnet for the camera.
+            // We search the camera list to find the correct serial number and the ability to read the firmware version
+            // which means it is the correct subnet.
+            for (unsigned int i=0; i<numCameras; i++) {
+                CameraPtr pCamera;
+                CNodePtr pBase;
+                CStringPtr pNode;
+                pCamera = camList_.GetByIndex(i);
+                INodeMap *pNodeMap = &pCamera->GetTLDeviceNodeMap();
+                char tempString[100];
+                sprintf(tempString, "%d", cameraId_);
+                gcstring desiredSerialNumber(tempString);
+                pBase = (CNodePtr)pNodeMap->GetNode("DeviceSerialNumber");
+                pNode = static_cast<CStringPtr>(pBase);
+                gcstring serialNumber = pNode->GetValue();
+                if (serialNumber != desiredSerialNumber) continue;
+                pBase = (CNodePtr)pNodeMap->GetNode("DeviceVersion");
+                if (IsAvailable(pBase) && IsReadable(pBase)) {
+                    pCamera_ = pCamera;
+                    break;
+                }
+            }
         }
-    
+        if (!pCamera_) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s cannot find camera=%d, exiting\n",
+                driverName, functionName, cameraId_);
+                exit(-1);
+        }
+
         // Initialize camera
         pCamera_->Init();
         
