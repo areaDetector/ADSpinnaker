@@ -435,7 +435,11 @@ void ADSpinnaker::imageGrabTask()
         }
         // Release the NDArray buffer now that we are done with it.
         // After the callback just above we don't need it anymore
-        pRaw_->release();
+        // Release the NDArray buffer now that we are done with it.
+        if (this->pArrays[0]) {
+            this->pArrays[0]->release();
+        }
+        this->pArrays[0] = pRaw_;
         pRaw_ = NULL;
 
         getIntegerParam(ADAcquire, &acquire);
