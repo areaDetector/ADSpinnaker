@@ -27,8 +27,8 @@ mapping GenICam_ features to EPICS records.
 
 `ADSpinnaker class`_ describes this class in detail.
 
-As it name implies, ADSpinnaker_ uses the FLIR/Point Grey Spinnaker_ library.
-It runs on Windows, and on Linux versions with gcc 7.5 and higher (e.g. Ubuntu 18, RHEL 8, Centos 8, Debian 10)
+As its name implies, ADSpinnaker_ uses the FLIR/Point Grey Spinnaker_ library.
+It runs on Windows, and on Linux versions with gcc 7.5 and higher (e.g. Ubuntu 18, RHEL 8, Centos 8, Debian 10).
 It does not run on older Linux versions (e.g. Centos 7/RHEL 7) because
 the FLIR Spinnaker SDK is compiled on Ubuntu 18 and thus requires newer versions of GLIBC and GLIBCXX.
 
