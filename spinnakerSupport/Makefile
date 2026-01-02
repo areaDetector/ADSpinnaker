@@ -21,7 +21,7 @@ LIB_INSTALLS    += ../os/linux-x86_64/libLog_gcc11_v3_0.so
 LIB_INSTALLS    += ../os/linux-x86_64/libMathParser_gcc11_v3_0.so
 LIB_INSTALLS    += ../os/linux-x86_64/libNodeMapData_gcc11_v3_0.so
 LIB_INSTALLS    += ../os/linux-x86_64/libXmlParser_gcc11_v3_0.so
-LIB_INSTALLS    +=  ../os/linux-x86_64/Spinnaker_GenTL.cti
+LIB_INSTALLS    += ../os/linux-x86_64/Spinnaker_GenTL.cti
 endif
 
 #=============================
